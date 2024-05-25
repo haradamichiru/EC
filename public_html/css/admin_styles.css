@@ -1,0 +1,361 @@
+html {
+  font-family: "Helvetica Neue",
+  Arial,
+  "Hiragino Kaku Gothic ProN",
+  "Hiragino Sans",
+  Meiryo,
+  sans-serif;
+  letter-spacing: -0.1em;
+  color: #323232;
+  font-size: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  color: #323232;
+}
+
+a:hover {
+  color: #ffffff;
+  background-color: rgba(110, 115, 130, 0.748);
+}
+
+textarea {
+  resize: none;
+  font-size: 18px;
+  height: 200px;
+}
+
+li {
+  list-style: none;
+}
+
+.btn {
+  padding: 10px 50px 10px 50px;
+  font-size: 20px;
+  background: #595959;
+  color: #ffffff;
+}
+
+.err {
+  margin: 10px 0;
+  color: #d82626;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.err-txt {
+  color: #ff0000;
+}
+
+/* ヘッダー */
+
+.header {
+  background: rgb(255, 255, 255);
+}
+
+.header__inner {
+  letter-spacing: 0.01em;
+  width: 90%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__inner nav ul {
+  margin-bottom: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.header__inner nav ul li {
+  font-size: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+}
+
+.header__inner nav ul li + li {
+  margin-left: 20px;
+}
+
+/* 運営者ログイン */
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-text {
+  width: 100%;
+  line-height: 2;
+  padding: 2px;
+  border: #595959 1px solid;
+  border-radius: 8px;
+}
+
+th {
+  padding: 10px;
+}
+
+td {
+  padding: 10px;
+}
+
+label {
+  display: block;
+}
+
+/* 商品登録内容確認 */
+.container {
+  background-color: #e8e7e7;
+  margin: 100px;
+  padding: 50px;
+  width: auto;
+}
+
+.container_form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.addition_detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.addition_detail table {
+  width: 90%;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goods_image {
+  position: relative;
+  margin: 20px;
+}
+
+.goods_image span {
+  position: absolute;
+  top: 15px;
+  right: 8px;
+  line-height: 2;
+  background-color: #ffffff;
+  padding: 3px;
+  border: #595959 1px solid;
+  border-radius: 8px;
+}
+
+.goods_image img {
+  width: 300px;
+}
+
+.goods_addition {
+  margin: 10px;
+}
+
+.edit {
+  background-color: #e8e7e7;
+  margin: 100px;
+  padding: 50px;
+}
+
+.edit_form img {
+  width: 200px;
+}
+
+.goods {
+  border-top: 1px solid #323232;
+  display: flex;
+  align-items: center;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+}
+
+.delete {
+  margin: 20px;
+}
+
+.goods_edit {
+  margin: 10px;
+}
+
+.goods_edit .btn {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+}
+
+/* 商品削除 */
+.delete .goods_detail{
+  margin: 10px;
+  font-size: 20px;
+}
+
+.goods_detail .form {
+  margin-top: 50px;
+}
+
+/* 発送管理 */
+.next {
+  font-size: 25px;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+
+}
+
+.status_detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.status_detail table {
+  width: 90%;
+}
+
+.order {
+  border-top: 1px solid #323232;
+  padding: 15px;
+}
+
+.order_detail {
+  display: flex;
+}
+
+.content th, .content td {
+  padding: 5px;
+}
+
+.order_state td {
+  padding: 10px;
+}
+
+.order_state {
+  margin-left: 20px;
+}
+
+.order_edit .btn {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+}
+
+
+@media (max-width: 800px){
+  html {
+    font-size: 14px;
+  }
+  p {
+    margin-bottom: 0px;
+  }
+  h1 {
+    font-size: 18px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  .order_title, th {
+    font-size: 16px;
+  }
+  /* ヘッダー */
+  .header img {
+    width: 50px;
+  }
+  .header_title {
+    display: flex;
+    flex-direction: column;
+  }
+  .header__inner nav ul li {
+    font-size: 15px;
+  }
+  /* 商品登録内容確認 */
+  .container {
+    margin: 20px;
+    padding: 15px;
+  }
+  .container_form {
+    flex-direction: column;
+    align-items: center;
+  }
+  .addition_detail table {
+    width: 100%;
+  }
+  .goods_image {
+    margin: 0px;
+  }
+  .entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .goods {
+    flex-direction: column;
+  }
+  .goods_image {
+    margin: 10px;
+  }
+  .delete {
+    margin-top: 0px;
+  }
+  .goods_edit .btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  /* 発送管理 */
+  .order_list {
+    width: 90%;
+  }
+  .order_detail {
+    display: flex;
+    flex-direction: column;
+  }
+  .order_state {
+    margin-left: 0px;
+  }
+  .order_state th {
+    padding: 0px;
+  }
+  .content th {
+    font-size: 14px;
+  }
+  .order_edit .btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+}

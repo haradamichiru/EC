@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>運営者ログイン</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Charm|M+PLUS+Rounded+1c&amp;subset=latin-ext,thai,vietnamese" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="./js/validation.js"></script>
+  <link rel="stylesheet" href="./css/admin_styles.css">
+</head>
+<body>
+<header class="header">
+<div class="header__inner">
+  <div class="header_title">
+    <span><img src="./asset/img/Vue_logo.png"></span>
+    <span>運営者管理メニュー</span>
+  </div>
+  <nav>
+    <ul>
+      <li class="menu"><a href="goods_confirm.html">商品登録<br>内容確認</a></li>
+      <li class="menu"><a href="order_confirm.html">発送管理</a></li>
+    </ul>
+  </nav>
+</div>
+</header>
+<div class="main">
+  <div class="login">
+    <h1>運営者ログイン</h1>
+      <form class="login_form" method="" action="goods_confirm.html" onsubmit="return validateFormAdmin()" name="adminForm">
+      <table>
+          <tbody>
+          <tr>
+            <th>
+              <label for="id">ログインID</label>
+            </th>
+            <td>
+              <input class="form-text" type="text" name="id" value="">
+              <p class="err-txt" id="err-id"></p>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <label for="password">パスワード</label>
+            </th>
+            <td>
+              <input class="form-text" type="text" name="password" value="">
+              <p class="err-txt" id="err-password"></p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <input class="btn" type="submit" value="次に進む">
+    </form>
+  </div>
+</div>
+</body>
+</html>
+
