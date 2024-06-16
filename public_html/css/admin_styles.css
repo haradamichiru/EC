@@ -1,13 +1,10 @@
 html {
-  font-family: "Helvetica Neue",
-  Arial,
-  "Hiragino Kaku Gothic ProN",
-  "Hiragino Sans",
-  Meiryo,
-  sans-serif;
-  letter-spacing: -0.1em;
   color: #323232;
   font-size: 18px;
+  letter-spacing: 0.01em;
+  font-family: 'メイリオ', 'Meiryo', sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 * {
@@ -59,6 +56,29 @@ p {
   margin-bottom: 0;
 }
 
+table {
+  table-layout: fixed;
+}
+
+th {
+  text-align: right;
+  vertical-align: middle;
+  width: 15%;
+}
+
+td {
+  padding: 10px;
+}
+
+label {
+  display: block;
+}
+
+textarea {
+  line-height: 1.5;
+  height: 6em;
+}
+
 .err-txt {
   color: #ff0000;
 }
@@ -67,10 +87,13 @@ p {
 
 .header {
   background: rgb(255, 255, 255);
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 10;
 }
 
 .header__inner {
-  letter-spacing: 0.01em;
   width: 90%;
   margin: auto;
   display: flex;
@@ -85,28 +108,7 @@ p {
 }
 
 .header__inner nav ul li {
-  font-size: 20px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  padding: 15px;
-}
-
-.header__inner nav ul li + li {
-  margin-left: 20px;
-}
-
-/* 運営者ログイン */
-.login {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.login_form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 20px;
 }
 
 .form-text {
@@ -117,19 +119,31 @@ p {
   border-radius: 8px;
 }
 
-th {
-  padding: 10px;
+/* 運営者ログイン */
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-td {
-  padding: 10px;
+.login_form {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-label {
-  display: block;
+.login_id, .login_password {
+  margin: 10px;
+  display: flex;
 }
 
-/* 商品登録内容確認 */
+.login_id label, .login_password label {
+  width: 50%;
+}
+
+
+/* 商品管理 */
 .container {
   background-color: #e8e7e7;
   margin: 100px;
@@ -154,6 +168,10 @@ label {
   width: 90%;
 }
 
+.small {
+  font-size: 13px;
+}
+
 .entry {
   display: flex;
   flex-direction: column;
@@ -162,7 +180,7 @@ label {
 
 .goods_image {
   position: relative;
-  margin: 20px;
+  margin: 10px;
 }
 
 .goods_image span {
@@ -205,8 +223,18 @@ label {
   align-items: center;
 }
 
-.delete {
-  margin: 20px;
+.size, .color {
+  display: flex;
+  text-align: center;
+}
+
+.goods_detail {
+  width: 80%;
+}
+
+.goods .delete {
+  width: 8%;
+  margin: 10px;
 }
 
 .goods_edit {
@@ -220,13 +248,9 @@ label {
 }
 
 /* 商品削除 */
-.delete .goods_detail{
-  margin: 10px;
-  font-size: 20px;
-}
-
-.goods_detail .form {
-  margin-top: 50px;
+.delete-btn {
+  display: flex;
+  justify-content: center;
 }
 
 /* 発送管理 */
@@ -235,7 +259,6 @@ label {
   display: flex;
   justify-content: space-between;
   padding: 20px;
-
 }
 
 .status_detail {
@@ -245,21 +268,42 @@ label {
   justify-content: center;
 }
 
-.status_detail table {
-  width: 90%;
+.status_detail .form-text {
+  width: 80%;
 }
 
 .order {
   border-top: 1px solid #323232;
-  padding: 15px;
+  padding-top: 10px;
 }
 
 .order_detail {
   display: flex;
 }
 
-.content th, .content td {
+.order_detail th, .content th {
+  width: auto;
+}
+
+.add {
+  text-align: center;
+  font-size: 22px;
+}
+
+.add-btn {
   padding: 5px;
+  font-size: 20px;
+  background: #595959;
+  color: #ffffff;
+}
+
+.order_content .delete {
+  margin: auto;
+}
+
+.order_state .price {
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .order_state td {
@@ -276,6 +320,43 @@ label {
   top: 100px;
 }
 
+.number{
+  width: 30px;
+}
+
+.cancel {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+@media (max-width: 1100px){
+  th {
+    width: 20%;
+  }
+  .goods {
+    flex-direction: column;
+  }
+  .goods_image {
+    margin: 10px;
+  }
+  .delete {
+    margin-top: 0px;
+  }
+  .goods_edit .btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  /* 商品管理 */
+  .size, .color {
+    flex-direction: column;
+  }
+  /* 発送管理 */
+  .order_customer, .order_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
 
 @media (max-width: 800px){
   html {
@@ -304,7 +385,11 @@ label {
   .header__inner nav ul li {
     font-size: 15px;
   }
-  /* 商品登録内容確認 */
+  /* 運営者ログイン */
+  .login_id, .login_password {
+    flex-direction: column;
+  }
+    /* 商品管理 */
   .container {
     margin: 20px;
     padding: 15px;
@@ -342,7 +427,6 @@ label {
     width: 90%;
   }
   .order_detail {
-    display: flex;
     flex-direction: column;
   }
   .order_state {
@@ -358,4 +442,5 @@ label {
     margin-top: 20px;
     width: 100%;
   }
+
 }

@@ -176,41 +176,43 @@ function validateFormGoodsAdd() {
 
 }
 
-function validateFormGoodsUpdate() {
-  let goodsName = document.forms["goodsFormUpdate"]["goods_name"].value;
-  let goodsPrice = document.forms["goodsFormUpdate"]["goods_price"].value;
+// function validateFormGoodsUpdate() {
+//   let goodsName = document.forms["goodsFormUpdate"]["goods_name"].value;
+//   let goodsPrice = document.forms["goodsFormUpdate"]["goods_price"].value;
 
-  errGoods = document.getElementById('err-goods_update');
-  errPrice = document.getElementById('err-price_update');
+//   errGoods = document.getElementById('err-goods_update');
+//   errPrice = document.getElementById('err-price_update');
 
-  const priceRegex = new RegExp(/^[0-9]+$/);
+//   const priceRegex = new RegExp(/^[0-9]+$/);
 
-  if (goodsName == "") {
-    errGoods.innerText = "商品名が未入力です。"
-    err = false;
-  } else {
-    errGoods.innerText = "";
-  }
+//   console.log(document.getElementsByName('goods_name').value);
 
-  if (goodsPrice == "") {
-    errPrice.innerText = "金額が未入力です。";
-    err = false;
-  } else {
-    if (!goodsPrice.match(priceRegex)) {
-      errPrice.innerText = "金額は半角数字で入力してください。"
-      err = false;
-    } else {
-      errPrice.innerText = "";
-    }
-  }
+//   if (goodsName == "") {
+//     errGoods.innerText = "商品名が未入力です。"
+//     err = false;
+//   } else {
+//     errGoods.innerText = "";
+//   }
 
-  if (errGoods.innerText == "" && errPrice.innerText == "") {
-    err = true;
-  }
+//   if (goodsPrice == "") {
+//     errPrice.innerText = "金額が未入力です。";
+//     err = false;
+//   } else {
+//     if (!goodsPrice.match(priceRegex)) {
+//       errPrice.innerText = "金額は半角数字で入力してください。"
+//       err = false;
+//     } else {
+//       errPrice.innerText = "";
+//     }
+//   }
 
-  return err;
+//   if (errGoods.innerText == "" && errPrice.innerText == "") {
+//     err = true;
+//   }
 
-}
+//   return err;
+
+// }
 
 function validateFormOrderSearch() {
   let number = document.forms["orderSearch"]["number"].value;
