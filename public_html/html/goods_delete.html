@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>商品削除</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="./css/admin_styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <div class="header_title">
+        <span><img src="./asset/img/Vue_logo.png"></span>
+        <span>運営者管理メニュー</span>
+      </div>
+      <nav>
+        <ul>
+          <li class="menu"><a href="goods_confirm.html">商品管理</a></li>
+          <li class="menu"><a href="order_confirm.html">発送管理</a></li>
+          <li class="menu"><a href="">ログアウト</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="main">
+    <div class="container">
+      <h2>この商品を本当に削除しますか。</h2>
+      <form class="delete_form" action="" method="">
+        <div class="goods">
+          <div class="goods_image">
+            <img src="./asset/img/a.jpg">
+          </div>
+          <div class="goods_detail">
+            <table>
+              <tbody>
+                <tr>
+                  <th>商品名</th>
+                  <td>
+                    <p>アクセサリーA</p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>金額</th>
+                  <td>
+                    <p class="price">10000円</p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>サイズ</th>
+                  <td>
+                    <p class="size">7号,8号,9号,10号,11号,12号,13号</p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>カラー</th>
+                  <td>
+                    <p class="color">シルバー,ゴールド</p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    商品説明
+                  </th>
+                  <td>
+                    <code>永遠の愛を象徴するダイヤモンドの指輪です。&lt;br&gt;&lt;br&gt;純白の輝きと無垢な透明感が特徴のダイヤモンドは、その美しさと希少価値から結婚指輪や婚約指輪として選ばれることが多い宝石です。&lt;br&gt;シンプルでありながらも上品なデザインが施されており、どんな場面でもその美しさを際立たせます。</code>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="delete-btn">
+          <input type="button" class="btn" onclick="location.href='goods_confirm.html'" value="やめる">
+          <input type="submit" class="btn" value="削除">
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+

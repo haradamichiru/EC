@@ -1,0 +1,529 @@
+html {
+  color: #323232;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+  font-family: 'メイリオ', 'Meiryo', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  display: block;
+  color: #323232;
+}
+
+a:hover {
+  color: #ffffff;
+  background-color: rgba(110, 115, 130, 0.748);
+}
+
+textarea {
+  resize: none;
+  font-size: 18px;
+  height: 200px;
+}
+
+li {
+  list-style: none;
+}
+
+.btn {
+  padding: 10px 50px 10px 50px;
+  font-size: 20px;
+  background: #595959;
+  color: #ffffff;
+}
+
+.err {
+  margin: 10px 0;
+  color: #d82626;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+table {
+  table-layout: fixed;
+}
+
+th {
+  text-align: right;
+  vertical-align: middle;
+  width: 0;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px;
+  width: auto;
+}
+
+label {
+  display: block;
+}
+
+textarea {
+  font-family: inherit;
+  line-height: 1.5;
+  height: 6em;
+}
+
+.err-txt {
+  margin: 3px 0;
+  color: #ff0000;
+}
+
+/* ヘッダー */
+
+.header {
+  background: rgb(255, 255, 255);
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.header__inner {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__inner nav ul {
+  margin-bottom: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.header__inner nav ul li {
+  padding: 20px;
+}
+
+.form-text {
+  width: 100%;
+  line-height: 2;
+  padding: 2px;
+  border: #595959 1px solid;
+  border-radius: 8px;
+}
+
+.logout {
+  border: none;
+  background: none;
+  text-decoration: underline;
+  font-size: 18px;
+}
+
+.logout:hover {
+  color: #ffffff;
+  background-color: rgba(46, 46, 46, 0.748);
+}
+
+/* 運営者ログイン */
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login_form {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login_id, .login_password {
+  margin: 10px;
+  display: flex;
+}
+
+.login_id label, .login_password label {
+  width: 50%;
+}
+
+
+/* 商品管理 */
+.container {
+  background-color: #e8e7e7;
+  margin: 100px;
+  padding: 50px;
+  width: auto;
+}
+
+.container_form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.addition_detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goods_image {
+  position: relative;
+  margin: 10px;
+}
+
+.goods_image .edit-btn {
+  position: absolute;
+  top: 15px;
+  left: 8px;
+  line-height: 2;
+  background-color: #ffffff;
+  padding: 3px;
+  border: #595959 1px solid;
+  border-radius: 8px;
+}
+
+.goods_image .delete_image-btn {
+  position: absolute;
+  top: 15px;
+  right: 8px;
+  color: #ffffff;
+  background-color: #595959;
+  padding: 3px;
+  border: #595959 1px solid;
+  border-radius: 8px;
+}
+
+.goods_image img {
+  width: 300px;
+}
+
+.goods_addition {
+  margin: 10px;
+}
+
+.setting_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price .setting {
+  margin: 10px;
+  text-align: right;
+  padding: 5px 20px 5px 0px;
+}
+
+.edit {
+  background-color: #e8e7e7;
+  margin: 100px;
+  padding: 50px;
+}
+
+.edit_form img {
+  width: 200px;
+}
+
+.goods {
+  border-top: 1px solid #323232;
+  display: flex;
+  align-items: center;
+}
+
+.goods td {
+  width: 800px;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+}
+
+.size, .color {
+  display: flex;
+  text-align: center;
+}
+
+.goods_detail {
+  width: 80%;
+}
+
+.delete_goods {
+  padding: 5px 5px 0px 5px;
+  background: #ffffff;
+  color: #323232;
+  border: none;
+  border: double #323232;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.goods_edit {
+  margin: 10px;
+}
+
+.goods_edit .btn {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+}
+
+/* 商品削除 */
+.note {
+  margin-bottom: 20px;
+  color: #d82626;
+}
+
+.delete-btn {
+  display: flex;
+  justify-content: center;
+}
+
+.delete-btn .btn {
+  margin: 10px;
+}
+
+.back {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* 発送管理 */
+.next {
+  font-size: 25px;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.status_detail {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.status_detail .form-text {
+  width: 80%;
+}
+
+.status_radio .form-text {
+  width: auto;
+}
+
+.order {
+  border-top: 1px solid #323232;
+  padding-top: 10px;
+}
+
+.order_detail {
+  display: flex;
+}
+
+.order_customer th {
+  width: 100%;
+}
+
+.order_content {
+  width: 100%;
+}
+
+.add {
+  text-align: center;
+  font-size: 22px;
+}
+
+.order_content .delete {
+  margin: auto;
+}
+
+.order_state .price {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.order_state td {
+  padding: 10px;
+}
+
+.order_state {
+  margin-left: 20px;
+}
+
+.order_edit .btn {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+}
+
+.number{
+  width: 30px;
+}
+
+.cancel {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+@media (max-width: 1100px){
+  th {
+    width: 20%;
+  }
+  .goods {
+    flex-direction: column;
+  }
+  .goods_image {
+    margin: 10px;
+  }
+  .delete {
+    margin-top: 0px;
+  }
+  .goods_edit .btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  /* 商品管理 */
+  .size, .color {
+    flex-direction: column;
+  }
+  /* 発送管理 */
+  .order_customer, .order_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 800px){
+  html {
+    font-size: 14px;
+  }
+  p {
+    margin-bottom: 0px;
+  }
+  h1 {
+    font-size: 18px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  .order_title, th {
+    font-size: 16px;
+  }
+  /* ヘッダー */
+  .header img {
+    width: 50px;
+  }
+  .header_title {
+    display: flex;
+    flex-direction: column;
+  }
+  .header__inner nav ul li {
+    font-size: 15px;
+  }
+  /* 運営者ログイン */
+  .login_id, .login_password {
+    flex-direction: column;
+  }
+    /* 商品管理 */
+  .container {
+    margin: 20px;
+    padding: 15px;
+  }
+  .container_form {
+    flex-direction: column;
+    align-items: center;
+  }
+  .addition_detail table {
+    width: 100%;
+  }
+  .goods_image {
+    margin: 0px;
+  }
+  .entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .goods {
+    flex-direction: column;
+  }
+  .goods_image {
+    margin: 10px;
+  }
+  .delete {
+    margin-top: 0px;
+  }
+  .goods_edit .btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  /* 発送管理 */
+  .order_list {
+    width: 90%;
+  }
+  .order_detail {
+    flex-direction: column;
+  }
+  .order_state {
+    margin-left: 0px;
+  }
+  .order_state th {
+    padding: 0px;
+  }
+  .content th {
+    font-size: 14px;
+  }
+  .order_edit .btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .content_items th, .content_items td {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .content_items th {
+    border-top: solid 1px #323232;
+    padding: 10px;
+  }
+  .content_items th:last-child {
+    border-top: none;
+  }
+  .delete-btn {
+    display: inline-table;
+  }
+}

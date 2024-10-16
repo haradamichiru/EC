@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>発送管理</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="./css/admin_styles.css">
+  <script src="./js/validation.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <div class="header_title">
+        <span><img src="./asset/img/Vue_logo.png"></span>
+        <span>運営者管理メニュー</span>
+      </div>
+      <nav>
+        <ul>
+          <li class="menu"><a href="goods_confirm.html">商品管理</a></li>
+          <li class="menu"><a href="order_confirm.html">発送管理</a></li>
+          <li class="menu"><a href="login.html">ログアウト</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="main">
+    <!-- 検索 -->
+    <div class="container">
+      <h2>注文状況検索</h2>
+      <form class="container_form" method="" action="" onsubmit="return validateFormOrderSearch()" name="orderSearch">
+        <div class="status_detail">
+          <p class="err-txt" id="err-search"></p>
+          <table>
+            <tbody>
+              <tr>
+                <th>
+                  <label>注文番号</label>
+                </th>
+                <td>
+                  <input class="form-text" type="text" name="number" value="">
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <label>お客様名</label>
+                </th>
+                <td>
+                  <input class="form-text" type="text" name="username" value="">
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  <label>電話番号</label>
+                </th>
+                <td>
+                  <input class="form-text" type="text" name="tel_number" value="">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="search">
+          <div class="goods_addition">
+            <input class="btn" type="submit" value="検索" id="search_submit">
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- 注文情報 -->
+    <div class="container">
+      <h2>発送管理</h2>
+        <form class="container_form" method="" action="">
+          <div class="order_list">
+            <div class="order">
+              <h3>注文番号：01234567890123</h3>
+              <div class="order_detail">
+                <div class="order_customer">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>ご注文者情報</th>
+                        <td><input class="form-text" type="text" name="name" value="原田みちる"></td>
+                      </tr>
+                      <tr>
+                        <th>フリガナ</th>
+                        <td><input class="form-text" type="text" name="name" value="ハラダミチル"></td>
+                      </tr>
+                      <tr>
+                        <th>住所</th>
+                        <td><input class="form-text" type="text" name="address" value="東京都新宿区○○町1-2-3××ビル501"></td>
+                      </tr>
+                      <tr>
+                        <th>メールアドレス</th>
+                        <td><input class="form-text" type="text" name="address" value="abc@mail.com"></td>
+                      </tr>
+                      <tr>
+                        <th>電話番号</th>
+                        <td><input class="form-text" type="text" name="address" value="0123-45-6789"></td>
+                      </tr>
+                      <tr>
+                        <th>支払方法</th>
+                        <td>
+                          <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
+                          <select>
+                            <option name="pay" value="credit">クレジットカード</option>
+                            <option name="pay" value="transfer" selected>銀行振込</option>
+                            <option name="pay" value="cash">代引</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order_content">
+                  <p class="order_title">注文内容</p>
+                  <table class="content">
+                    <tbody>
+                      <tr>
+                        <th>アクセサリーA</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーB</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥15,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーC</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥5,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーD</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" class="add"><button type="button" class="add-btn">商品を追加する</button></th>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="order_state">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>購入日時：</th>
+                          <td>2023/12/17<br>16:15:30</td>
+                        </tr>
+                        <tr>
+                          <th>合計金額：</th>
+                          <td class="price">￥40,000</td>
+                        </tr>
+                        <tr>
+                          <th>発送状態：</th>
+                          <td>
+                            <select>
+                              <option value="preparation">発送準備中</option>
+                              <option value="preparation">発送完了</option>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="cancel">
+                <input class="btn cancel-btn" type="submit" value="注文をキャンセルする">
+              </div>
+            </div>
+            <div class="order">
+              <h3>注文番号：01234567890123</h3>
+              <div class="order_detail">
+                <div class="order_customer">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>ご注文者情報</th>
+                        <td><input class="form-text" type="text" name="name" value="原田みちる"></td>
+                      </tr>
+                      <tr>
+                        <th>フリガナ</th>
+                        <td><input class="form-text" type="text" name="name" value="ハラダミチル"></td>
+                      </tr>
+                      <tr>
+                        <th>住所</th>
+                        <td><input class="form-text" type="text" name="address" value="東京都新宿区○○町1-2-3××ビル501"></td>
+                      </tr>
+                      <tr>
+                        <th>メールアドレス</th>
+                        <td><input class="form-text" type="text" name="address" value="abc@mail.com"></td>
+                      </tr>
+                      <tr>
+                        <th>電話番号</th>
+                        <td><input class="form-text" type="text" name="address" value="0123-45-6789"></td>
+                      </tr>
+                      <tr>
+                        <th>支払方法</th>
+                        <td>
+                          <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
+                          <select>
+                            <option name="pay" value="credit">クレジットカード</option>
+                            <option name="pay" value="transfer" selected>銀行振込</option>
+                            <option name="pay" value="cash">代引</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order_content">
+                  <p class="order_title">注文内容</p>
+                  <table class="content">
+                    <tbody>
+                      <tr>
+                        <th>アクセサリーB</th>
+                        <td><input class="form-text number" type="text" name="number" value="2">個</td>
+                        <td>￥15,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーE</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥8,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" class="add"><button type="button" class="add-btn">商品を追加する</button></th>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="order_state">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>購入日時：</th>
+                          <td>2023/12/17<br>16:15:30</td>
+                        </tr>
+                        <tr>
+                          <th>合計金額：</th>
+                          <td class="price">￥38,000</td>
+                        </tr>
+                        <tr>
+                          <th>発送状態：</th>
+                          <td>
+                            <select>
+                              <option value="preparation">発送準備中</option>
+                              <option value="preparation" selected>発送完了</option>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="cancel">
+                <input class="btn cancel-btn" type="submit" value="注文をキャンセルする">
+              </div>
+            </div>
+            <div class="order">
+              <h3>注文番号：01234567890123</h3>
+              <div class="order_detail">
+                <div class="order_customer">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>ご注文者情報</th>
+                        <td><input class="form-text" type="text" name="name" value="原田みちる"></td>
+                      </tr>
+                      <tr>
+                        <th>フリガナ</th>
+                        <td><input class="form-text" type="text" name="name" value="ハラダミチル"></td>
+                      </tr>
+                      <tr>
+                        <th>住所</th>
+                        <td><input class="form-text" type="text" name="address" value="東京都新宿区○○町1-2-3××ビル501"></td>
+                      </tr>
+                      <tr>
+                        <th>メールアドレス</th>
+                        <td><input class="form-text" type="text" name="address" value="abc@mail.com"></td>
+                      </tr>
+                      <tr>
+                        <th>電話番号</th>
+                        <td><input class="form-text" type="text" name="address" value="0123-45-6789"></td>
+                      </tr>
+                      <tr>
+                        <th>支払方法</th>
+                        <td>
+                          <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
+                          <select>
+                            <option name="pay" value="credit" selected>クレジットカード</option>
+                            <option name="pay" value="transfer">銀行振込</option>
+                            <option name="pay" value="cash">代引</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order_content">
+                  <p class="order_title">注文内容</p>
+                  <table class="content">
+                    <tbody>
+                      <tr>
+                        <th>アクセサリーA</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" class="add"><button type="button" class="add-btn">商品を追加する</button></th>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="order_state">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>購入日時：</th>
+                          <td>2023/12/17<br>16:15:30</td>
+                        </tr>
+                        <tr>
+                          <th>合計金額：</th>
+                          <td class="price">￥10,000</td>
+                        </tr>
+                        <tr>
+                          <th>発送状態：</th>
+                          <td>
+                            <select>
+                              <option value="preparation">発送準備中</option>
+                              <option value="preparation" selected>発送完了</option>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="cancel">
+                <input class="btn cancel-btn" type="submit" value="注文をキャンセルする">
+              </div>
+            </div>
+            <div class="order">
+              <h3>注文番号：01234567890123</h3>
+              <div class="order_detail">
+                <div class="order_customer">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>ご注文者情報</th>
+                        <td><input class="form-text" type="text" name="name" value="原田みちる"></td>
+                      </tr>
+                      <tr>
+                        <th>フリガナ</th>
+                        <td><input class="form-text" type="text" name="name" value="ハラダミチル"></td>
+                      </tr>
+                      <tr>
+                        <th>住所</th>
+                        <td><input class="form-text" type="text" name="address" value="東京都新宿区○○町1-2-3××ビル501"></td>
+                      </tr>
+                      <tr>
+                        <th>メールアドレス</th>
+                        <td><input class="form-text" type="text" name="address" value="abc@mail.com"></td>
+                      </tr>
+                      <tr>
+                        <th>電話番号</th>
+                        <td><input class="form-text" type="text" name="address" value="0123-45-6789"></td>
+                      </tr>
+                      <tr>
+                        <th>支払方法</th>
+                        <td>
+                          <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
+                          <select>
+                            <option name="pay" value="credit">クレジットカード</option>
+                            <option name="pay" value="transfer" selected>銀行振込</option>
+                            <option name="pay" value="cash">代引</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order_content">
+                  <p class="order_title">注文内容</p>
+                  <table class="content">
+                    <tbody>
+                      <tr>
+                        <th>アクセサリーA</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーB</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥15,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーC</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥5,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーD</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" class="add"><button type="button" class="add-btn">商品を追加する</button></th>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="order_state">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>購入日時：</th>
+                          <td>2023/12/17<br>16:15:30</td>
+                        </tr>
+                        <tr>
+                          <th>合計金額：</th>
+                          <td class="price">￥40,000</td>
+                        </tr>
+                        <tr>
+                          <th>発送状態：</th>
+                          <td>
+                            <select>
+                              <option value="preparation">発送準備中</option>
+                              <option value="preparation">発送完了</option>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="cancel">
+                <input class="btn cancel-btn" type="submit" value="注文をキャンセルする">
+              </div>
+            </div>
+            <div class="order">
+              <h3>注文番号：01234567890123</h3>
+              <div class="order_detail">
+                <div class="order_customer">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>ご注文者情報</th>
+                        <td><input class="form-text" type="text" name="name" value="原田みちる"></td>
+                      </tr>
+                      <tr>
+                        <th>フリガナ</th>
+                        <td><input class="form-text" type="text" name="name" value="ハラダミチル"></td>
+                      </tr>
+                      <tr>
+                        <th>住所</th>
+                        <td><input class="form-text" type="text" name="address" value="東京都新宿区○○町1-2-3××ビル501"></td>
+                      </tr>
+                      <tr>
+                        <th>メールアドレス</th>
+                        <td><input class="form-text" type="text" name="address" value="abc@mail.com"></td>
+                      </tr>
+                      <tr>
+                        <th>電話番号</th>
+                        <td><input class="form-text" type="text" name="address" value="0123-45-6789"></td>
+                      </tr>
+                      <tr>
+                        <th>支払方法</th>
+                        <td>
+                          <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
+                          <select>
+                            <option name="pay" value="credit">クレジットカード</option>
+                            <option name="pay" value="transfer" selected>銀行振込</option>
+                            <option name="pay" value="cash">代引</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order_content">
+                  <p class="order_title">注文内容</p>
+                  <table class="content">
+                    <tbody>
+                      <tr>
+                        <th>アクセサリーA</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーB</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥15,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーC</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥5,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーD</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" class="add"><button type="button" class="add-btn">商品を追加する</button></th>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="order_state">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>購入日時：</th>
+                          <td>2023/12/17<br>16:15:30</td>
+                        </tr>
+                        <tr>
+                          <th>合計金額：</th>
+                          <td class="price">￥40,000</td>
+                        </tr>
+                        <tr>
+                          <th>発送状態：</th>
+                          <td>
+                            <select>
+                              <option value="preparation">発送準備中</option>
+                              <option value="preparation">発送完了</option>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="cancel">
+                <input class="btn cancel-btn" type="submit" value="注文をキャンセルする">
+              </div>
+            </div>
+            <div class="order">
+              <h3>注文番号：01234567890123</h3>
+              <div class="order_detail">
+                <div class="order_customer">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>ご注文者情報</th>
+                        <td><input class="form-text" type="text" name="name" value="原田みちる"></td>
+                      </tr>
+                      <tr>
+                        <th>フリガナ</th>
+                        <td><input class="form-text" type="text" name="name" value="ハラダミチル"></td>
+                      </tr>
+                      <tr>
+                        <th>住所</th>
+                        <td><input class="form-text" type="text" name="address" value="東京都新宿区○○町1-2-3××ビル501"></td>
+                      </tr>
+                      <tr>
+                        <th>メールアドレス</th>
+                        <td><input class="form-text" type="text" name="address" value="abc@mail.com"></td>
+                      </tr>
+                      <tr>
+                        <th>電話番号</th>
+                        <td><input class="form-text" type="text" name="address" value="0123-45-6789"></td>
+                      </tr>
+                      <tr>
+                        <th>支払方法</th>
+                        <td>
+                          <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
+                          <select>
+                            <option name="pay" value="credit">クレジットカード</option>
+                            <option name="pay" value="transfer" selected>銀行振込</option>
+                            <option name="pay" value="cash">代引</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="order_content">
+                  <p class="order_title">注文内容</p>
+                  <table class="content">
+                    <tbody>
+                      <tr>
+                        <th>アクセサリーA</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーB</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥15,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーC</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥5,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th>アクセサリーD</th>
+                        <td><input class="form-text number" type="text" name="number" value="1">個</td>
+                        <td>￥10,000/個</td>
+                        <td><input type="button" class="delete-btn" value="削除"></td>
+                      </tr>
+                      <tr>
+                        <th colspan="4" class="add"><button type="button" class="add-btn">商品を追加する</button></th>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="order_state">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>購入日時：</th>
+                          <td>2023/12/17<br>16:15:30</td>
+                        </tr>
+                        <tr>
+                          <th>合計金額：</th>
+                          <td class="price">￥40,000</td>
+                        </tr>
+                        <tr>
+                          <th>発送状態：</th>
+                          <td>
+                            <select>
+                              <option value="preparation">発送準備中</option>
+                              <option value="preparation">発送完了</option>
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="cancel">
+                <input class="btn cancel-btn" type="submit" value="注文をキャンセルする">
+              </div>
+            </div>
+            <div class="next">
+              <a href="">＜</a>
+              <a href="">＞</a>
+            </div>
+          </div>
+          <div div class="order_edit">
+            <input class="btn" type="submit" value="更新">
+          </div>
+        </form>
+    </div>
+  </div>
+</body>
+</html>
+
