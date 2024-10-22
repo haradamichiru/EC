@@ -27,7 +27,6 @@ function validateForm() {
   if (mail == "") {
     errMail.innerText = "メールアドレスが未入力です。"
     err = false;
-
   } else {
     if (!mail.match(mailRegex)) {
       errMail.innerText = "メールアドレスの形式ではありません。";
@@ -57,23 +56,18 @@ function validateForm() {
   }
 
   if (address == "") {
-    errAddress.innerText = "メールアドレスが未入力です。"
+    errAddress.innerText = "住所が未入力です。"
     err = false;
-  } else {
-    if (!mail.match(mailRegex)) {
-      errAddress.innerText = "メールアドレスの形式ではありません。"
-      err = false;
     } else {
       errAddress.innerText = "";
     }
-  }
 
   if (tel == "") {
     errTel.innerText = "電話番号が未入力です。"
     err = false;
   } else {
     if (!tel.match(telRegex)) {
-      errTel.innerText = "電話番号をハイフンなしで入力してください。"
+      errTel.innerText = "電話番号が不正です。ハイフンなしで入力してください。"
       err = false;
     } else {
       errTel.innerText = "";
@@ -176,43 +170,35 @@ function validateFormGoodsAdd() {
 
 }
 
-// function validateFormGoodsUpdate() {
-//   let goodsName = document.forms["goodsFormUpdate"]["goods_name"].value;
-//   let goodsPrice = document.forms["goodsFormUpdate"]["goods_price"].value;
+function validateFormSetting() {
+  let postage = document.forms["settingForm"]["postage"].value;
+  let tax = document.forms["settingForm"]["tax"].value;
+  console.log('aa');
 
-//   errGoods = document.getElementById('err-goods_update');
-//   errPrice = document.getElementById('err-price_update');
+  errPostage = document.getElementById('err-postage');
+  errTax = document.getElementById('err-tax');
 
-//   const priceRegex = new RegExp(/^[0-9]+$/);
+  if (postage == "") {
+    errPostage.innerText = "送料が未入力です。"
+    err = false;
+  } else {
+    errPostage.innerText = "";
+  }
 
-//   console.log(document.getElementsByName('goods_name').value);
+  if (tax == "") {
+    errTax.innerText = "消費税が未入力です。";
+    err = false;
+  } else {
+    errTax.innerText ="";
+  }
 
-//   if (goodsName == "") {
-//     errGoods.innerText = "商品名が未入力です。"
-//     err = false;
-//   } else {
-//     errGoods.innerText = "";
-//   }
+  if (errPostage.innerText == "" && errTax.innerText == "") {
+    err = true;
+  }
 
-//   if (goodsPrice == "") {
-//     errPrice.innerText = "金額が未入力です。";
-//     err = false;
-//   } else {
-//     if (!goodsPrice.match(priceRegex)) {
-//       errPrice.innerText = "金額は半角数字で入力してください。"
-//       err = false;
-//     } else {
-//       errPrice.innerText = "";
-//     }
-//   }
+  return err;
 
-//   if (errGoods.innerText == "" && errPrice.innerText == "") {
-//     err = true;
-//   }
-
-//   return err;
-
-// }
+}
 
 function validateFormOrderSearch() {
   let number = document.forms["orderSearch"]["number"].value;

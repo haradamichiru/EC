@@ -247,6 +247,11 @@ th,td {
   margin-bottom: 5px;
 }
 
+.tax {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
 /* カート内一覧 */
 .shopping_cart {
   display: flex;
@@ -340,6 +345,12 @@ th,td {
 
 .total_price table{
   margin: 0px;
+}
+
+.tax_in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* お客様情報入力 */

@@ -52,8 +52,8 @@ h3 {
 }
 
 p {
-  margin-top: 0;
-  margin-bottom: 0;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 table {
@@ -63,11 +63,13 @@ table {
 th {
   text-align: right;
   vertical-align: middle;
-  width: 15%;
+  width: 0;
+  white-space: nowrap;
 }
 
 td {
   padding: 10px;
+  width: auto;
 }
 
 label {
@@ -75,11 +77,13 @@ label {
 }
 
 textarea {
+  font-family: inherit;
   line-height: 1.5;
   height: 6em;
 }
 
 .err-txt {
+  margin: 3px 0;
   color: #ff0000;
 }
 
@@ -117,6 +121,18 @@ textarea {
   padding: 2px;
   border: #595959 1px solid;
   border-radius: 8px;
+}
+
+.logout {
+  border: none;
+  background: none;
+  text-decoration: underline;
+  font-size: 18px;
+}
+
+.logout:hover {
+  color: #ffffff;
+  background-color: rgba(46, 46, 46, 0.748);
 }
 
 /* 運営者ログイン */
@@ -164,10 +180,6 @@ textarea {
   justify-content: center;
 }
 
-.addition_detail table {
-  width: 90%;
-}
-
 .small {
   font-size: 13px;
 }
@@ -183,12 +195,23 @@ textarea {
   margin: 10px;
 }
 
-.goods_image span {
+.goods_image .edit-btn {
+  position: absolute;
+  top: 15px;
+  left: 8px;
+  line-height: 2;
+  background-color: #ffffff;
+  padding: 3px;
+  border: #595959 1px solid;
+  border-radius: 8px;
+}
+
+.goods_image .delete_image-btn {
   position: absolute;
   top: 15px;
   right: 8px;
-  line-height: 2;
-  background-color: #ffffff;
+  color: #ffffff;
+  background-color: #595959;
   padding: 3px;
   border: #595959 1px solid;
   border-radius: 8px;
@@ -200,6 +223,24 @@ textarea {
 
 .goods_addition {
   margin: 10px;
+}
+
+.setting_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price .setting {
+  margin: 10px;
+  text-align: right;
+  padding: 5px 20px 5px 0px;
 }
 
 .edit {
@@ -218,6 +259,10 @@ textarea {
   align-items: center;
 }
 
+.goods td {
+  width: 800px;
+}
+
 .price {
   display: flex;
   align-items: center;
@@ -232,9 +277,18 @@ textarea {
   width: 80%;
 }
 
-.goods .delete {
-  width: 8%;
-  margin: 10px;
+.delete_goods {
+  padding: 5px 5px 0px 5px;
+  background: #ffffff;
+  color: #323232;
+  border: none;
+  border: double #323232;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .goods_edit {
@@ -248,9 +302,23 @@ textarea {
 }
 
 /* 商品削除 */
-.delete-btn {
+.note {
+  margin-bottom: 20px;
+  color: #d82626;
+}
+
+.back-delete {
   display: flex;
   justify-content: center;
+}
+
+.back-delete .btn {
+  margin: 10px;
+}
+
+.back {
+  color: #ffffff;
+  text-decoration: none;
 }
 
 /* 発送管理 */
@@ -272,6 +340,10 @@ textarea {
   width: 80%;
 }
 
+.status_radio .form-text {
+  width: auto;
+}
+
 .order {
   border-top: 1px solid #323232;
   padding-top: 10px;
@@ -281,20 +353,17 @@ textarea {
   display: flex;
 }
 
-.order_detail th, .content th {
-  width: auto;
+.order_customer th {
+  width: 100%;
+}
+
+.order_content {
+  width: 100%;
 }
 
 .add {
   text-align: center;
   font-size: 22px;
-}
-
-.add-btn {
-  padding: 5px;
-  font-size: 20px;
-  background: #595959;
-  color: #ffffff;
 }
 
 .order_content .delete {
@@ -442,5 +511,19 @@ textarea {
     margin-top: 20px;
     width: 100%;
   }
-
+  .content_items th, .content_items td {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .content_items th {
+    border-top: solid 1px #323232;
+    padding: 10px;
+  }
+  .content_items th:last-child {
+    border-top: none;
+  }
+  .delete-btn {
+    display: inline-table;
+  }
 }
