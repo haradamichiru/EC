@@ -3,32 +3,46 @@ require_once(__DIR__ .'/header.php');
 $app = new Ec\Controller\Goods();
 $app->run();
 ?>
-<div class="information">
+<section class="information">
   <h1 class="page_title">お客様情報入力</h1>
     <div class="customerInformation">
-      <form method="post" action="" id="form" onsubmit="return validateForm()" name="customerInformation">
+      <form method="post" class="h-adr" action="" id="form" onsubmit="return validateForm()" name="customerInformation">
         <div class="form-contents">
-          <label class="form">メールアドレス（必須）</label><br>
-          <input class="form-text" type="text" name="mail" value="<?= isset($_SESSION['mail']) ? h($_SESSION['mail']): ''; ?>">
+          <label class="form">メールアドレス（必須）</label>
+          <input class="form-text" type="email" name="mail" value="<?= isset($_SESSION['mail']) ? h($_SESSION['mail']): ''; ?>" placeholder="abc@vue.jp">
           <p class="err-txt" id="err-mail"></p>
           <p>※入力誤りにご注意ください。メールアドレスに誤りがある場合、注文完了メールが受け取れなくなります。</p>
         </div>
         <div class="form-contents">
-          <label class="form">氏名（必須）</label><br>
-          <input class="form-text" type="text" name="name" value="<?= isset($_SESSION['name']) ? h($_SESSION['name']): ''; ?>">
+          <label class="form">氏名（必須）</label>
+          <input class="form-text" type="text" name="name" value="<?= isset($_SESSION['name']) ? h($_SESSION['name']): ''; ?>" placeholder="佐藤太郎">
           <p class="err-txt" id="err-name"></p>
         </div>
         <div class="form-contents">
-          <label class="form">氏名フリガナ（必須）</label><br>
-          <input class="form-text" type="text" name="kana" value="<?= isset($_SESSION['kana']) ? h($_SESSION['kana']): ''; ?>">
-          <p class="err-txt" id="err-kana"></p></div>
-          <div class="form-contents"><label class="form">住所（必須）</label><br>
-          <input class="form-text" type="text" name="address" value="<?= isset($_SESSION['address']) ? h($_SESSION['address']): ''; ?>">
+          <label class="form">氏名フリガナ（必須）</label>
+          <input class="form-text" type="text" name="kana" value="<?= isset($_SESSION['kana']) ? h($_SESSION['kana']): ''; ?>" placeholder="サトウタロウ" id="kana">
+          <p class="err-txt" id="err-kana"></p>
+          <p>※全角カナでご入力ください。</p>
+        </div>
+        <div class="form-contents">
+          <label class="form">郵便番号（必須）</label>
+          <span class="p-country-name" style="display:none;">Japan</span>
+          <p class="postnum">
+            〒
+            <input class="form-text p-postal-code" type="text" name="post-number-1" value="<?= isset($_SESSION['post_number1']) ? h($_SESSION['post_number1']): ''; ?>" placeholder="160">
+            -
+            <input class="form-text p-postal-code" type="text" name="post-number-2" value="<?= isset($_SESSION['post_number2']) ? h($_SESSION['post_number2']): ''; ?>" placeholder="0022">
+          </p>
+          <p class="err-txt" id="err-postnum"></p>
+        </div>
+        <div class="form-contents"><label class="form">住所（必須）</label>
+          <input class="form-text p-region p-locality p-street-address p-extended-address" type="text" name="address" value="<?= isset($_SESSION['address']) ? h($_SESSION['address']): ''; ?>" placeholder="東京都新宿区新宿１丁目１９−１０ サンモールクレスト 5F">
+          <p>※建物名、部屋番号を必ずご入力ください。</p>
           <p class="err-txt" id="err-address"></p>
         </div>
         <div class="form-contents">
-          <label class="form">お届け時に連絡可能な電話番号（必須）</label><br>
-          <input class="form-text" type="text" name="tel" value="<?= isset($_SESSION['tel']) ? h($_SESSION['tel']): ''; ?>">
+          <label class="form">お届け時に連絡可能な電話番号（必須）</label>
+          <input class="form-text" type="tel" name="tel" value="<?= isset($_SESSION['tel']) ? h($_SESSION['tel']): ''; ?>" placeholder="0312345678" id="tel">
           <p class="err-txt" id="err-tel"></p>
         </div>
         <div class="bottom">
@@ -102,12 +116,12 @@ $app->run();
           </div>
           <div class="next">
             <input class="btn" type="submit" name="customer" value="次に進む">
-            <a class="back" href="javascript:history.back();">ショッピングカートに戻る</a>
+            <a class="back" href="<?= SITE_URL; ?>/shopping_all.php">ショッピングカートに戻る</a>
           </div>
         </div>
       </form>
     </div>
-</div>
+</section>
 <?php
   require_once(__DIR__ .'/footer.php');
 ?>

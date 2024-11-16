@@ -17,17 +17,27 @@ require_once(__DIR__ .'/../config/config.php');
   <script src="./js/check.js"></script>
   <script src="./js/count.js"></script>
   <script src="./js/validation.js"></script>
+  <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/libphonenumber-js/1.1.10/libphonenumber-js.min.js"></script>
   <link rel="stylesheet" href="./css/shopping_styles.css">
 </head>
 <body>
 <header class="header">
 <div class="header_inner">
-  <div><a href="<?= SITE_URL; ?>/index.php"><img src="./asset/img/Vue_logo.png"></a></div>
+  <h1>
+    <a href="<?= SITE_URL; ?>/index.php">
+      <img src="./asset/img/Vue_logo.png" alt="Vue">
+    </a>
+  </h1>
   <nav>
     <ul>
-      <li class="menu"><a href="<?= SITE_URL; ?>/shopping_all.php"><img src="./asset/img/cart.jpg"></a></li>
+      <li class="menu">
+        <a href="<?= SITE_URL; ?>/shopping_all.php">
+          <img src="./asset/img/cart.jpg">
+        </a>
+      </li>
     </ul>
   </nav>
 </div>
 </header>
-<div class="main">
+<main class="main">

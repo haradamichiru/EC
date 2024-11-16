@@ -1,6 +1,6 @@
 html {
   color: #323232;
-  font-size: 18px;
+  font-size: 62.5%;
   letter-spacing: 0.01em;
   font-family: 'メイリオ', 'Meiryo', sans-serif;
   font-weight: 400;
@@ -14,6 +14,7 @@ html {
 a {
   display: block;
   color: #323232;
+  font-size: 1.8rem;
 }
 
 a:hover {
@@ -23,7 +24,7 @@ a:hover {
 
 textarea {
   resize: none;
-  font-size: 18px;
+  font-size: 1.1rem;
   height: 200px;
 }
 
@@ -33,27 +34,39 @@ li {
 
 .btn {
   padding: 10px 50px 10px 50px;
-  font-size: 20px;
+  font-size: 2rem;
   background: #595959;
   color: #ffffff;
 }
 
 .err {
-  margin: 10px 0;
+  margin: 14px 0;
   color: #d82626;
 }
 
+h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0px;
+}
+
 h2 {
-  font-size: 24px;
+  font-size: 2.1rem;
+  margin-bottom: 0px;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 2rem;
+  margin-bottom: 0px;
+}
+
+h4 {
+  font-size: 1.7rem;
 }
 
 p {
   margin-top: 0px;
   margin-bottom: 0px;
+  font-size: 1.6rem;
 }
 
 table {
@@ -73,18 +86,42 @@ td {
 }
 
 label {
-  display: block;
+  font-size: 1.7rem;
+}
+
+.back {
+  font-size: 1.6rem;
 }
 
 textarea {
-  font-family: inherit;
-  line-height: 1.5;
-  height: 6em;
+  resize: none;
+  font-size: 2rem;
+  height: 200px;
+}
+
+span {
+  font-size: 1.6rem;
+}
+
+th,td {
+  padding: 5px;
+  font-size: 1.7rem;
 }
 
 .err-txt {
   margin: 3px 0;
   color: #ff0000;
+}
+
+.form-text {
+  width: 100%;
+  height: 50px;
+  font-size: 1.8rem;
+  line-height: 2;
+  padding: 2px;
+  margin: 5px 0px 5px 0px;
+  border: #595959 1px solid;
+  border-radius: 8px;
 }
 
 /* ヘッダー */
@@ -115,19 +152,11 @@ textarea {
   padding: 20px;
 }
 
-.form-text {
-  width: 100%;
-  line-height: 2;
-  padding: 2px;
-  border: #595959 1px solid;
-  border-radius: 8px;
-}
-
 .logout {
   border: none;
   background: none;
   text-decoration: underline;
-  font-size: 18px;
+  font-size: 1.8rem;
 }
 
 .logout:hover {
@@ -151,7 +180,6 @@ textarea {
 
 .login_id, .login_password {
   margin: 10px;
-  display: flex;
 }
 
 .login_id label, .login_password label {
@@ -181,7 +209,7 @@ textarea {
 }
 
 .small {
-  font-size: 13px;
+  font-size: 1.3rem;
 }
 
 .entry {
@@ -210,6 +238,7 @@ textarea {
   position: absolute;
   top: 15px;
   right: 8px;
+  line-height: 2;
   color: #ffffff;
   background-color: #595959;
   padding: 3px;
@@ -277,7 +306,12 @@ textarea {
   width: 80%;
 }
 
+.large {
+  height: 150px;
+}
+
 .delete_goods {
+  font-size: 2rem;
   padding: 5px 5px 0px 5px;
   background: #ffffff;
   color: #323232;
@@ -323,7 +357,7 @@ textarea {
 
 /* 発送管理 */
 .next {
-  font-size: 25px;
+  font-size: 2.5rem;
   display: flex;
   justify-content: space-between;
   padding: 20px;
@@ -336,12 +370,19 @@ textarea {
   justify-content: center;
 }
 
-.status_detail .form-text {
-  width: 80%;
+.select {
+  height: 50px;
+  font-size: 1.8rem;
 }
 
-.status_radio .form-text {
-  width: auto;
+.form-status {
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.status {
+  margin-right: 30px;
 }
 
 .order {
@@ -353,17 +394,13 @@ textarea {
   display: flex;
 }
 
-.order_customer th {
-  width: 100%;
-}
-
 .order_content {
   width: 100%;
 }
 
 .add {
   text-align: center;
-  font-size: 22px;
+  font-size: 2.2rem;
 }
 
 .order_content .delete {
@@ -371,7 +408,7 @@ textarea {
 }
 
 .order_state .price {
-  font-size: 25px;
+  font-size: 2.5rem;
   font-weight: bold;
 }
 
@@ -429,19 +466,19 @@ textarea {
 
 @media (max-width: 800px){
   html {
-    font-size: 14px;
+    font-size: 1.4rem;
   }
   p {
     margin-bottom: 0px;
   }
   h1 {
-    font-size: 18px;
+    font-size: 1.8rem;
   }
   h2 {
-    font-size: 18px;
+    font-size: 1.8rem;
   }
   .order_title, th {
-    font-size: 16px;
+    font-size: 1.6rem;
   }
   /* ヘッダー */
   .header img {
@@ -452,7 +489,7 @@ textarea {
     flex-direction: column;
   }
   .header__inner nav ul li {
-    font-size: 15px;
+    font-size: 1.5rem;
   }
   /* 運営者ログイン */
   .login_id, .login_password {
@@ -505,7 +542,7 @@ textarea {
     padding: 0px;
   }
   .content th {
-    font-size: 14px;
+    font-size: 1.4rem;
   }
   .order_edit .btn {
     margin-top: 20px;

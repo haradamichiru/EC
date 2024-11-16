@@ -1,7 +1,7 @@
 html {
   color: #323232;
-  font-size: 16px;
-  letter-spacing: 0.01em;
+  font-size: 62.5%;
+  letter-spacing: 0.02em;
   font-family: "Zen Old Mincho", serif;
   font-weight: 400;
   font-style: normal;
@@ -14,7 +14,6 @@ html {
 a {
   display: block;
   color: #323232;
-  text-decoration: none;
 }
 
 a:hover {
@@ -24,7 +23,7 @@ a:hover {
 
 textarea {
   resize: none;
-  font-size: 18px;
+  font-size: 2rem;
   height: 200px;
 }
 
@@ -34,23 +33,33 @@ li {
 
 .btn {
   padding: 10px 50px 10px 50px;
-  font-size: 20px;
+  font-size: 2rem;
   background: #595959;
   color: #ffffff;
 }
 
 .err {
-  margin: 10px 0;
+  margin: 14px 0;
   color: #d82626;
 }
 
 h1 {
-  font-size: 25px;
+  font-size: 2.4rem;
   margin-bottom: 0px;
 }
 
 h2 {
-  font-size: 20px;
+  font-size: 2.1rem;
+  margin-bottom: 0px;
+}
+
+h3 {
+  font-size: 2rem;
+  margin-bottom: 0px;
+}
+
+h4 {
+  font-size: 1.7rem;
 }
 
 .page_title {
@@ -59,8 +68,10 @@ h2 {
 }
 
 p {
-  margin-top: 0;
-  margin-bottom: 0;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-size: 1.6rem;
+  line-height: 2rem;
 }
 
 table {
@@ -69,6 +80,19 @@ table {
 
 th,td {
   padding: 5px;
+  font-size: 1.7rem;
+}
+
+span {
+  font-size: 1.6rem;
+}
+
+label {
+  font-size: 1.7rem;
+}
+
+.back {
+  font-size: 1.6rem;
 }
 
 /* ヘッダー */
@@ -109,7 +133,7 @@ th,td {
   position: absolute;
   left: 5%;
   top: 70%;
-  font-size: 30px;
+  font-size: 7rem;
   letter-spacing: 8px;
   margin-bottom: 50px;
   font-weight: 300;
@@ -118,14 +142,18 @@ th,td {
 }
 
 .top_text {
-  font-size: 20px;
+  font-size: 2.1rem;
   text-align: center;
   margin-top: 50px;
   padding: 20px;
 }
 
+.top_text p {
+  font-size: 1.8rem;
+}
+
 .more {
-  font-size: 30px;
+  font-size: 3rem;
   font-weight: 500;
   margin-bottom: 30px;
 }
@@ -148,10 +176,11 @@ th,td {
 
 .item img {
   width: 200px;
+  margin-bottom: 10px;
 }
 
 .price {
-  font-size: 16px;
+  font-size: 1.9rem;
   margin-right: 5px;
   font-weight: bold;
 }
@@ -187,6 +216,10 @@ th,td {
   margin: 8px;
 }
 
+.select {
+  height: 50px;
+}
+
 .quantity {
   border: 0.1rem solid rgba(var(--color-base-text),.08);
   position: relative;
@@ -200,7 +233,7 @@ th,td {
 .quantity__button {
   width: calc(4.5rem / var(--font-body-scale));
   flex-shrink: 0;
-  font-size: 1.8rem;
+  font-size: 2.9rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -229,7 +262,7 @@ th,td {
   border: 0;
   width: 50px;
   color: currentColor;
-  font-size: 1.4rem;
+  font-size: 2.2rem;
   font-weight: 500;
   opacity: .85;
   text-align: center;
@@ -241,14 +274,12 @@ th,td {
 }
 
 .item_contents {
-  font-size: 16px;
   font-weight: bold;
   border-bottom: 3px solid #323232;
   margin-bottom: 5px;
 }
 
 .tax {
-  font-size: 14px;
   margin-top: 5px;
 }
 
@@ -282,13 +313,15 @@ th,td {
 }
 
 .count_number {
+  height: 50px;
   width: 50px;
+  font-size: 2.1rem;
   text-align: center;
 }
 
 .btn_change {
   padding: 2px 10px 2px 10px;
-  font-size: 17px;
+  font-size: 1.7rem;
   background: #595959;
   color: #ffffff;
   margin-left: 20px;
@@ -300,7 +333,7 @@ th,td {
 }
 
 .item_price {
-  font-size: 17px;
+  font-size: 1.9rem;
 }
 
 .subtotal {
@@ -315,6 +348,7 @@ th,td {
   border: transparent;
   margin-top: 10px;
   padding: 5px;
+  font-size: 1.6rem;
 }
 
 .total {
@@ -337,10 +371,9 @@ th,td {
 }
 
 .total_price {
-  width: 250px;
   display: flex;
   justify-content: space-between;
-  padding: 7px;
+  margin: 7px;
 }
 
 .total_price table{
@@ -348,9 +381,14 @@ th,td {
 }
 
 .tax_in {
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.back {
+  margin-top: 10px;
 }
 
 /* お客様情報入力 */
@@ -367,10 +405,17 @@ th,td {
 
 .form-text {
   width: 100%;
+  height: 50px;
+  font-size: 1.8rem;
   line-height: 2;
   padding: 2px;
+  margin: 5px;
   border: #595959 1px solid;
   border-radius: 8px;
+}
+
+.p-postal-code {
+  width: auto;
 }
 
 input[name="name"],input[name="kana"],input[name="tel"] {
@@ -383,12 +428,19 @@ input[name="name"],input[name="kana"],input[name="tel"] {
 
 .form-contents {
   margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
 }
 
 .bottom {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+}
+
+.form p {
+  font-size: 1.7rem;
+  margin-bottom: 2px;
 }
 
 .next a {
@@ -405,7 +457,9 @@ input[id="cvv"] {
 
 select {
   margin-top: 7px;
+  font-size: 1.8rem;
   line-height: 2.5;
+  height: 50px;
   border-radius: 8px;
 }
 
@@ -528,7 +582,6 @@ select {
 .address p {
   text-align: right;
   margin-bottom: 0px;
-  font-size: 16px;
 }
 
 .map {
@@ -544,7 +597,7 @@ iframe {
 @media (max-width: 1500px) {
     /* トップ */
     .mv p {
-      font-size: 50px;
+      font-size: 5rem;
     }
     .item__list {
       max-width: 100%;
@@ -552,11 +605,8 @@ iframe {
 }
 
 @media (max-width: 800px){
-  p {
-    margin-bottom: 0px;
-  }
   h1 {
-    font-size: 18px;
+    font-size: 1.7rem;
   }
   /* トップ */
   .mv {
@@ -564,7 +614,7 @@ iframe {
   }
   .mv p {
     top: 82%;
-    font-size: 30px;
+    font-size: 3.2rem;
   }
   .item__list {
     max-width: 100%;
@@ -630,6 +680,10 @@ iframe {
     align-items: center;
     width: 100%;
   }
+  .p-postal-code {
+    width: 30%;
+  }
+
   /* 注文内容確認 */
   .container_confirm {
     flex-direction: column;

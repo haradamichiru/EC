@@ -14,11 +14,11 @@ $app = new Ec\Controller\Goods();
 $app->run();
 
 ?>
-    <div class="shopping_cart">
+    <section class="shopping_cart">
       <h1 class="page_title">カート内一覧</h1>
       <form class="cart" method="post" action="">
         <!-- 商品一覧 -->
-        <div div class="items">
+        <section div class="items">
           <?php if (empty($item)) { ?>
             <p>ショッピングカートの中に商品がございません。</p>
           <?php } else { ?>
@@ -30,11 +30,13 @@ $app->run();
           $color = $all['color']; ?>
           <div class="cart_item">
             <div class="item_img">
-              <img src="<?= !(empty($list[$id]->image)) ? './gazou/'.h($list[$id]->image) : './asset/img/noimage.png'; ?>">
+              <img src="<?= !(empty($list[$id]->image)) ? './image/'.h($list[$id]->image) : './asset/img/noimage.png'; ?>">
             </div>
             <div class="item_number">
-              <h1><p><?= h($list[$id]->goods_name); ?></p></h1>
-              <div class="item_price"><span class="price">￥<?= number_format($price); ?></span>/点</div>
+              <h2><?= h($list[$id]->goods_name); ?></h2>
+              <div class="item_price">
+                <p><span class="price">￥<?= number_format($price * ($rate + 1)); ?></span>（内税￥<?= number_format($price * $rate); ?>）/点<p>
+              </div>
               <div class="specification">
                 <table>
                   <tbody>
@@ -62,11 +64,11 @@ $app->run();
           </div>
           </div>
           <?php endforeach ?>
-        </div>
+        </section>
         <!-- 合計 -->
-        <div class="total">
+        <section class="total">
           <div class="payment">
-            <h2>お支払金額</h2>
+            <h3>お支払金額</h3>
             <div class="total_price">
               <div class="total_number">
                 <table>
@@ -101,10 +103,11 @@ $app->run();
               </div>
             </div>
           <input class="btn" type="submit" name="order" value="次に進む">
-        </div>
+          <a class="back" href="<?= SITE_URL; ?>/index.php">買い物を続ける</a>
+        </section>
         <?php } ?>
       </form>
-    </div>
+    </section>
 <?php
   require_once(__DIR__ .'/footer.php');
 ?>

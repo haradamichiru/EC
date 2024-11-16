@@ -28,24 +28,25 @@ $app->run();
         <form method="post" action="">
           <div class="container_confirm">
             <!-- 注文者情報 -->
-            <div class="customer">
+            <section class="customer">
               <div class="customer-info">
-                <p>ご注文者情報</p>
+                <h4>ご注文者情報</h4>
                 <p class="customer-info_detail"><?= h($_SESSION['name']); ?>　（ <?= h($_SESSION['kana']); ?> ）</p>
               </div>
               <div class="customer-info">
-                <p>お届け先</p>
+                <h4>お届け先</h4>
+                <p class="customer-info_detail">〒<?= h($_SESSION['post_number']); ?></p>
                 <p class="customer-info_detail"><?= h($_SESSION['address']); ?></p>
               </div>
               <div class="customer-info">
-                <p>ご連絡先</p>
+                <h4>ご連絡先</h4>
                 <div class="customer-info_detail">
                   <p><?= h($_SESSION['mail']); ?></p>
                   <p><?= h($_SESSION['tel']); ?></p>
                 </div>
               </div>
               <div class="customer-info">
-                <p>お支払方法</p>
+                <h4>お支払方法</h4>
                 <div class="customer-info_detail">
                   <p><?php if ($_SESSION['pay'] == 'cash') {
                     ?>代引<?php } elseif ($_SESSION['pay'] == 'transfer') {
@@ -54,10 +55,10 @@ $app->run();
                   <p><?= h($_SESSION['credit_number']); } ?></p>
                 </div>
               </div>
-            </div>
+            </section>
             <!-- 合計 -->
             <div class="total">
-              <div class="payment">
+              <section class="payment">
                 <h2>お支払金額</h2>
                 <div class="total_price">
                   <div class="total_number">
@@ -69,7 +70,7 @@ $app->run();
                         </tr>
                         <tr>
                           <th>送料</th>
-                          <td>￥<?= h($_SESSION['postage']); ?></td>
+                          <td>￥<?= h($postage); ?></td>
                         </tr>
                       </tbody>
                     </table>
@@ -79,17 +80,17 @@ $app->run();
                       <span class="tax">(内税￥<?= h($_SESSION['total_tax']); ?>)</span>
                     </p>
                   </div>
-                </div>
-                <div class="next_confirm">
-                  <input class="btn" type="submit" name="complete" value="ご注文を確定する">
-                  <input type="hidden" name="number" value="<?= h($date. $num); ?>">
-                  <input type="hidden" name="postage" value="<?= h($postage); ?>">
-                  <input type="hidden" name="tax_rate" value="<?= h($setting[0]->tax); ?>">
-                  <a class="back" href="<?= SITE_URL; ?>/shopping_information.php">ご注文手続きに戻る</a>
+              </section>
+              <div class="next_confirm">
+                <input class="btn" type="submit" name="complete" value="ご注文を確定する">
+                <input type="hidden" name="number" value="<?= h($date. $num); ?>">
+                <input type="hidden" name="postage" value="<?= h($postage); ?>">
+                <input type="hidden" name="tax_rate" value="<?= h($setting[0]->tax); ?>">
+                <a class="back" href="<?= SITE_URL; ?>/shopping_information.php">お客様情報入力画面に戻る</a>
               </div>
             </div>
           </div>
-          <div class="deliver">
+          <section class="deliver">
             <h2>お届け内容</h2>
             <?php foreach($item as $all):
               $id = $all['id'];
@@ -97,15 +98,15 @@ $app->run();
               $count = $all['count'][0]; ?>
             <div class="deliver_item">
               <div class="item_img">
-                <img src="<?= !(empty($list[$id]->image)) ? './gazou/'.h($list[$id]->image) : './asset/img/noimage.png'; ?>">
+                <img src="<?= !(empty($list[$id]->image)) ? './image/'.h($list[$id]->image) : './asset/img/noimage.png'; ?>">
               </div>
               <div class="deliver_item_detail">
-                <h1><p><?= h($list[$id]->goods_name); ?></p></h1>
-                <div class="item_price">￥<?= number_format($price * ($rate + 1)); ?>/点</div>
+                <h3><?= h($list[$id]->goods_name); ?></h3>
+                <p class="item_price">￥<?= number_format($price * ($rate + 1)); ?>/点</p>
                 <p class="number">点数：<?= h($number[$id] = $count); ?></p>
-                <p class="number">color：<?= h($all['color']); ?></p>
+                <p class="color">color：<?= h($all['color']); ?></p>
                 <?php if (isset($all['size'])) { ?>
-                <p class="number">size：<?= h($all['size']); ?></p>
+                <p class="size">size：<?= h($all['size']); ?></p>
                 <?php } ?>
                 <div class="subtotal">
                   <p>小計￥<?= number_format($subtotal[$id] = $price * $count * ($rate + 1)); ?></p>
@@ -113,7 +114,7 @@ $app->run();
               </div>
             </div>
             <?php endforeach ?>
-          </div>
+          </section>
         </form>
       </div>
     </div>

@@ -32,6 +32,7 @@ class Order extends \Ec\Controller {
       'email' => $_SESSION['mail'],
       'name' => $_SESSION['name'],
       'kana' => $_SESSION['kana'],
+      'postNum' => $_SESSION['post_number'],
       'address' => $_SESSION['address'],
       'tel' => $_SESSION['tel'],
       'pay' => $_SESSION['pay'],
@@ -57,6 +58,7 @@ class Order extends \Ec\Controller {
       $this->setErrors('name', $errorMessages['name']);
       $this->setErrors('kana', $errorMessages['kana']);
       $this->setErrors('email', $errorMessages['email']);
+      $this->setErrors('postNum', $errorMessages['postNum']);
       $this->setErrors('address', $errorMessages['address']);
       $this->setErrors('tel', $errorMessages['tel']);
       $this->setErrors('pay', $errorMessages['pay']);
@@ -64,6 +66,7 @@ class Order extends \Ec\Controller {
       $this->setValues('name', $_POST['name'][$key]);
       $this->setValues('kana', $_POST['kana'][$key]);
       $this->setValues('email', $_POST['email'][$key]);
+      $this->setValues('postNum', $_POST['postNUm'][$key]);
       $this->setValues('address', $_POST['address'][$key]);
       $this->setValues('telN', $_POST['tel'][$key]);
       $this->setValues('pay', $_POST['pay'][$key]);
@@ -97,6 +100,7 @@ class Order extends \Ec\Controller {
         'number' => $_POST['number'][$key],
         'name' => $_POST['name'][$key],
         'kana' => $_POST['kana'][$key],
+        'postNum' => $_POST['postNum'][$key],
         'address' => $_POST['address'][$key],
         'email' => $_POST['email'][$key],
         'tel' => $_POST['tel'][$key],
@@ -163,6 +167,9 @@ class Order extends \Ec\Controller {
       }
       if ($_POST['kana'][$key] === '') {
         $errors['kana'] = "ご注文者名カナが入力されていません。";
+      }
+      if ($_POST['postNum'][$key] === '') {
+        $errors['postNum'] = "郵便番号が入力されていません。";
       }
       if ($_POST['address'][$key] === '') {
         $errors['address'] = "住所が入力されていません。";

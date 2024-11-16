@@ -14,7 +14,7 @@ class Order extends \Ec\Model {
   // 新規注文
   public function order($values) {
     $items_data = serialize($values['items']);
-    $stmt = $this->db->prepare("INSERT INTO orders (number, goods,postage,tax,customers_email,customers_name,customers_kana,customers_address,customers_tel,customers_pay,created,modified) VALUES (:number, :goods,:postage,:tax,:customers_email,:customers_name,:customers_kana,:customers_address,:customers_tel,:customers_pay,now(),now())");
+    $stmt = $this->db->prepare("INSERT INTO orders (number, goods,postage,tax,customers_email,customers_name,customers_kana,customers_post_number,customers_address,customers_tel,customers_pay,created,modified) VALUES (:number, :goods,:postage,:tax,:customers_email,:customers_name,:customers_kana,:customers_post_number,:customers_address,:customers_tel,:customers_pay,now(),now())");
     $res = $stmt->execute([
       ':number' => $values['number'],
       ':goods' => $items_data,
@@ -23,6 +23,7 @@ class Order extends \Ec\Model {
       ':customers_email' => $values['email'],
       ':customers_name' => $values['name'],
       ':customers_kana' => $values['kana'],
+      ':customers_post_number' => $values['postNum'],
       ':customers_address' => $values['address'],
       ':customers_tel' => $values['tel'],
       ':customers_pay' => $values['pay'],
@@ -45,7 +46,7 @@ class Order extends \Ec\Model {
   // 注文更新
   public function update($values) {
     $goods_data = serialize($values['goods']);
-    $stmt = $this->db->prepare("UPDATE orders SET goods = :goods, status = :status, customers_email = :customers_email, customers_name = :customers_name,customers_kana = :customers_kana, customers_address = :customers_address, customers_tel = :customers_tel, customers_pay = :customers_pay, modified = now() WHERE number = :number");
+    $stmt = $this->db->prepare("UPDATE orders SET goods = :goods, status = :status, customers_email = :customers_email, customers_name = :customers_name,customers_kana = :customers_kana, customers_post_number = :customers_post_number, customers_address = :customers_address, customers_tel = :customers_tel, customers_pay = :customers_pay, modified = now() WHERE number = :number");
     $stmt->execute([
       ':number' => $values['number'],
       ':goods' => $goods_data,
@@ -53,6 +54,7 @@ class Order extends \Ec\Model {
       ':customers_email' => $values['email'],
       ':customers_name' => $values['name'],
       ':customers_kana' => $values['kana'],
+      ':customers_post_number' => $values['postNum'],
       ':customers_address' => $values['address'],
       ':customers_tel' => $values['tel'],
       ':customers_pay' => $values['pay'],

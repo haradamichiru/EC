@@ -49,5 +49,5 @@ else {
         </ul>
       </nav>
     </div>
-    </header>
-  <div class="main">
+  </header>
+  <main class="main">

@@ -97,7 +97,7 @@ function myFilter($val) {
               </span>
             </label>
             <div class="imgfile">
-              <img class="add_image" src="<?= isset($goodsCon->getValues()->image) ? './gazou/'.h($goodsCon->getValues()->image) : './asset/img/noimage.png'; ?>" alt="">
+              <img class="add_image" src="<?= isset($goodsCon->getValues()->image) ? './image/'.h($goodsCon->getValues()->image) : './asset/img/noimage.png'; ?>" alt="">
             </div>
           </div>
           <div class="goods_addition">
@@ -162,7 +162,7 @@ function myFilter($val) {
               </label>
               <div class="image_file">
                 <input type="hidden" class="old_image" name="old_image[<?= $id; ?>]" value="<?= h($item->image); ?>">
-                <img class="edit_image" src="<?= !(empty($item->image)) ? './gazou/'.h($item->image) : './asset/img/noimage.png'; ?>">
+                <img class="edit_image" src="<?= !(empty($item->image)) ? './image/'.h($item->image) : './asset/img/noimage.png'; ?>">
               </div>
             </div>
             <div class="goods_detail">
@@ -209,7 +209,7 @@ function myFilter($val) {
                     </th>
                     <td>
                       <code class="small">※改行する場合は	&lt;br&gt;を入力してください。</code>
-                      <textarea class="form-text" name="explanation[<?= $id; ?>]"><?= h($item->explanation); ?></textarea>
+                      <textarea class="form-text large" name="explanation[<?= $id; ?>]"><?= h($item->explanation); ?></textarea>
                     </td>
                   </tr>
                 </tbody>

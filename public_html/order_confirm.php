@@ -39,7 +39,7 @@ $arraySize = array_combine($goods_id, $size);
 ?>
 
     <!-- 検索 -->
-    <div class="container">
+    <section class="container">
       <h2>注文状況検索</h2>
       <form class="container_form" method="get" action="" onsubmit="return validateFormOrderSearch()" name="orderSearch">
         <div class="status_detail">
@@ -74,15 +74,19 @@ $arraySize = array_combine($goods_id, $size);
                 <th>
                   発送状態
                 </th>
-                <td>
-                  <label class="status_radio">
-                    <input class="form-text" type="radio" name="status" value="0" <?php if ($OrderCon->getValues()->status == 0) { ?> checked <?php } ?>>
-                    発送準備中
-                  </label>
-                  <label class="status_radio">
-                    <input class="form-text" type="radio" name="status" value="1" <?php if ($OrderCon->getValues()->status == 1) { ?> checked <?php } ?>>
-                    発送完了
-                  </label>
+                <td class="form-status">
+                  <div class="status">
+                    <input class="status-radio" id="status0" type="radio" name="status" value="0" <?php if ($OrderCon->getValues()->status == 0) { ?> checked <?php } ?>>
+                    <label for="status0">
+                      発送準備中
+                    </label>
+                  </div>
+                  <div class="status">
+                    <input class="status-radio" id="status1" type="radio" name="status" value="1" <?php if ($OrderCon->getValues()->status == 1) { ?> checked <?php } ?>>
+                    <label for="status1">
+                      発送完了
+                    </label>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -94,11 +98,11 @@ $arraySize = array_combine($goods_id, $size);
           </div>
         </div>
       </form>
-    </div>
+    </section>
     <!-- 注文情報 -->
-    <div class="container">
+    <section class="container">
       <h2>発送管理</h2>
-        <form class="container_form" method="post" action="">
+      <form class="container_form" method="post" action="">
           <div class="order_list">
           <?php foreach($orders_data as $key => $order):
             $number = $order->number;
@@ -129,9 +133,16 @@ $arraySize = array_combine($goods_id, $size);
                         </td>
                       </tr>
                       <tr>
+                        <th>郵便番号</th>
+                        <td>
+                          <input class="form-text" type="text" name="postNum[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->postNum) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->postNum): h($order->customers_post_number); ?>" ?>
+                          <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('postNum')): ''; ?></p>
+                        </td>
+                      </tr>
+                      <tr>
                         <th>住所</th>
                         <td>
-                          <textarea class="form-text" name="address[<?= $key; ?>]" cols="40" rows="4"><?= isset($OrderCon->getValues()->address) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->address): h($order->customers_address); ?></textarea>
+                          <textarea class="form-text large" name="address[<?= $key; ?>]" cols="40" rows="4"><?= isset($OrderCon->getValues()->address) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->address): h($order->customers_address); ?></textarea>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('address')): ''; ?></p>
                         </td>
                       </tr>
@@ -159,7 +170,7 @@ $arraySize = array_combine($goods_id, $size);
                             }
                           ?>
                           <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
-                          <select name="pay[<?= $key; ?>]">
+                          <select class="select" name="pay[<?= $key; ?>]">
                             <option value="credit" <?php if ($valuesPay == "credit" || $pay == "credit") { ?> selected <?php } ?>>クレジットカード</option>
                             <option value="transfer" <?php if (!($valuesPay == 'credit') && $pay == "transfer") { ?> selected <?php } ?>>銀行振込</option>
                             <option value="cash" <?php if (!($valuesPay == 'credit') && $pay == "cash") { ?> selected <?php } ?>>代引</option>
@@ -191,7 +202,7 @@ $arraySize = array_combine($goods_id, $size);
                           <input class="form-text number" type="text" name="goods[<?= $key ?>][<?= $k ?>][count][0]" value="<?= $count = $item[$key][$k]['count'][0]; ?>">個
                         </td>
                         <td>color:
-                          <select name="goods[<?= $key ?>][<?= $k ?>][color]">
+                          <select class="select" name="goods[<?= $key ?>][<?= $k ?>][color]">
                           <?php
                             for ($i = 0; $i < count($color); $i++) {
                               if ($goods_id[$i] == $id) {
@@ -206,7 +217,7 @@ $arraySize = array_combine($goods_id, $size);
                         <td>
                           <?php if (!(empty($item[$key][$k]['size']))) { ?>
                           size:
-                          <select name="goods[<?= $key ?>][<?= $k ?>][size]">
+                          <select class="select" name="goods[<?= $key ?>][<?= $k ?>][size]">
                           <?php
                             for ($i = 0; $i < count($size); $i++) {
                               if ($goods_id[$i] == $id) {
@@ -234,7 +245,7 @@ $arraySize = array_combine($goods_id, $size);
                       ?>
                       <tr class="add-order">
                         <th>
-                          <select class="goods-name" name="goods[<?= $key ?>][<?= $j ?>][id]">
+                          <select class="goods-name select" name="goods[<?= $key ?>][<?= $j ?>][id]">
                             <option value="" selected>
                               商品を選択してください
                             </option>
@@ -253,7 +264,7 @@ $arraySize = array_combine($goods_id, $size);
                           <?php
                             $colorKeys = array_keys($arrayColor);
                             for ($i = 0; $i < count($arrayColor); $i++) { ?>
-                            <select name="goods[<?= $key ?>][<?= $j ?>][color][<?= $i ?>]" class="color <?= $colorKeys[$i] ?>">
+                            <select class="color <?= $colorKeys[$i] ?> select" name="goods[<?= $key ?>][<?= $j ?>][color][<?= $i ?>]">
                               <option value="">
                                 カラーを選択してください
                               </option>
@@ -273,7 +284,7 @@ $arraySize = array_combine($goods_id, $size);
                             $sizeKeys = array_keys($arraySize);
                             for ($i = 0; $i < count($size); $i++) {
                               if (!empty($size[$i])) { ?>
-                            <select name="goods[<?= $key ?>][<?= $j ?>][size][<?= $i ?>]" class="size <?= $sizeKeys[$i] ?>">
+                            <select class="size <?= $sizeKeys[$i] ?> select" name="goods[<?= $key ?>][<?= $j ?>][size][<?= $i ?>]">
                               <option value="" selected>
                                 サイズを選択してください
                               </option>
@@ -331,7 +342,7 @@ $arraySize = array_combine($goods_id, $size);
                         <tr>
                           <th>発送状態：</th>
                           <td>
-                            <select name="status[<?= $key ?>]">
+                            <select class="select" name="status[<?= $key ?>]">
                               <option value="0" <?php if ($status == "0") { ?> selected <?php } ?>>発送準備中</option>
                               <option value="1" <?php if ($status == "1") { ?> selected <?php } ?>>発送完了</option>
                             </select>
@@ -372,7 +383,7 @@ $arraySize = array_combine($goods_id, $size);
             </div>
           </div>
         </form>
-    </div>
+    </section>
 <?php
   require_once(__DIR__ .'/footer_admin.php');
 ?>

@@ -134,6 +134,7 @@ class Goods extends \Ec\Controller {
     $_SESSION['mail'] = $_POST['mail'];
     $_SESSION['name'] = $_POST['name'];
     $_SESSION['kana'] = $_POST['kana'];
+    $_SESSION['post_number'] = $_POST['post-number-1']. '-'. $_POST['post-number-2'];
     $_SESSION['address'] = $_POST['address'];
     $_SESSION['tel'] = $_POST['tel'];
     if ($_POST['credit_number']) {
