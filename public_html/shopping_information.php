@@ -22,16 +22,15 @@ $app->run();
           <label class="form">氏名フリガナ（必須）</label>
           <input class="form-text" type="text" name="kana" value="<?= isset($_SESSION['kana']) ? h($_SESSION['kana']): ''; ?>" placeholder="サトウタロウ" id="kana">
           <p class="err-txt" id="err-kana"></p>
-          <p>※全角カナでご入力ください。</p>
         </div>
         <div class="form-contents">
           <label class="form">郵便番号（必須）</label>
           <span class="p-country-name" style="display:none;">Japan</span>
           <p class="postnum">
             〒
-            <input class="form-text p-postal-code" type="text" name="post-number-1" value="<?= isset($_SESSION['post_number1']) ? h($_SESSION['post_number1']): ''; ?>" placeholder="160">
+            <input class="form-text p-postal-code" type="text" name="post-number1" value="<?= isset($_SESSION['post_number1']) ? h($_SESSION['post_number1']): ''; ?>" placeholder="160">
             -
-            <input class="form-text p-postal-code" type="text" name="post-number-2" value="<?= isset($_SESSION['post_number2']) ? h($_SESSION['post_number2']): ''; ?>" placeholder="0022">
+            <input class="form-text p-postal-code" type="text" name="post-number2" value="<?= isset($_SESSION['post_number2']) ? h($_SESSION['post_number2']): ''; ?>" placeholder="0022">
           </p>
           <p class="err-txt" id="err-postnum"></p>
         </div>

@@ -13,29 +13,76 @@ class Order extends \Ec\Model {
 
   // 新規注文
   public function order($values) {
-    $items_data = serialize($values['items']);
-    $stmt = $this->db->prepare("INSERT INTO orders (number, goods,postage,tax,customers_email,customers_name,customers_kana,customers_post_number,customers_address,customers_tel,customers_pay,created,modified) VALUES (:number, :goods,:postage,:tax,:customers_email,:customers_name,:customers_kana,:customers_post_number,:customers_address,:customers_tel,:customers_pay,now(),now())");
+    $stmt = $this->db->prepare("INSERT INTO orders (number, postage, tax, name, kana, email, post_number, address, tel, pay, created, modified) VALUES (:number, :postage, :tax, :name, :kana, :email, :post_number, :address, :tel, :pay, now(), now())");
     $res = $stmt->execute([
       ':number' => $values['number'],
-      ':goods' => $items_data,
       ':postage' => $values['postage'],
       ':tax' => $values['tax'],
-      ':customers_email' => $values['email'],
-      ':customers_name' => $values['name'],
-      ':customers_kana' => $values['kana'],
-      ':customers_post_number' => $values['postNum'],
-      ':customers_address' => $values['address'],
-      ':customers_tel' => $values['tel'],
-      ':customers_pay' => $values['pay'],
+      ':name' => $values['name'],
+      ':kana' => $values['kana'],
+      ':email' => $values['email'],
+      ':post_number' => $values['postNum'],
+      ':address' => $values['address'],
+      ':tel' => $values['tel'],
+      ':pay' => $values['pay'],
     ]);
   }
+  public function orderGoods($values) {
+    $stmt = $this->db->prepare("INSERT INTO order_goods (order_number, goods_id, price, count, size, color, created, modified) VALUES (:order_number, :goods_id, :price, :count, :size, :color, now(), now())");
+    if (empty($values['size'])) {
+      if (empty($values['color'])) {
+        $res = $stmt->execute([
+          ':order_number' => $values['order_number'],
+          ':goods_id' => $values['goods_id'],
+          ':price' => $values['price'],
+          ':count' => $values['count'],
+          ':size' => '',
+          ':color' => '',
+        ]);
+      } else {
+        $res = $stmt->execute([
+          ':order_number' => $values['order_number'],
+          ':goods_id' => $values['goods_id'],
+          ':price' => $values['price'],
+          ':count' => $values['count'],
+          ':size' => '',
+          ':color' => $values['color'],
+        ]);
+      }
+    } else {
+      if (empty($values['color'])) {
+        $res = $stmt->execute([
+          ':order_number' => $values['order_number'],
+          ':goods_id' => $values['goods_id'],
+          ':price' => $values['price'],
+          ':count' => $values['count'],
+          ':size' => $values['size'],
+          ':color' => '',
+        ]);
+      } else {
+        $res = $stmt->execute([
+          ':order_number' => $values['order_number'],
+          ':goods_id' => $values['goods_id'],
+          ':price' => $values['price'],
+          ':count' => $values['count'],
+          ':size' => $values['size'],
+          ':color' => $values['color'],
+        ]);
+      }
+    }
+  }
 
-  // 注文一覧
+  // 注文商品一覧
   public function orders() {
-    $stmt = $this->db->query("SELECT * FROM orders");
+    $stmt = $this->db->query("SELECT * FROM order_goods");
     return $stmt->fetchAll(\PDO::FETCH_OBJ);
   }
 
+  // 注文商品一覧
+  // public function ordersGoods() {
+  //   $stmt = $this->db->query("SELECT * FROM order_goods");
+  //   return $stmt->fetchAll(\PDO::FETCH_OBJ);
+  // }
 
   // 注文追加
   public function addGoods() {
@@ -45,21 +92,51 @@ class Order extends \Ec\Model {
 
   // 注文更新
   public function update($values) {
-    $goods_data = serialize($values['goods']);
-    $stmt = $this->db->prepare("UPDATE orders SET goods = :goods, status = :status, customers_email = :customers_email, customers_name = :customers_name,customers_kana = :customers_kana, customers_post_number = :customers_post_number, customers_address = :customers_address, customers_tel = :customers_tel, customers_pay = :customers_pay, modified = now() WHERE number = :number");
+    $stmt = $this->db->prepare("UPDATE orders SET status = :status, email = :email, name = :name, kana = :kana, post_number = :post_number, address = :address, tel = :tel, pay = :pay, modified = now() WHERE number = :number");
     $stmt->execute([
       ':number' => $values['number'],
-      ':goods' => $goods_data,
       ':status' => $values['status'],
-      ':customers_email' => $values['email'],
-      ':customers_name' => $values['name'],
-      ':customers_kana' => $values['kana'],
-      ':customers_post_number' => $values['postNum'],
-      ':customers_address' => $values['address'],
-      ':customers_tel' => $values['tel'],
-      ':customers_pay' => $values['pay'],
+      ':email' => $values['email'],
+      ':name' => $values['name'],
+      ':kana' => $values['kana'],
+      ':post_number' => $values['postNum'],
+      ':address' => $values['address'],
+      ':tel' => $values['tel'],
+      ':pay' => $values['pay'],
     ]);
   }
+
+  // 注文商品更新
+  public function orderGoodsUpdate($values) {
+    var_dump($values);
+    exit();
+    // $stmt = $this->db->prepare("UPDATE order_goods SET goods_id = :goods_id, price = :price, count = :count, size = :size, color = :color, modified = now() WHERE order_number = :number");
+    // $stmt->execute([
+    //   ':number' => $values['number'],
+    //   ':goods_id' => $values['goods_id'],
+    //   ':price' => $values['price'],
+    //   ':count' => $values['count'],
+    //   ':size' => $values['size'],
+    //   ':color' => $values['color'],
+    // ]);
+  }
+
+  // 注文商品追加
+  public function orderGoodsCreate($values) {
+    var_dump($values);
+    exit();
+
+    $stmt = $this->db->prepare("INSERT INTO order_goods (order_number, goods_id, price, count, size, color, created, modified) VALUES (:number, :goods_id, :price, :count, :size, :color, now(), now())");
+    $res = $stmt->execute([
+      ':number' => $values['number'],
+      ':goods_id' => $values['goods_id'],
+      ':price' => $values['price'],
+      ':count' => $values['count'],
+      ':size' => $values['size'],
+      ':color' => $values['color'],
+    ]);
+  }
+
 
   // 注文削除
   public function delete($values) {
@@ -72,11 +149,11 @@ class Order extends \Ec\Model {
 
   // 注文検索
   public function searchOrder($values) {
-    $stmt = $this->db->prepare("SELECT * FROM orders WHERE number LIKE :number AND customers_name LIKE :customers_name AND customers_tel LIKE :customers_tel AND status = :status AND delflag = 0;");
+    $stmt = $this->db->prepare("SELECT * FROM orders WHERE number LIKE :number AND name LIKE :name AND tel LIKE :tel AND status = :status AND delflag = 0");
     $stmt->execute([
       ':number' => '%'.$values['number'].'%',
-      ':customers_name' => '%'.$values['username'].'%',
-      ':customers_tel' => '%'.$values['tel'].'%',
+      ':name' => '%'.$values['username'].'%',
+      ':tel' => '%'.$values['tel'].'%',
       ':status' => $values['status'],
     ]);
     return $stmt->fetchAll(\PDO::FETCH_OBJ);

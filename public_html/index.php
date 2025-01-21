@@ -1,10 +1,6 @@
 <?php
 require_once(__DIR__ .'/header.php');
-$goodsMod = new Ec\Model\Goods();
 $goods = $goodsMod->goods();
-$setting = $goodsMod->settings();
-
-$rate = $setting[0]->tax / 100;
 ?>
   <section class="mv">
     <h2><p>ここちいい<br>つけごこち</p></h2>
@@ -22,7 +18,7 @@ $rate = $setting[0]->tax / 100;
     <li class="item">
       <a class="item_link" href="<?= SITE_URL; ?>/goods_detail.php?goods_id=<?= $id; ?>">
       <img src="<?= !(empty($item->image)) ? './image/'.h($item->image) : './asset/img/noimage.png'; ?>">
-      <h4><?= h($item->goods_name); ?></h4>
+      <h4><?= h($item->name); ?></h4>
       <div class="detail_price">
         <span class="price">￥<?= number_format($item->price * ($rate + 1)); ?></span>
       </div>

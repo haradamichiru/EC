@@ -133,7 +133,8 @@ label {
   position: absolute;
   left: 5%;
   top: 70%;
-  font-size: 7rem;
+  font-size: 8rem;
+  line-height: 7.5rem;
   letter-spacing: 8px;
   margin-bottom: 50px;
   font-weight: 300;
@@ -598,6 +599,7 @@ iframe {
     /* トップ */
     .mv p {
       font-size: 5rem;
+      line-height: 4.5rem;
     }
     .item__list {
       max-width: 100%;
@@ -614,7 +616,8 @@ iframe {
   }
   .mv p {
     top: 82%;
-    font-size: 3.2rem;
+    font-size: 3.5rem;
+    line-height: 3rem;
   }
   .item__list {
     max-width: 100%;

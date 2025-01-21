@@ -1,14 +1,9 @@
 <?php
 require_once(__DIR__ .'/header.php');
-$goodsMod = new Ec\Model\Goods();
 $goods = $goodsMod->goods();
-$setting = $goodsMod->settings();
 
 $item = $_SESSION['cart'];
 $list = array_column($goods, null, 'id');
-
-$postage = $setting[0]->postage;
-$rate = $setting[0]->tax / 100;
 
 $app = new Ec\Controller\Goods();
 $app->run();
@@ -33,9 +28,9 @@ $app->run();
               <img src="<?= !(empty($list[$id]->image)) ? './image/'.h($list[$id]->image) : './asset/img/noimage.png'; ?>">
             </div>
             <div class="item_number">
-              <h2><?= h($list[$id]->goods_name); ?></h2>
+              <h2><?= h($list[$id]->name); ?></h2>
               <div class="item_price">
-                <p><span class="price">￥<?= number_format($price * ($rate + 1)); ?></span>（内税￥<?= number_format($price * $rate); ?>）/点<p>
+                <p><span class="price">￥<?= number_format($price * (RATE + 1)); ?></span>（内税￥<?= number_format($price * RATE); ?>）/点<p>
               </div>
               <div class="specification">
                 <table>
@@ -83,8 +78,8 @@ $app->run();
                     <tr>
                       <th>送料</th>
                       <td>
-                        ￥<?= $postage; ?>
-                        <input type="hidden" name="postage" value="<?= $postage; ?>">
+                        ￥<?= POSTAGE; ?>
+                        <input type="hidden" name="postage" value="<?= POSTAGE; ?>">
                       </td>
                     </tr>
                   </tbody>

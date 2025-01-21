@@ -1,12 +1,16 @@
 <?php
 require_once(__DIR__ .'/header_admin.php');
 $GoodsMod = new Ec\Model\Goods();
-$OrdersMod = new Ec\Model\Order();
+$OrderMod = new Ec\Model\Order();
 $goods_data = $GoodsMod->goods();
-$setting = $GoodsMod->settings();
 $OrderCon = new Ec\Controller\Order();
 $OrderCon->run();
 $orders = $OrderCon->search();
+$order_goods = $OrderMod->orders();
+$sizes = $goodsMod->sizes();
+$goodsSizes = $goodsMod->goods_sizes();
+$colors = $goodsMod->colors();
+$goodsColors = $goodsMod->goods_colors();
 
 if (isset($orders)) {
   define('MAX','5');
@@ -20,21 +24,22 @@ if (isset($orders)) {
   $start_no = ($now - 1) * MAX;
   $orders_data = array_slice($orders, $start_no, MAX, true);
 }
+// var_dump($goodsColors);
 
-for ($i = 0; $i < count($goods_data); $i++) {
-  $goods_id[$i] = $goods_data[$i]->id;
-  $color[$i] = unserialize($goods_data[$i]->color);
-  $size[$i] = unserialize($goods_data[$i]->size);
-}
-for ($i = 0; $i < count($orders); $i++) {
-  $item[$i] = array_values(array_filter(unserialize($orders[$i]->goods), 'myFilter'));
-}
-function myFilter($val) {
-  return !($val === "");
-}
+// for ($i = 0; $i < count($goods_data); $i++) {
+//   $goods_id[$i] = $goods_data[$i]->id;
+//   $color[$i] = unserialize($goods_data[$i]->color);
+//   $size[$i] = unserialize($goods_data[$i]->size);
+// }
+// for ($i = 0; $i < count($orders); $i++) {
+//   $item[$i] = array_values(array_filter(unserialize($orders[$i]->goods), 'myFilter'));
+// }
+// function myFilter($val) {
+//   return !($val === "");
+// }
 
-$arrayColor = array_combine($goods_id, $color);
-$arraySize = array_combine($goods_id, $size);
+// $arrayColor = array_combine($goods_id, $color);
+// $arraySize = array_combine($goods_id, $size);
 
 ?>
 
@@ -104,10 +109,11 @@ $arraySize = array_combine($goods_id, $size);
       <h2>発送管理</h2>
       <form class="container_form" method="post" action="">
           <div class="order_list">
+          <!-- オーダー繰り返しここから -->
           <?php foreach($orders_data as $key => $order):
             $number = $order->number;
             $status = $order->status;
-            $pay = $order->customers_pay;
+            $pay = $order->pay;
             $postage = $order->postage;
             $rate = $order->tax / 100;
           ?>
@@ -121,41 +127,41 @@ $arraySize = array_combine($goods_id, $size);
                       <tr>
                         <th>ご注文者名</th>
                         <td>
-                          <input class="form-text" type="text" name="name[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->name) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->name): h($order->customers_name); ?>" ?>
+                          <input class="form-text" type="text" name="name[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->name) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->name): h($order->name); ?>" ?>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('name')): ''; ?></p>
                         </td>
                       </tr>
                       <tr>
                         <th>フリガナ</th>
                         <td>
-                          <input class="form-text" type="text" name="kana[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->kana) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->kana): h($order->customers_kana); ?>" ?>
+                          <input class="form-text" type="text" name="kana[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->kana) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->kana): h($order->kana); ?>" ?>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('kana')): ''; ?></p>
                         </td>
                       </tr>
                       <tr>
                         <th>郵便番号</th>
                         <td>
-                          <input class="form-text" type="text" name="postNum[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->postNum) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->postNum): h($order->customers_post_number); ?>" ?>
+                          <input class="form-text" type="text" name="postNum[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->postNum) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->postNum): h($order->post_number); ?>" ?>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('postNum')): ''; ?></p>
                         </td>
                       </tr>
                       <tr>
                         <th>住所</th>
                         <td>
-                          <textarea class="form-text large" name="address[<?= $key; ?>]" cols="40" rows="4"><?= isset($OrderCon->getValues()->address) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->address): h($order->customers_address); ?></textarea>
+                          <textarea class="form-text large" name="address[<?= $key; ?>]" cols="40" rows="4"><?= isset($OrderCon->getValues()->address) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->address): h($order->address); ?></textarea>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('address')): ''; ?></p>
                         </td>
                       </tr>
                       <tr>
                         <th>メールアドレス</th>
                         <td>
-                          <input class="form-text" type="text" name="email[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->email) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->email): h($order->customers_email); ?>">
+                          <input class="form-text" type="text" name="email[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->email) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->email): h($order->email); ?>">
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('email')): ''; ?></p>
                       </tr>
                       <tr>
                         <th>電話番号</th>
                         <td>
-                          <input class="form-text" type="text" name="tel[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->telN) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->telN): h($order->customers_tel); ?>">
+                          <input class="form-text" type="text" name="tel[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->telN) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->telN): h($order->tel); ?>">
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('tel')): ''; ?></p>
                         </td>
                       </tr>
@@ -185,125 +191,120 @@ $arraySize = array_combine($goods_id, $size);
                   <p class="order_title">注文内容</p>
                   <table class="content_items">
                     <tbody>
-                    <?php for ($k = 0; $k < count($item[$key]); $k++):
-                      $id = $item[$key][$k]['id'];
-                      $price = $item[$key][$k]['price'];
-                      $array = $item[$key][$k]; ?>
+                    <!-- オーダーされたグッズ繰り返しここから -->
+                    <?php foreach($order_goods as $goods):
+                      if ($number == $goods->order_number) {
+                        foreach($goods_data as $gd):
+                          if ($goods->goods_id == $gd->id) { ?>
                       <tr>
                         <th>
-                          <?php foreach($goods_data as $goods): ?>
-                            <?php if ($id == $goods->id) { ?>
-                              <?= h($goods->goods_name); ?>
-                              <input type="hidden" name="goods[<?= $key ?>][<?= $k ?>][id]" value="<?= $goods->id; ?>">
-                            <?php } ?>
-                          <?php endforeach; ?>
+                            <?= h($gd->name); ?>
+                            <input type="hidden" name="id[<?= $key; ?>][]" value="<?= $goods->goods_id; ?>">
                         </th>
                         <td>
-                          <input class="form-text number" type="text" name="goods[<?= $key ?>][<?= $k ?>][count][0]" value="<?= $count = $item[$key][$k]['count'][0]; ?>">個
-                        </td>
-                        <td>color:
-                          <select class="select" name="goods[<?= $key ?>][<?= $k ?>][color]">
-                          <?php
-                            for ($i = 0; $i < count($color); $i++) {
-                              if ($goods_id[$i] == $id) {
-                                foreach($color[$i] as $c):
-                          ?>
-                            <option value="<?= $c ?>" <?php if ($c == $item[$key][$k]['color']) { ?> selected <?php } ?>>
-                              <?= h($c); ?>
-                            </option>
-                          <?php endforeach; }} ?>
-                          </select>
+                          <input class="form-text number" type="text" name="count[<?= $key; ?>][]" value="<?= $goods->count; ?>">個
                         </td>
                         <td>
-                          <?php if (!(empty($item[$key][$k]['size']))) { ?>
-                          size:
-                          <select class="select" name="goods[<?= $key ?>][<?= $k ?>][size]">
+                          <?php if (!(empty($goods->color))) { ?>
+                          color:
+                          <select class="select" name="color[<?= $key; ?>][]">
                           <?php
-                            for ($i = 0; $i < count($size); $i++) {
-                              if ($goods_id[$i] == $id) {
-                              foreach($size[$i] as $s):
+                            foreach($goodsColors as $gc):
+                              if ($gc->goods_id == $goods->goods_id) {
                           ?>
-                            <option value="<?= $s ?>" <?php if ($s == $item[$key][$k]['size']) { ?> selected <?php } ?>>
-                              <?= h($s); ?>
+                            <option value="<?= $gc->color ?>" <?php if ($gc->color == $goods->color) { ?> selected <?php } ?>>
+                              <?= h($gc->color); ?>
                             </option>
-                          <?php endforeach; }} ?>
+                          <?php } endforeach; ?>
                           </select>
+                          <?php } else { ?>
+                            <input type="hidden" name="color[<?= $key; ?>][]" value="">
                           <?php } ?>
                         </td>
                         <td>
-                          ￥<?= number_format($price) ?>／個
-                          <input type="hidden" name="goods[<?= $key ?>][<?= $k ?>][price]" value="<?= $price; ?>">
+                          <?php if (!(empty($goods->size))) { ?>
+                          size:
+                          <select class="select" name="size[<?= $key; ?>][]">
+                          <?php
+                            foreach($goodsSizes as $gs):
+                              if ($gs->goods_id == $goods->goods_id) {
+                          ?>
+                            <option value="<?= $gs->size ?>" <?php if ($gs->size == $goods->size) { ?> selected <?php } ?>>
+                              <?= h($gs->size); ?>
+                            </option>
+                          <?php } endforeach; ?>
+                          </select>
+                          <?php } else { ?>
+                            <input type="hidden" name="size[<?= $key; ?>][]" value="">
+                          <?php } ?>
+                        </td>
+                        <td>
+                          ￥<?= number_format($goods->price) ?>／個
                         </td>
                         <td>
                           <button type="button" class="delete-btn">削除</button>
                         </td>
                       </tr>
                       <?php
-                        $total[$key][] = $price * $count;
-                        endfor;
-                        $j = $k;
+                        $total[] = $goods->price * $goods->count;
+                        } endforeach; } endforeach;
+                        // var_dump(array_sum($total));
                       ?>
+                      <!-- オーダーされたグッズここまで -->
                       <tr class="add-order">
                         <th>
-                          <select class="goods-name select" name="goods[<?= $key ?>][<?= $j ?>][id]">
+                          <select class="goods-name select" name="id[<?= $key; ?>][]">
                             <option value="" selected>
                               商品を選択してください
                             </option>
-                            <?php foreach($goods_data as $goods): ?>
-                            <option value="<?= $goods->id ?>">
-                              <?= h($goods->goods_name); ?>
+                            <?php foreach($goods_data as $gd): ?>
+                            <option value="<?= h($gd->id); ?>">
+                              <?= h($gd->name); ?>
                             </option>
                             <?php  endforeach; ?>
                           </select>
                         </th>
                         <td>
-                          <input class="form-text number" type="text" name="goods[<?= $key ?>][<?= $j ?>][count][0]" value="1">個
+                          <input class="form-text number" type="text" name="count[<?= $key; ?>][]" value="" placeholder="1">個
                         </td>
                         <td>
                           color:
-                          <?php
-                            $colorKeys = array_keys($arrayColor);
-                            for ($i = 0; $i < count($arrayColor); $i++) { ?>
-                            <select class="color <?= $colorKeys[$i] ?> select" name="goods[<?= $key ?>][<?= $j ?>][color][<?= $i ?>]">
+                            <select class="select select-color" name="color[<?= $key; ?>][]">
                               <option value="">
                                 カラーを選択してください
                               </option>
                               <?php
-                                foreach($color[$i] as $c):
+                                foreach($goodsColors as $gc):
+                                  if (!empty($gc->color)) {
                               ?>
-                              <option value="<?= h($c); ?>">
-                                <?= h($c); ?>
+                              <option class="color <?= h($gc->goods_id); ?>" value="<?= h($gc->color); ?>">
+                                <?= h($gc->color); ?>
                               </option>
-                              <?php endforeach; ?>
+                              <?php } endforeach; ?>
                             </select>
-                          <?php } ?>
                         </td>
                         <td>
                           size:
-                          <?php
-                            $sizeKeys = array_keys($arraySize);
-                            for ($i = 0; $i < count($size); $i++) {
-                              if (!empty($size[$i])) { ?>
-                            <select class="size <?= $sizeKeys[$i] ?> select" name="goods[<?= $key ?>][<?= $j ?>][size][<?= $i ?>]">
+                            <select class="select select-size" name="size[<?= $key; ?>][]">
                               <option value="" selected>
                                 サイズを選択してください
                               </option>
                               <?php
-                                foreach($size[$i] as $s):
+                                foreach($goodsSizes as $gs):
+                                  if (!empty($gs->size)) {
                               ?>
-                              <option value="<?= h($s); ?>">
-                                <?= h($s); ?>
+                              <option class="size <?= h($gs->goods_id); ?>" value="<?= h($gs->size); ?>">
+                                <?= h($gs->size); ?>
                               </option>
-                              <?php endforeach; ?>
+                              <?php } endforeach; ?>
                             </select>
-                          <?php }} ?>
                         </td>
                         <td>
                           ￥
                           <?php
                             foreach($goods_data as $i => $goods): ?>
                               <p class="add-price <?= h($goods->id); ?>"><?= h($goods->price); ?></p>
-                              <input name="goods[<?= $key ?>][<?= $j ?>][price]" type="hidden" class="add-price <?= h($goods->id); ?>" value="<?= h($goods->price); ?>">
+                              <input name="price[<?= $key; ?>][]" type="hidden" class="add-price <?= h($goods->id); ?>" value="<?= h($goods->price); ?>">
                           <?php endforeach; ?>／個
                         </td>
                         <td>
@@ -321,23 +322,27 @@ $arraySize = array_combine($goods_id, $size);
                       <tbody>
                         <tr>
                           <th>購入日時：</th>
-                          <td><?= h($order->created); ?><br></td>
+                          <td><?= h($order->created); ?></td>
                         </tr>
                         <tr>
                           <th>更新日時：</th>
-                          <td><?= h($order->modified); ?><br></td>
+                          <td><?= h($order->modified); ?></td>
                         </tr>
                         <tr>
                           <th>消費税額：</th>
-                          <td>￥<?= number_format($tax = array_sum($total[$key]) * $rate); ?><br></td>
+                          <td>
+                            ￥<?= number_format(array_sum($total) * $rate); ?>
+                          </td>
                         </tr>
                         <tr>
                           <th>送料：</th>
-                          <td>￥<?= number_format($postage); ?><br></td>
+                          <td>
+                            ￥<?= number_format($postage); ?>
+                          </td>
                         </tr>
                         <tr>
                           <th>合計金額：</th>
-                          <td class="price">￥<?= number_format(array_sum($total[$key]) + $postage + $tax); ?></td>
+                          <td class="price">￥<?= number_format(array_sum($total) * (1 + $rate) + $postage); ?></td>
                         </tr>
                         <tr>
                           <th>発送状態：</th>
@@ -360,7 +365,8 @@ $arraySize = array_combine($goods_id, $size);
                 <input class="btn update-btn" type="submit" value="更新" name="update[<?= $key; ?>]">
               </div>
             </div>
-          <?php endforeach ?>
+          <?php endforeach; ?>
+          <!-- オーダー繰り返しここまで -->
             <div class="next">
               <div>
                 <?php

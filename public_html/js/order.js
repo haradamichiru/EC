@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
     let btn = document.querySelectorAll('.add-btn');
     let add = document.getElementsByClassName('add-order');
     let main = document.getElementsByClassName('goods-name');
-    let color = document.getElementsByClassName("color");
-    let size = document.getElementsByClassName("size");
-    let price = document.getElementsByClassName("add-price");
-    let count = 0;
+    let color = document.getElementsByClassName('color');
+    let size = document.getElementsByClassName('size');
+    let price = document.getElementsByClassName('add-price');
+
     for (var i = 0; i < add.length; i++) {
       add[i].style.display = 'none';
     }
@@ -32,25 +32,54 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     for (var j = 0; j < btn.length; j++){
       btn[j].addEventListener('click',function(){
-        count ++;
         let ad = this.parentNode.parentNode.previousElementSibling;
         ad.style.display = 'revert';
         this.style.display = 'none';
       });
+      for (var k = 0; k < color.length; k++) {
+        color[k].style.display = 'none';
+      }
+
       for (var i = 0; i < main.length; i++) {
         main[j].onchange = function() {
-          for (var k = 0; k < color.length; k++) {
-            color[k].style.display = 'none';
-          }
+          let sizeCount = 0;
+          let colorCount = 0;
+
+          this.parentNode.parentNode.querySelector('.select-color').style.display = 'revert';
+          this.parentNode.parentNode.querySelector('.select-size').style.display = 'revert';
           for (var k = 0; k < size.length; k++) {
             size[k].style.display = 'none';
+          }
+          for (var k = 0; k < color.length; k++) {
+            color[k].style.display = 'none';
           }
           for (var k = 0; k < price.length; k++) {
             price[k].style.display = 'none';
           }
-          let cs = this.parentElement.parentElement.getElementsByClassName(this.value);
-          for (var k =0; k < cs.length; k++) {
-            cs[k].style.display = 'revert';
+          for (var k = 0; k < color.length; k++) {
+            if (color[k].className == 'color' + ' ' + this.value) {
+              color[k].style.display = 'revert';
+              colorCount++;
+            }
+          }
+          if (colorCount == 0) {
+            this.parentNode.parentNode.querySelector('.select-color').style.display = 'none';
+          }
+
+          for (var k = 0; k < size.length; k++) {
+            if (size[k].className == 'size' + ' ' + this.value) {
+              size[k].style.display = 'revert';
+              sizeCount++;
+            }
+          }
+          if (sizeCount == 0) {
+            this.parentNode.parentNode.querySelector('.select-size').style.display = 'none';
+          }
+
+          for (var k = 0; k < price.length; k++) {
+            if (price[k].className == 'add-price' + ' ' + this.value) {
+              price[k].style.display = 'revert';
+            }
           }
         }
       }

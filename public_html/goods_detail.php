@@ -1,19 +1,19 @@
 <?php
 require_once(__DIR__ .'/header.php');
-$goodsMod = new Ec\Model\Goods();
-$goods_id = $_GET['goods_id'];
-$detail = $goodsMod->getGoods($goods_id);
-$setting = $goodsMod->settings();
-$ex = htmlspecialchars_decode($detail->explanation);
-$color = array_filter(unserialize($detail->color), 'myFilter');
-if (!empty($detail->size)) {
-  $size = array_filter(unserialize($detail->size), 'myFilter');
+$detail = $goodsMod->getGoods($_GET['goods_id']);
+$sizeMod = $goodsMod->goods_sizes();
+$colorMod = $goodsMod->goods_colors();
+
+foreach ($sizeMod as $size) {
+  if ($size->goods_id == $_GET['goods_id']) {
+    $goodsSize[] = $size->size;
+  }
 }
-function myFilter($val) {
-	return !($val === "");
+foreach ($colorMod as $color) {
+  if ($color->goods_id == $_GET['goods_id']) {
+    $goodsColor[] = $color->color;
+  }
 }
-$price = $detail->price;
-$rate = $setting[0]->tax / 100;
 
 $app = new Ec\Controller\Goods();
 $app->run();
@@ -25,34 +25,34 @@ $app->run();
       </div>
       <form method="post" action="">
         <section class="item_detail">
-          <h1><?= h($detail->goods_name); ?></h1>
+          <h1><?= h($detail->name); ?></h1>
           <div class="detail_price tax_in">
-            <span class="price">￥<?= number_format($price * ($rate + 1)); ?></span>
-            <input type="hidden" name="price" value="<?= h($price); ?>">
-            <span class="tax">（内税￥<?= number_format($price * $rate); ?>）</span>
+            <span class="price">￥<?= number_format($detail->price * (RATE + 1)); ?></span>
+            <input type="hidden" name="price" value="<?= h($detail->price); ?>">
+            <span class="tax">（内税￥<?= number_format($detail->price * RATE); ?>）</span>
           </div>
           <div class="specification">
             <table>
               <tbody>
                 <tr>
-                  <?php if (!empty($color)) { ?>
-                  <th>color</th>
+                  <?php if (!empty($goodsSize)) { ?>
+                  <th>size</th>
                   <td>
-                    <select class="select" name="color">
-                      <?php foreach($color as $c): ?>
-                      <option value="<?= h($c); ?>"><?= !empty($c) ? h($c) : ''; ?></option>
+                    <select class="select" name="size">
+                      <?php foreach($goodsSize as $s): ?>
+                      <option value="<?= h($s); ?>"><?= h($s); ?></option>
                       <?php endforeach ?>
                     </select>
                   </td>
                   <?php } ?>
                 </tr>
                 <tr>
-                  <?php if (!empty($size)) { ?>
-                  <th>size</th>
+                  <?php if (!empty($goodsColor)) { ?>
+                  <th>color</th>
                   <td>
-                    <select class="select" name="size">
-                      <?php foreach($size as $s): ?>
-                      <option value="<?= h($s); ?>"><?= h($s); ?></option>
+                    <select class="select" name="color">
+                      <?php foreach($goodsColor as $c): ?>
+                      <option value="<?= h($c); ?>"><?= h($c); ?></option>
                       <?php endforeach ?>
                     </select>
                   </td>
@@ -89,7 +89,7 @@ $app->run();
     <section class="explanation">
       <h4 class="item_contents">商品説明</h4>
       <div class="contents">
-        <p><?= $ex; ?></p>
+        <p><?= nl2br(htmlspecialchars($detail->explanation, ENT_QUOTES, 'UTF-8')); ?></p>
       </div>
     </section>
   </div>

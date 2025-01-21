@@ -28,6 +28,7 @@ else {
   <script src="./js/validation.js"></script>
   <script src="./js/order.js"></script>
   <script src="./js/goods.js"></script>
+  <script src="./js/sort.js"></script>
 </head>
 <body>
   <header class="header">

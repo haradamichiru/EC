@@ -1,17 +1,10 @@
 <?php
 require_once(__DIR__ .'/header.php');
-$goodsMod = new Ec\Model\Goods();
 $OrderMod = new Ec\Model\Order();
 $goods = $goodsMod->goods();
 $orders = $OrderMod->orders();
 $item = $_SESSION['cart'];
 $list = array_column($goods, null, 'id');
-$setting = $goodsMod->settings();
-
-$postage = $setting[0]->postage;
-$rate = $setting[0]->tax / 100;
-
-$date = date('Ymd');
 
 if ($orders == array()) {
   $num = 0;
@@ -70,21 +63,21 @@ $app->run();
                         </tr>
                         <tr>
                           <th>送料</th>
-                          <td>￥<?= h($postage); ?></td>
+                          <td>￥<?= h(POSTAGE); ?></td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                     <p class="tax_in">
-                      <span class="price">￥<?= number_format($_SESSION['total_price']); ?></span>
-                      <span class="tax">(内税￥<?= h($_SESSION['total_tax']); ?>)</span>
+                      <span class="price">￥<?= number_format($_SESSION['total_price'] * (1 + RATE)); ?></span>
+                      <span class="tax">(内税￥<?= number_format($_SESSION['total_price'] * RATE); ?>)</span>
                     </p>
                   </div>
               </section>
               <div class="next_confirm">
                 <input class="btn" type="submit" name="complete" value="ご注文を確定する">
-                <input type="hidden" name="number" value="<?= h($date. $num); ?>">
-                <input type="hidden" name="postage" value="<?= h($postage); ?>">
+                <input type="hidden" name="number" value="<?= h(date('Ymd'). $num); ?>">
+                <input type="hidden" name="postage" value="<?= h(POSTAGE); ?>">
                 <input type="hidden" name="tax_rate" value="<?= h($setting[0]->tax); ?>">
                 <a class="back" href="<?= SITE_URL; ?>/shopping_information.php">お客様情報入力画面に戻る</a>
               </div>
@@ -102,14 +95,14 @@ $app->run();
               </div>
               <div class="deliver_item_detail">
                 <h3><?= h($list[$id]->goods_name); ?></h3>
-                <p class="item_price">￥<?= number_format($price * ($rate + 1)); ?>/点</p>
+                <p class="item_price">￥<?= number_format($price * (RATE + 1)); ?>/点</p>
                 <p class="number">点数：<?= h($number[$id] = $count); ?></p>
                 <p class="color">color：<?= h($all['color']); ?></p>
                 <?php if (isset($all['size'])) { ?>
                 <p class="size">size：<?= h($all['size']); ?></p>
                 <?php } ?>
                 <div class="subtotal">
-                  <p>小計￥<?= number_format($subtotal[$id] = $price * $count * ($rate + 1)); ?></p>
+                  <p>小計￥<?= number_format($subtotal[$id] = $price * $count * (RATE + 1)); ?></p>
                 </div>
               </div>
             </div>

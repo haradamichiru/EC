@@ -26,7 +26,7 @@ function myFilter($val) {
       <form class="delete_form" method="post" action="">
         <div class="goods">
           <div class="goods_image">
-            <img src="<?= !(empty($image)) ? './gazou/'.h($image) : './asset/img/noimage.png'; ?>">
+            <img src="<?= !(empty($image)) ? './image/'.h($image) : './asset/img/noimage.png'; ?>">
           </div>
           <div class="goods_detail">
             <p class="note">※一度削除すると元には戻せません。</p>

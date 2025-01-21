@@ -299,7 +299,17 @@ th,td {
 
 .size, .color {
   display: flex;
-  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.size .form-text, .color .form-text {
+  width: auto;
+}
+
+.label {
+  padding: 10px;
+  font-size: 2rem;
 }
 
 .goods_detail {
@@ -307,7 +317,7 @@ th,td {
 }
 
 .large {
-  height: 150px;
+  height: 300px;
 }
 
 .delete_goods {
@@ -333,6 +343,13 @@ th,td {
   position: -webkit-sticky;
   position: sticky;
   top: 100px;
+}
+
+/* サイズ・カラー管理 */
+.size_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* 商品削除 */

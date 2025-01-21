@@ -26,20 +26,37 @@ class Order extends \Ec\Controller {
   }
 
   protected function newOrder() {
+    foreach ($_SESSION['cart'] as $goods) {
+      $goods_id[] = $goods['id'];
+      $price[] = $goods['price'];
+      $count[] = $goods['count'][0];
+      $size[] = $goods['size'];
+      $color[] = $goods['color'];
+    }
     $OrderMod = new \Ec\Model\Order();
     $order = $OrderMod->order([
       'number' => $_POST['number'],
-      'email' => $_SESSION['mail'],
+      'postage' => $_POST['postage'],
+      'tax' => $_POST['tax_rate'],
       'name' => $_SESSION['name'],
       'kana' => $_SESSION['kana'],
+      'email' => $_SESSION['mail'],
       'postNum' => $_SESSION['post_number'],
       'address' => $_SESSION['address'],
       'tel' => $_SESSION['tel'],
       'pay' => $_SESSION['pay'],
-      'items' => $_SESSION['cart'],
-      'postage' => $_POST['postage'],
-      'tax' => $_POST['tax_rate'],
     ]);
+
+    foreach ($goods_id as $key => $gId) {
+      $OrderMod->orderGoods([
+        'order_number' => $_POST['number'],
+        'goods_id' => $gId,
+        'price' => $price[$key],
+        'count' => $count[$key],
+        'size' => $size[$key],
+        'color' => $color[$key],
+      ]);
+    }
     $_SESSION = array();
     $_SESSION['number'] = $_POST['number'];
     header('Location: ' . SITE_URL . '/shopping_completed.php');
@@ -49,6 +66,8 @@ class Order extends \Ec\Controller {
   protected function UpdateOrders() {
     $key = array_keys($_POST['update'])['0'];
     $errorMessages = [];
+    // var_dump($_POST['postNum'][$key]);
+    // exit();
     try {
       $this->validate();
     } catch (\Exception $e) {
@@ -66,48 +85,121 @@ class Order extends \Ec\Controller {
       $this->setValues('name', $_POST['name'][$key]);
       $this->setValues('kana', $_POST['kana'][$key]);
       $this->setValues('email', $_POST['email'][$key]);
-      $this->setValues('postNum', $_POST['postNUm'][$key]);
+      $this->setValues('postNum', $_POST['postNum'][$key]);
       $this->setValues('address', $_POST['address'][$key]);
       $this->setValues('telN', $_POST['tel'][$key]);
       $this->setValues('pay', $_POST['pay'][$key]);
       return $errorMessages;
     } else {
-      $OrderMod = new \Ec\Model\order();
+      $OrderMod = new \Ec\Model\Order();
       $GoodsMod = new \Ec\Model\Goods();
       $goods_data = $GoodsMod->goods();
-      for ($i = 0; $i <= count(array_keys($_POST['goods'][$key])); $i++){
-        foreach($goods_data as $goods):
-          if ($_POST['goods'][$key][$i]['id'] == $goods->id) {
-            $_POST['goods'][$key][$i]['price'] = $goods->price;
+      $order_goods = $OrderMod->orders();
+      foreach ($goods_data as $goods) {
+        foreach ($_POST['id'][$key] as $post_id) {
+          if ($post_id == $goods->id) {
+            $price[] = $goods->price;
           }
-        endforeach;
-          if (empty($_POST['goods'][$key][$i]['id'])) {
-            unset($_POST['goods'][$key][$i]);
-          } elseif (empty($_POST['goods'][$key][$i]['color'])) {
-            unset($_POST['goods'][$key][$i]['color']);
-          } elseif (is_array($_POST['goods'][$key][$i]['color'])) {
-            $_POST['goods'][$key][$i]['color'] = array_shift(array_values(array_filter($_POST['goods'][$key][$i]['color'])));
-          }
-          if (empty($_POST['goods'][$key][$i]['id'])) {
-            unset($_POST['goods'][$key][$i]);
-          } elseif (empty($_POST['goods'][$key][$i]['size'])) {
-            unset($_POST['goods'][$key][$i]['size']);
-          } elseif (is_array($_POST['goods'][$key][$i]['size'])) {
-            $_POST['goods'][$key][$i]['size'] = array_shift(array_values(array_filter($_POST['goods'][$key][$i]['size'])));
-          }
+        }
       }
+      // var_dump($order_goods);
+      // for ($i = 0; $i <= count(array_keys($_POST['goods'][$key])); $i++){
+      //   foreach($goods_data as $goods):
+      //     if ($_POST['goods'][$key][$i]['id'] == $goods->id) {
+      //       $_POST['goods'][$key][$i]['price'] = $goods->price;
+      //     }
+      //   endforeach;
+      //     if (empty($_POST['goods'][$key][$i]['id'])) {
+      //       unset($_POST['goods'][$key][$i]);
+      //     } elseif (empty($_POST['goods'][$key][$i]['color'])) {
+      //       unset($_POST['goods'][$key][$i]['color']);
+      //     } elseif (is_array($_POST['goods'][$key][$i]['color'])) {
+      //       $_POST['goods'][$key][$i]['color'] = array_shift(array_values(array_filter($_POST['goods'][$key][$i]['color'])));
+      //     }
+      //     if (empty($_POST['goods'][$key][$i]['id'])) {
+      //       unset($_POST['goods'][$key][$i]);
+      //     } elseif (empty($_POST['goods'][$key][$i]['size'])) {
+      //       unset($_POST['goods'][$key][$i]['size']);
+      //     } elseif (is_array($_POST['goods'][$key][$i]['size'])) {
+      //       $_POST['goods'][$key][$i]['size'] = array_shift(array_values(array_filter($_POST['goods'][$key][$i]['size'])));
+      //     }
+      // }
       $OrderMod->update([
         'number' => $_POST['number'][$key],
+        'status' => $_POST['status'][$key],
+        'email' => $_POST['email'][$key],
         'name' => $_POST['name'][$key],
         'kana' => $_POST['kana'][$key],
         'postNum' => $_POST['postNum'][$key],
         'address' => $_POST['address'][$key],
-        'email' => $_POST['email'][$key],
         'tel' => $_POST['tel'][$key],
         'pay' => $_POST['pay'][$key],
-        'goods' => $_POST['goods'][$key],
-        'status' => $_POST['status'][$key],
       ]);
+
+      // var_dump(count($_POST['id'][$key]));
+      // exit();
+      foreach ($order_goods as $orders) {
+        if ($orders->order_number == $_POST['number'][$key]) {
+          $same_number[] = $orders;
+        }
+      }
+      $counter = 0;
+      // var_dump($same_number);
+      foreach ($same_number as $sn) {
+        for ($i = 0; $i < count($price); $i++) {
+            // var_dump($counter);
+          if ($counter == 0) {
+            // var_dump('0');
+            // $OrderMod->orderGoodsUpdate([
+            //   'number' => $_POST['number'][$key],
+            //   'goods_id' => $_POST['id'][$key][$counter],
+            //   'price' => $price[$counter],
+            //   'count' => $_POST['count'][$key][$counter],
+            //   'size' => $_POST['size'][$key][$counter],
+            //   'color' => $_POST['color'][$key][$counter],
+            // ]);
+            $counter++;
+            break;
+          }
+          
+          // 2回目以上のループ($i)
+          if ($i >= 1 && $counter == $i) {
+            // $OrderMod->orderGoodsUpdate([
+            //   'number' => $_POST['number'][$key],
+            //   'goods_id' => $_POST['id'][$key][$counter],
+            //   'price' => $price[$counter],
+            //   'count' => $_POST['count'][$key][$counter],
+            //   'size' => $_POST['size'][$key][$counter],
+            //   'color' => $_POST['color'][$key][$counter],
+            // ]);
+            $counter++;
+            // $j = $i +1;
+            // continue;
+          } elseif (count($same_number) < count($price) && $i == count($same_number)) {
+              // $OrderMod->orderGoodsCreate([
+              //   'number' => $_POST['number'][$key],
+              //   'goods_id' => $_POST['id'][$key][$counter-1],
+              //   'price' => $price[$counter-1],
+              //   'count' => $_POST['count'][$key][$counter-1],
+              //   'size' => $_POST['size'][$key][$counter-1],
+              //   'color' => $_POST['color'][$key][$counter-1],
+              // ]);
+            $counter++;
+            // $counter++;
+            // continue;
+            // if ($i )
+          }
+        }
+      }
+      // var_dump($i);
+      // var_dump($counter);
+
+      exit();
+      // foreach ($_POST['id'][$key] as $i => $id) {
+      //   foreach ($order_goods as $orders) {
+      //   }
+      // }
+
       header('Location: '. SITE_URL . '/order_confirm.php');
       exit();
     }
@@ -228,3 +320,42 @@ class Order extends \Ec\Controller {
   }
 
 }
+            // if ($counter >= 1 && $counter <= $i) {
+            //   // var_dump('jump');
+            //   // var_dump($i);
+            //   // var_dump($counter);
+
+            //   continue;
+            // }
+            // var_dump($_POST['size'][$key][$counter]);
+            // var_dump($counter);
+
+            // if ($i == $counter) {
+            //   // var_dump($i);
+            //   // var_dump($counter);
+            //   var_dump('upd');
+            //   // $OrderMod->orderGoodsUpdate([
+            //   //   'number' => $_POST['number'][$key],
+            //   //   'goods_id' => $_POST['id'][$key][$counter],
+            //   //   'price' => $price[$counter],
+            //   //   'count' => $_POST['count'][$key][$counter],
+            //   //   'size' => $_POST['size'][$key][$counter],
+            //   //   'color' => $_POST['color'][$key][$counter],
+            //   // ]);
+            //   $counter++;
+            //   continue;
+            // } elseif ($counter < $i) {
+            //   var_dump('add');
+            //   // var_dump($_POST['size'][$key]);
+            //   // var_dump($_POST['size'][$key][$counter-1]);
+
+            //   // exit();
+            //   // $OrderMod->orderGoodsCreate([
+            //   //   'number' => $_POST['number'][$key],
+            //   //   'goods_id' => $_POST['id'][$key][$counter-1],
+            //   //   'price' => $price[$counter-1],
+            //   //   'count' => $_POST['count'][$key][$counter-1],
+            //   //   'size' => $_POST['size'][$key][$counter-1],
+            //   //   'color' => $_POST['color'][$key][$counter-1],
+            //   // ]);
+            // }

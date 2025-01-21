@@ -9,3 +9,6 @@ require_once(__DIR__ . '/autoload.php');
 session_start();
 $current_uri = $_SERVER["REQUEST_URI"];
 $file_name = basename($current_uri);
+$goodsMod = new Ec\Model\Goods();
+define('RATE', $goodsMod->settings()[0]->tax / 100);
+define('POSTAGE', $goodsMod->settings()[0]->postage);

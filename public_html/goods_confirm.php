@@ -7,16 +7,21 @@ $orderCon->run();
 
 $goodsMod = new Ec\Model\Goods();
 $goods = $goodsMod->goods();
-$setting = $goodsMod->settings();
+$sizes = $goodsMod->sizes();
+$goodsSizes = $goodsMod->goods_sizes();
+$colors = $goodsMod->colors();
+$goodsColors = $goodsMod->goods_colors();
 
-for ($i = 0; $i < count($goods); $i++) {
-  $color[$i] = array_filter(unserialize($goods[$i]->color), 'myFilter');
-  $size[$i] = unserialize($goods[$i]->size);
-  $ex[$i] = htmlspecialchars_decode($goods[$i]->explanation);
-}
-function myFilter($val) {
-  return !($val === "");
-}
+
+// for ($i = 0; $i < count($goods); $i++) {
+//   // $color[$i] = array_filter(unserialize($goods[$i]->color), 'myFilter');
+//   $size[$i] = unserialize($goods[$i]->size);
+//   // $ex[$i] = htmlspecialchars_decode($goods[$i]->explanation);
+// }
+// function myFilter($val) {
+//   return !($val === "");
+// }
+// var_dump($goodsSizes);
 
 ?>
     <!-- 商品追加 -->
@@ -49,7 +54,6 @@ function myFilter($val) {
                   <label for="goods_price">商品説明</label>
                 </th>
                 <td>
-                  <code class="small">※改行する場合は	&lt;br&gt;を入力してください。</code>
                   <textarea class="form-text" name="explanation" value="<?= isset($goodsCon->getValues()->explanation) ? h($goodsCon->getValues()->explanation): ''; ?>"></textarea>
                   <p class="err-txt" id="err-ex"></p>
                 </td>
@@ -59,16 +63,14 @@ function myFilter($val) {
                   <label>サイズ</label>
                 </th>
                 <td>
-                  <p class="small">※サイズを設定する場合は、単位と共にこちらに入力してください。</p>
-                  <p class="size">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                    <input class="form-text size" name="size[]" type="text" value="<?= isset($goodsCon->getValues()->size) ? h($goodsCon->getValues()->size): ''; ?>">
-                  </p>
+                  <div class="size">
+                  <?php foreach($sizes as $size):
+                    if (!(empty($size->size))) { ?>
+                    <input class="form-text size" name="size[<?= $size->id; ?>]" id="size[<?= $size->id; ?>]" type="checkbox">
+                    <label class="label" for="size[<?= $size->id; ?>]"><?= h($size->size); ?></label>
+                  <?php } endforeach ?>
+                    <buttton type="button" name="size-button" class="btn" onclick="location.href='size.php'">サイズ編集</button>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -76,14 +78,14 @@ function myFilter($val) {
                   <label>カラー</label>
                 </th>
                 <td>
-                  <p class="small">※カラーを設定する場合は、こちらに入力してください。</p>
-                  <p class="color">
-                    <input class="form-text color" name="color[]" type="text" value="<?= isset($goodsCon->getValues()->color) ? h($goodsCon->getValues()->color): ''; ?>">
-                    <input class="form-text color" name="color[]" type="text" value="<?= isset($goodsCon->getValues()->color) ? h($goodsCon->getValues()->color): ''; ?>">
-                    <input class="form-text color" name="color[]" type="text" value="<?= isset($goodsCon->getValues()->color) ? h($goodsCon->getValues()->color): ''; ?>">
-                    <input class="form-text color" name="color[]" type="text" value="<?= isset($goodsCon->getValues()->color) ? h($goodsCon->getValues()->color): ''; ?>">
-                    <input class="form-text color" name="color[]" type="text" value="<?= isset($goodsCon->getValues()->color) ? h($goodsCon->getValues()->color): ''; ?>">
-                  </p>
+                  <div class="color">
+                  <?php foreach($colors as $color):
+                    if (!(empty($color->color))) { ?>
+                    <input class="form-text color" name="color[<?= $color->id; ?>]" id="color[<?= $color->id; ?>]" type="checkbox">
+                    <label class="label" for="color[<?= $color->id; ?>]"><?= h($color->color); ?></label>
+                  <?php } endforeach ?>
+                    <buttton type="button" name="color-button" class="btn" onclick="location.href='color.php'">カラー編集</button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -120,7 +122,7 @@ function myFilter($val) {
                 </th>
                 <td>
                   <p class="price">
-                    <input class="form-text setting" type="text" name="postage" value="<?= isset($setting[0]->postage) ? h($setting[0]->postage): ''; ?>">円
+                    <input class="form-text setting" type="text" name="postage" value="<?= isset($postage) ? h($postage): ''; ?>">円
                   </p>
                   <p class="err-txt" id="err-postage"></p>
                 </td>
@@ -131,7 +133,7 @@ function myFilter($val) {
                 </th>
                 <td>
                   <p class="price">
-                    <input class="form-text setting" type="text" name="tax" value="<?= isset($setting[0]->tax) ? h($setting[0]->tax): ''; ?>">％
+                    <input class="form-text setting" type="text" name="tax" value="<?= isset($rate) ? h($rate * 100): ''; ?>">％
                   </p>
                   <p class="err-txt" id="err-tax"></p>
                 </td>
@@ -152,7 +154,7 @@ function myFilter($val) {
         <div class="goods_list">
         <?php foreach($goods as $key => $item):
           $id = $item->id; ?>
-          <div class="goods">
+          <div class="goods" id="goods[<?= $id ?>]">
             <div class="goods_image">
               <span class="delete_image-btn">削除</span>
               <label>
@@ -182,33 +184,40 @@ function myFilter($val) {
                     </td>
                   </tr>
                   <tr>
-                    <th>カラー</th>
-                    <td>
-                      <p class="color">
-                        <?php foreach($color[$key] as $c):?>
-                          <input class="form-text color" name="color[<?= $id; ?>][]" type="text" value="<?= h($c); ?>">
-                        <?php endforeach ?>
-                        <input class="add-color btn" name="color_add" type="button" value="追加">
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
                     <th>サイズ</th>
                     <td>
                       <p class="size">
-                        <?php foreach($size[$key] as $s):?>
-                          <input class="form-text size" name="size[<?= $id; ?>][]" type="text" value="<?= h($s); ?>">
-                        <?php endforeach ?>
-                        <input class="add-size btn" name="size_add" type="button" value="追加">
+                      <?php foreach($sizes as $size):
+                        if (!(empty($size->size))) { ?>
+                        <input class="form-text size" name="size[<?= $id; ?>][]" id="size[<?= $id; ?>][<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>"
+                        <?php foreach($goodsSizes as $gSize):
+                          if ($id == $gSize->goods_id && $size->size == $gSize->size && $gSize->delflag == '0') { ?> checked
+                        <?php } endforeach ?> >
+                        <label class="label" for="size[<?= $id;?>][<?= $size->id; ?>]"><?= h($size->size); ?></label>
+                      <?php } endforeach ?>
                       </p>
                     </td>
                   </tr>
                   <tr>
+                  <tr>
+                    <th>カラー</th>
+                    <td>
+                      <p class="color">
+                      <?php foreach($colors as $color):
+                        if (!(empty($color->color))) { ?>
+                        <input class="form-text color" name="color[<?= $id; ?>][]" id="color[<?= $id; ?>][<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>"
+                        <?php foreach($goodsColors as $gColor):
+                          if ($id == $gColor->goods_id && $color->color == $gColor->color && $gColor->delflag == '0') { ?> checked
+                        <?php } endforeach ?> >
+                        <label class="label" for="color[<?= $id; ?>][<?= $color->id; ?>]"><?= h($color->color); ?></label>
+                        <?php } endforeach ?>
+                      </p>
+                    </td>
+                  </tr>
                     <th>
                       商品説明
                     </th>
                     <td>
-                      <code class="small">※改行する場合は	&lt;br&gt;を入力してください。</code>
                       <textarea class="form-text large" name="explanation[<?= $id; ?>]"><?= h($item->explanation); ?></textarea>
                     </td>
                   </tr>
@@ -220,7 +229,7 @@ function myFilter($val) {
                 <input class="delete_goods" type="submit" name="delete_confirm[<?= $id ?>]" value="削除">
               </p>
               <div class="goods_edit">
-                <input class="btn" type="submit" name="goods_update[<?= $id ?>]" value="更新">
+                <input class="btn update-goods" type="submit" name="goods_update[<?= $id ?>]" value="更新">
                 <p class="err-txt" id="err-goods_update"></p>
                 <p class="err-txt" id="err-price_update"></p>
               </div>

@@ -3,17 +3,53 @@ namespace Ec\Model;
 class Goods extends \Ec\Model {
   // 商品追加
   public function create($values) {
-    // サイズとカラーを配列のまま保存
-    $size_data = serialize($values['size']);
-    $color_data = serialize($values['color']);
-    $stmt = $this->db->prepare("INSERT INTO goods (goods_name,price,explanation,image,size,color,created,modified) VALUES (:goods_name,:price,:explanation,:image,:size,:color,now(),now())");
+    // $size_data = serialize($values['size']);
+    // $color_data = serialize($values['color']);
+    $stmt = $this->db->prepare("INSERT INTO goods (goods_name,price,explanation,image,created,modified) VALUES (:goods_name,:price,:explanation,:image,now(),now())");
     $res = $stmt->execute([
       ':goods_name' => $values['goods_name'],
       ':price' => $values['price'],
       ':explanation' => $values['explanation'],
       ':image' => $values['image'],
-      ':size' => $size_data,
-      ':color' => $color_data,
+    ]);
+  }
+
+  // サイズ追加
+  public function sizeCreate($values) {
+    var_dump($values);
+    $stmt = $this->db->prepare("INSERT INTO sizes (id,size,created,modified) VALUES (:id,:size,now(),now())");
+    $res = $stmt->execute([
+      ':id' => $values['id'],
+      ':size' => $values['size'],
+    ]);
+  }
+
+  // サイズ更新
+  public function sizeUpdate($values) {
+    $stmt = $this->db->prepare("UPDATE sizes SET size = :size, modified = now() WHERE id = :id");
+    $res = $stmt->execute([
+      ':id' => $values['id'],
+      ':size' => $values['size'],
+    ]);
+  }
+
+  // カラー追加
+  public function colorCreate($values) {
+    // var_dump($values);
+    // exit();
+    $stmt = $this->db->prepare("INSERT INTO colors (id,color,created,modified) VALUES (:id,:color,now(),now())");
+    $res = $stmt->execute([
+      ':id' => $values['id'],
+      ':color' => $values['color'],
+    ]);
+  }
+
+  // カラー更新
+  public function colorUpdate($values) {
+    $stmt = $this->db->prepare("UPDATE colors SET color = :color, modified = now() WHERE id = :id");
+    $res = $stmt->execute([
+      ':id' => $values['id'],
+      ':color' => $values['color'],
     ]);
   }
 
@@ -59,6 +95,30 @@ class Goods extends \Ec\Model {
     return $stmt->fetchAll(\PDO::FETCH_OBJ);
   }
 
+  // サイズ一覧
+  public function sizes() {
+    $stmt = $this->db->query("SELECT * FROM sizes WHERE delflag = 0");
+    return $stmt->fetchAll(\PDO::FETCH_OBJ);
+  }
+
+  // 商品サイズ一覧
+  public function goods_sizes() {
+    $stmt = $this->db->query("SELECT * FROM goods_size");
+    return $stmt->fetchAll(\PDO::FETCH_OBJ);
+  }
+
+  // カラー一覧
+  public function colors() {
+    $stmt = $this->db->query("SELECT * FROM colors WHERE delflag = 0");
+    return $stmt->fetchAll(\PDO::FETCH_OBJ);
+  }
+
+  // 商品カラー一覧
+  public function goods_colors() {
+    $stmt = $this->db->query("SELECT * FROM goods_color");
+    return $stmt->fetchAll(\PDO::FETCH_OBJ);
+  }
+
   // 設定値
   public function settings() {
     $stmt = $this->db->query("SELECT * FROM users");
@@ -96,24 +156,55 @@ class Goods extends \Ec\Model {
 
   // 商品更新
   public function goodsUpdate($values) {
-    if (!empty($values['color'])) {
-      $color = serialize(array_filter($values['color']));
-    }
-    if (!empty($values['size'])) {
-      $size = serialize(array_filter($values['size']));
-    }
-
-    $stmt = $this->db->prepare("UPDATE goods SET goods_name = :goods_name, price = :price, explanation = :explanation, image = :image, size = :size, color = :color, modified = now() WHERE id = :id");
+    $stmt = $this->db->prepare("UPDATE goods SET goods_name = :goods_name, price = :price, explanation = :explanation, image = :image, modified = now() WHERE id = :id");
     $stmt->execute([
       ':id' => $values['id'],
       ':goods_name' => $values['goods_name'],
       ':price' => $values['price'],
       ':explanation' => $values['explanation'],
       ':image' => $values['image'],
-      ':size' => $size,
-      ':color' => $color,
     ]);
   }
+
+  // 商品サイズ追加
+  public function goodsSizeCreate($values) {
+    $stmt = $this->db->prepare("INSERT INTO goods_size (goods_id,size,created,modified) VALUES (:goods_id,:size,now(),now())");
+    $res = $stmt->execute([
+      ':goods_id' => $values['goods_id'],
+      ':size' => $values['size'],
+    ]);
+  }
+
+  // 商品サイズ更新
+  public function goodsSizeUpdate($values) {
+    $stmt = $this->db->prepare("UPDATE goods_size SET size = :size, delflag = :delflag, modified = now() WHERE id = :id");
+    $stmt->execute([
+      ':id' => $values['id'],
+      ':size' => $values['size'],
+      ':delflag' => $values['delflag'],
+    ]);
+  }
+
+  // 商品カラー追加
+  public function goodsColorCreate($values) {
+    $stmt = $this->db->prepare("INSERT INTO goods_color (goods_id,color,created,modified) VALUES (:goods_id,:color,now(),now())");
+    $res = $stmt->execute([
+      ':goods_id' => $values['goods_id'],
+      ':color' => $values['color'],
+    ]);
+  }
+
+  // 商品カラー更新
+  public function goodsColorUpdate($values) {
+    var_dump($values);
+    $stmt = $this->db->prepare("UPDATE goods_color SET color = :color, delflag = :delflag, modified = now() WHERE id = :id");
+    $stmt->execute([
+      ':id' => $values['id'],
+      ':color' => $values['color'],
+      ':delflag' => $values['delflag'],
+    ]);
+  }
+
 
   // 設定値更新
   public function settingUpdate($values) {
