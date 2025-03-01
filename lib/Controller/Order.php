@@ -2,30 +2,75 @@
 namespace Ec\Controller;
 class Order extends \Ec\Controller {
   public function run() {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['complete'])) {
-      $this->newOrder();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy'])) {
+      $this->newOrder(); // 新規注文
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
-      $this->updateOrders();
+      $this->updateOrders(); // 注文更新
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
-      $this->cancel();
+      $this->cancel(); // 注文削除画面への遷移
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
-      $this->delete();
+      $this->delete(); // 注文削除
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['search'])) {
       $orderData = $this->search();
-      return $orderData;
+      return $orderData; // 注文検索
     }
-
   }
 
+  // 注文者情報POSTデータ格納
+  private function orders() {
+    if ($_POST['post-number1']) { // 新規注文の場合
+      $orders = [
+        'number' => $_POST['number'],
+        'postage' => $_POST['postage'],
+        'tax_rate' => $_POST['tax_rate'] * 100,
+        'status' => $_POST['status'],
+        'email' => $_POST['email'],
+        'name' => $_POST['name'],
+        'kana' => $_POST['kana'],
+        'post-number' => $_POST['post-number1']. '-' .$_POST['post-number2'],
+        'address' => $_POST['address'],
+        'tel' => $_POST['tel'],
+        'pay' => $_POST['pay'],
+      ];
+    } elseif (isset($_POST['update'])) { // 注文更新の場合
+      $key = array_keys($_POST['update'])['0']; // POSTされた商品を特定するためのキーを変数格納
+      $orders = [
+        'number' => $_POST['number'][$key],
+        'status' => $_POST['status'][$key],
+        'email' => $_POST['email'][$key],
+        'name' => $_POST['name'][$key],
+        'kana' => $_POST['kana'][$key],
+        'post-number' => $_POST['post-number'][$key],
+        'address' => $_POST['address'][$key],
+        'tel' => $_POST['tel'][$key],
+        'pay' => $_POST['pay'][$key],
+      ];
+    }
+    return $orders;
+  }
+
+  // 注文商品更新データ格納
+  private function orderGoodsUpdate() {
+    $key = array_keys($_POST['update'])['0']; // POSTされた商品を特定するためのキーを変数格納
+    $orderGoodsUpdate = [
+      'count' => $_POST['count'][$key],
+      'size' => $_POST['size'][$key],
+      'color' => $_POST['color'][$key],
+    ];
+    return $orderGoodsUpdate;
+  }
+
+  // 新規注文
   protected function newOrder() {
+    // セッション「カート」を項目ごとに格納
     foreach ($_SESSION['cart'] as $goods) {
       $goods_id[] = $goods['id'];
       $price[] = $goods['price'];
@@ -33,22 +78,12 @@ class Order extends \Ec\Controller {
       $size[] = $goods['size'];
       $color[] = $goods['color'];
     }
-    $OrderMod = new \Ec\Model\Order();
-    $order = $OrderMod->order([
-      'number' => $_POST['number'],
-      'postage' => $_POST['postage'],
-      'tax' => $_POST['tax_rate'],
-      'name' => $_SESSION['name'],
-      'kana' => $_SESSION['kana'],
-      'email' => $_SESSION['mail'],
-      'postNum' => $_SESSION['post_number'],
-      'address' => $_SESSION['address'],
-      'tel' => $_SESSION['tel'],
-      'pay' => $_SESSION['pay'],
-    ]);
-
+    // 注文者情報をordersテーブルに新規追加
+    $orderMod = new \Ec\Model\Order();
+    $orderMod->order($this->orders());
+    // カートに入っていた商品をorder_goodsテーブルに新規追加
     foreach ($goods_id as $key => $gId) {
-      $OrderMod->orderGoods([
+      $orderMod->orderGoods([
         'order_number' => $_POST['number'],
         'goods_id' => $gId,
         'price' => $price[$key],
@@ -57,23 +92,22 @@ class Order extends \Ec\Controller {
         'color' => $color[$key],
       ]);
     }
-    $_SESSION = array();
-    $_SESSION['number'] = $_POST['number'];
-    header('Location: ' . SITE_URL . '/shopping_completed.php');
+    $_SESSION = array(); // セッション削除
+    $_SESSION['number'] = $_POST['number']; // 注文番号をセッションに格納
+    header('Location: ' . SITE_URL . '/shopping_completed.php'); // 注文完了画面へ遷移
     exit();
   }
 
+  // 注文更新
   protected function UpdateOrders() {
-    $key = array_keys($_POST['update'])['0'];
-    $errorMessages = [];
-    // var_dump($_POST['postNum'][$key]);
-    // exit();
+    $key = array_keys($_POST['update'])['0']; // POSTされた商品を特定するためのキーを変数格納
+    $errorMessages = []; //　エラーメッセージをリセット
     try {
       $this->validate();
     } catch (\Exception $e) {
       $errorMessages = json_decode($e->getMessage(), true);
     }
-    if (!empty($errorMessages)) {
+    if (!empty($errorMessages)) { // $errorMessagesがあった場合
       $this->setErrors('name', $errorMessages['name']);
       $this->setErrors('kana', $errorMessages['kana']);
       $this->setErrors('email', $errorMessages['email']);
@@ -81,6 +115,7 @@ class Order extends \Ec\Controller {
       $this->setErrors('address', $errorMessages['address']);
       $this->setErrors('tel', $errorMessages['tel']);
       $this->setErrors('pay', $errorMessages['pay']);
+      $this->setErrors('goods', $errorMessages['goods']);
       $this->setValues('id', $key);
       $this->setValues('name', $_POST['name'][$key]);
       $this->setValues('kana', $_POST['kana'][$key]);
@@ -89,168 +124,93 @@ class Order extends \Ec\Controller {
       $this->setValues('address', $_POST['address'][$key]);
       $this->setValues('telN', $_POST['tel'][$key]);
       $this->setValues('pay', $_POST['pay'][$key]);
+      $this->setValues('goods', $_POST['goods_id'][$key]);
       return $errorMessages;
     } else {
       $OrderMod = new \Ec\Model\Order();
       $GoodsMod = new \Ec\Model\Goods();
-      $goods_data = $GoodsMod->goods();
-      $order_goods = $OrderMod->orders();
+      $goods_data = $GoodsMod->goods(); // DB"goods"を変数格納
+      $order_goods = $OrderMod->ordersGoods(); // DB"order_goods"を変数格納
+
+      // 注文者情報更新
+      $OrderMod->update($this->orders());
+
+      // DB"goods"内でPOSTされた商品IDと同じ商品IDの金額を配列として格納
       foreach ($goods_data as $goods) {
-        foreach ($_POST['id'][$key] as $post_id) {
+        foreach ($_POST['goods_id'][$key] as $post_id) {
           if ($post_id == $goods->id) {
             $price[] = $goods->price;
           }
         }
       }
-      // var_dump($order_goods);
-      // for ($i = 0; $i <= count(array_keys($_POST['goods'][$key])); $i++){
-      //   foreach($goods_data as $goods):
-      //     if ($_POST['goods'][$key][$i]['id'] == $goods->id) {
-      //       $_POST['goods'][$key][$i]['price'] = $goods->price;
-      //     }
-      //   endforeach;
-      //     if (empty($_POST['goods'][$key][$i]['id'])) {
-      //       unset($_POST['goods'][$key][$i]);
-      //     } elseif (empty($_POST['goods'][$key][$i]['color'])) {
-      //       unset($_POST['goods'][$key][$i]['color']);
-      //     } elseif (is_array($_POST['goods'][$key][$i]['color'])) {
-      //       $_POST['goods'][$key][$i]['color'] = array_shift(array_values(array_filter($_POST['goods'][$key][$i]['color'])));
-      //     }
-      //     if (empty($_POST['goods'][$key][$i]['id'])) {
-      //       unset($_POST['goods'][$key][$i]);
-      //     } elseif (empty($_POST['goods'][$key][$i]['size'])) {
-      //       unset($_POST['goods'][$key][$i]['size']);
-      //     } elseif (is_array($_POST['goods'][$key][$i]['size'])) {
-      //       $_POST['goods'][$key][$i]['size'] = array_shift(array_values(array_filter($_POST['goods'][$key][$i]['size'])));
-      //     }
-      // }
-      $OrderMod->update([
-        'number' => $_POST['number'][$key],
-        'status' => $_POST['status'][$key],
-        'email' => $_POST['email'][$key],
-        'name' => $_POST['name'][$key],
-        'kana' => $_POST['kana'][$key],
-        'postNum' => $_POST['postNum'][$key],
-        'address' => $_POST['address'][$key],
-        'tel' => $_POST['tel'][$key],
-        'pay' => $_POST['pay'][$key],
-      ]);
 
-      // var_dump(count($_POST['id'][$key]));
-      // exit();
+      // DB"order_goods"内でとPOSTされた注文番号が同じIDと商品IDを配列として格納
       foreach ($order_goods as $orders) {
         if ($orders->order_number == $_POST['number'][$key]) {
-          $same_number[] = $orders;
+          $ordersGoodsId[] = $orders->id;
+          $goodsId[] = $orders->goods_id;
         }
       }
-      $counter = 0;
-      // var_dump($same_number);
-      foreach ($same_number as $sn) {
-        for ($i = 0; $i < count($price); $i++) {
-            // var_dump($counter);
-          if ($counter == 0) {
-            // var_dump('0');
-            // $OrderMod->orderGoodsUpdate([
-            //   'number' => $_POST['number'][$key],
-            //   'goods_id' => $_POST['id'][$key][$counter],
-            //   'price' => $price[$counter],
-            //   'count' => $_POST['count'][$key][$counter],
-            //   'size' => $_POST['size'][$key][$counter],
-            //   'color' => $_POST['color'][$key][$counter],
-            // ]);
-            $counter++;
-            break;
+
+      if (count($ordersGoodsId) >= count(array_filter($_POST['goods_id'][$key]))) { // DBとPOSTの注文番号一致数がPOSTされた数以上の場合
+        foreach (array_filter($_POST['goods_id'][$key]) as $i => $orderId) { // POSTされた商品数までループ
+          $OrderMod->orderGoodsUpdate([
+            'id' => $ordersGoodsId[$i],
+            'key' => $i,
+            'goods_id' => $orderId,
+            $this->orderGoodsUpdate(),
+          ]);
+        }
+        foreach ($ordersGoodsId as $i => $orderId) { // DB内とPOSTされた注文番号が一致する数までループ
+          if ($i >= count(array_filter($_POST['goods_id'][$key]))) { // POSTされた数より多い場合
+            $OrderMod->orderGoodsUpdate([
+              'id' => $ordersGoodsId[$i],
+              'key' => $i,
+              'goods_id' => $orderId,
+              $this->orderGoodsUpdate(),
+            ]);
           }
-          
-          // 2回目以上のループ($i)
-          if ($i >= 1 && $counter == $i) {
-            // $OrderMod->orderGoodsUpdate([
-            //   'number' => $_POST['number'][$key],
-            //   'goods_id' => $_POST['id'][$key][$counter],
-            //   'price' => $price[$counter],
-            //   'count' => $_POST['count'][$key][$counter],
-            //   'size' => $_POST['size'][$key][$counter],
-            //   'color' => $_POST['color'][$key][$counter],
-            // ]);
-            $counter++;
-            // $j = $i +1;
-            // continue;
-          } elseif (count($same_number) < count($price) && $i == count($same_number)) {
-              // $OrderMod->orderGoodsCreate([
-              //   'number' => $_POST['number'][$key],
-              //   'goods_id' => $_POST['id'][$key][$counter-1],
-              //   'price' => $price[$counter-1],
-              //   'count' => $_POST['count'][$key][$counter-1],
-              //   'size' => $_POST['size'][$key][$counter-1],
-              //   'color' => $_POST['color'][$key][$counter-1],
-              // ]);
-            $counter++;
-            // $counter++;
-            // continue;
-            // if ($i )
+        }
+      } else { // DBとPOSTの注文番号一致数がPOSTされた数より少ない場合
+        foreach ($_POST['goods_id'][$key] as $i => $orderId) { // POSTされた商品数までループ
+          foreach ($ordersGoodsId as $id) { // DBとPOSTの注文番号一致数までループ
+            if ($id == $_POST['id'][$key][$i]) { // DB内のidとPOSTされたidが同じだった場合
+              var_dump('bb');
+              $OrderMod->orderGoodsUpdate([
+                'id' => $id,
+                'key' => $i,
+                'goods_id' => $orderId,
+                $this->orderGoodsUpdate(),
+              ]);
+              break;
+            } else { // DB内にPOSTされたidがなかった場合
+              $OrderMod->orderGoodsCreate([
+                'number' => $_POST['number'][$key],
+                'goods_id' => $orderId,
+                'price' => $price[0],
+                'count' => $_POST['count'][$key][$i],
+                'size' => $_POST['size'][$key][$i],
+                'color' => $_POST['color'][$key][$i],
+              ]);
+              break;
+            }
           }
         }
       }
-      // var_dump($i);
-      // var_dump($counter);
-
-      exit();
-      // foreach ($_POST['id'][$key] as $i => $id) {
-      //   foreach ($order_goods as $orders) {
-      //   }
-      // }
-
-      header('Location: '. SITE_URL . '/order_confirm.php');
+      header('Location: '. SITE_URL . '/order_confirm.php?page_id=' .$_GET['page_id']. '#order[' .$key .']');
       exit();
     }
   }
 
+  // 注文削除画面への遷移
   private function cancel() {
-    $key = array_keys($_POST['cancel'])['0'];
-    $_SESSION['number'] = $_POST['number'][$key];
-    header('Location: ' . SITE_URL . '/cancel.php');
+    $key = array_keys($_POST['cancel'])['0']; // 注文番号の特定
+    $_SESSION['number'] = $_POST['number'][$key]; // 注文番号をセッションに格納
+    header('Location: ' . SITE_URL . '/cancel.php'); // 注文削除画面へ遷移
     exit();
   }
 
-  private function delete() {
-    $OrderMod = new \Ec\Model\order();
-    $OrderMod->delete([
-      'number' => $_SESSION['number'],
-    ]);
-    $_SESSION = array();
-    header('Location: ' . SITE_URL . '/order_confirm.php');
-    exit();
-  }
-
-  public function search() {
-    if (isset($_GET['number'])) {
-      $number = $_GET['number'];
-    }
-    if (isset($_GET['username'])) {
-      $username = $_GET['username'];
-    }
-    if (isset($_GET['tel'])) {
-      $tel = $_GET['tel'];
-    }
-    if (isset($_GET['status'])) {
-      $status = $_GET['status'];
-    } else {
-      $status = 0;
-    }
-    $this->setValues('number', $number);
-    $this->setValues('username', $username);
-    $this->setValues('tel', $tel);
-    $this->setValues('status', $status);
-    $OrderMod = new \Ec\Model\order();
-    $orderData = $OrderMod->searchOrder([
-      'number' => $number,
-      'username' => $username,
-      'tel' => $tel,
-      'status' => $status,
-    ]);
-    return $orderData;
-  }
-
+  // 注文更新バリデーション
   private function validate() {
     if (isset($_POST['update'])) {
       $key = array_keys($_POST['update'])['0'];
@@ -273,89 +233,64 @@ class Order extends \Ec\Controller {
       }
       if ($_POST['tel'][$key] === '') {
         $errors['tel'] = "電話番号が入力されていません。";
-      } elseif (!preg_match('/^[0-9]{2,4}[0-9]{2,4}[0-9]{3,4}$/', $_POST['tel'][$key])) {
-        $errors['tel'] = "電話番号が不正です。ハイフンなしで入力してください。";
       }
-      if ($_POST['pay'][$key] === 'credit') {
+      if ($_POST['credit'][$key] == 1 && $_POST['pay'][$key] == 'credit') {
         $errors['pay'] = "クレジットへの変更はできません。";
       }
-
-    //   if ($_POST['username'][$id] === '') {
-    //     $errors['username'] = "ユーザー名が入力されていません!";
-    //   }
-    //   if (!($_POST['authority'][$id] == "1" || $_POST['authority'][$id] == "99")) {
-    //     $errors['authority'] = "権限は「1=一般ユーザー」か「99=管理者」を入力してください！";
-    //   }
-    //   if (!($_POST['delflag'][$id] == "1" || $_POST['delflag'][$id] == "0")) {
-    //     $errors['delflag'] = "削除フラグは0か1を入力してください！（1は削除されたユーザーになります）";
-    //   }
-    //   if (!empty($errors)) {
-    //     throw new \Exception(json_encode($errors, JSON_UNESCAPED_UNICODE));
-    //   }
-    // }
-    // if (isset($_POST['password'])) {
-    //   if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password'])) {
-    //     echo "不正なフォームから登録されています!";
-    //     exit();
-    //   }
-    //   if ($_POST['username'] === '') {
-    //     $errors['username'] = "ユーザー名が入力されていません!";
-    //   }
-    //   if (!preg_match('/\A[a-zA-Z0-9]+\z/', $_POST['password'])) {
-    //     $errors['password'] = "パスワードが不正です!";
-    //   }
-    //   if (!($_POST['authority'] == "1" || $_POST['authority'] == "99")) {
-    //     $errors['authority'] = "権限は「1=一般ユーザー」か「99=管理者」を入力してください！";
-    //   }
-    //   if (!($_POST['delflag'] == "1" || $_POST['delflag'] == "0")) {
-    //     $errors['delflag'] = "削除フラグは0か1を入力してください！（1は削除されたユーザーになります）";
-    //   }
-    //   if (!filter_var($_POST['email'][$id],FILTER_VALIDATE_EMAIL)) {
-    //     $errors['email'] = "メールアドレスが不正です!";
-    //   }
+      if (count(array_filter($_POST['goods_id'][$key])) == 0) {
+        $errors['goods'] = "１つ以上の注文商品登録をしてください。";
+      }
       if (!empty($errors)) {
         throw new \Exception(json_encode($errors, JSON_UNESCAPED_UNICODE));
       }
     }
   }
 
+  // 注文削除
+  private function delete() {
+    $OrderMod = new \Ec\Model\order();
+    $OrderMod->delete([
+      'number' => $_SESSION['number'],
+    ]);
+    $_SESSION['number'] = array(); // セッション削除
+    header('Location: ' . SITE_URL . '/order_confirm.php'); // 発送管理画面へ遷移
+    exit();
+  }
+
+  // 注文検索
+  public function search() {
+    // 注文番号が入力されていた場合
+    if (isset($_GET['number'])) {
+      $number = $_GET['number'];
+    }
+    // お客様名が入力されていた場合
+    if (isset($_GET['username'])) {
+      $username = $_GET['username'];
+    }
+    // 電話番号が入力されていた場合
+    if (isset($_GET['tel'])) {
+      $tel = $_GET['tel'];
+    }
+    // 発送状態が選択されていた場合
+    if (isset($_GET['status'])) {
+      $status = $_GET['status'];
+    } else {
+      $status = 0; // 選択されていなかった場合、発送準備中を選択
+    }
+    // 入力した値を保存
+    $this->setValues('number', $number);
+    $this->setValues('username', $username);
+    $this->setValues('tel', $tel);
+    $this->setValues('status', $status);
+
+    $OrderMod = new \Ec\Model\order();
+    $orderData = $OrderMod->searchOrder([
+      'number' => $number,
+      'username' => $username,
+      'tel' => $tel,
+      'status' => $status,
+    ]);
+    return $orderData;
+  }
+
 }
-            // if ($counter >= 1 && $counter <= $i) {
-            //   // var_dump('jump');
-            //   // var_dump($i);
-            //   // var_dump($counter);
-
-            //   continue;
-            // }
-            // var_dump($_POST['size'][$key][$counter]);
-            // var_dump($counter);
-
-            // if ($i == $counter) {
-            //   // var_dump($i);
-            //   // var_dump($counter);
-            //   var_dump('upd');
-            //   // $OrderMod->orderGoodsUpdate([
-            //   //   'number' => $_POST['number'][$key],
-            //   //   'goods_id' => $_POST['id'][$key][$counter],
-            //   //   'price' => $price[$counter],
-            //   //   'count' => $_POST['count'][$key][$counter],
-            //   //   'size' => $_POST['size'][$key][$counter],
-            //   //   'color' => $_POST['color'][$key][$counter],
-            //   // ]);
-            //   $counter++;
-            //   continue;
-            // } elseif ($counter < $i) {
-            //   var_dump('add');
-            //   // var_dump($_POST['size'][$key]);
-            //   // var_dump($_POST['size'][$key][$counter-1]);
-
-            //   // exit();
-            //   // $OrderMod->orderGoodsCreate([
-            //   //   'number' => $_POST['number'][$key],
-            //   //   'goods_id' => $_POST['id'][$key][$counter-1],
-            //   //   'price' => $price[$counter-1],
-            //   //   'count' => $_POST['count'][$key][$counter-1],
-            //   //   'size' => $_POST['size'][$key][$counter-1],
-            //   //   'color' => $_POST['color'][$key][$counter-1],
-            //   // ]);
-            // }

@@ -284,6 +284,11 @@ label {
   margin-top: 5px;
 }
 
+.buy {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
 /* カート内一覧 */
 .shopping_cart {
   display: flex;
@@ -464,63 +469,8 @@ select {
   border-radius: 8px;
 }
 
-/* 注文内容確認 */
-.container_confirm {
-  display: flex;
-}
-
-.customer {
-  border: #595959 solid 1px;
-  padding: 20px;
-  margin: 0px 20px 20px 0px;
-}
-
-.customer {
-  display: flex;
-  flex-direction: column;
-}
-
-.customer-info {
-  margin: 10px;
-  border-top: 1px solid #323232;
-  font: 15px bold;
-}
-
-.customer-info p {
-  margin-bottom:  0px;
-}
-
-.customer-info_detail {
-  text-indent: 10px;
-}
-
-.confirm {
-  margin-left: 50px;
-}
-
-.next_confirm {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 50px;
-}
-
-.deliver_item {
-  display: flex;
-  margin: 5px;
-  border-top: 3px solid #323232;
-}
-
-.deliver_item img {
-  width: 150px;
-  margin: 20px 0 20px 0;
-}
-
-.deliver_item_detail {
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
-  width: 100%;
+.complete {
+  display: none;
 }
 
 /* 注文完了 */

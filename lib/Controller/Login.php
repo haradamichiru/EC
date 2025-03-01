@@ -7,17 +7,13 @@ class Login extends \Ec\Controller {
       exit();
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $this->postProcess();
+      $this->login();
     }
   }
 
-  protected function postProcess() {
-          $this->validate();
-
-    // try {
-    // } catch (\Ec\Exception\EmptyPost $e) {
-    //   $this->setErrors('login', $e->getMessage());
-    // }
+  // ログイン処理
+  protected function login() {
+    $this->validate();
     $this->setValues('loginid', $_POST['id']);
     if ($this->hasError()) {
       return;
@@ -35,7 +31,7 @@ class Login extends \Ec\Controller {
       }
       session_regenerate_id(true);
       $_SESSION['me'] = $user;
-      header('Location: '. SITE_URL . '/goods_confirm.php');
+      header('Location: '. SITE_URL . '/goods_confirm.php'); //商品管理に遷移
       exit();
     }
   }

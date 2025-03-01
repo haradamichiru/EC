@@ -11,16 +11,8 @@ $sizes = $goodsMod->sizes();
 $goodsSizes = $goodsMod->goods_sizes();
 $colors = $goodsMod->colors();
 $goodsColors = $goodsMod->goods_colors();
+$postage = $goodsMod->settings()[0]->postage;
 
-
-// for ($i = 0; $i < count($goods); $i++) {
-//   // $color[$i] = array_filter(unserialize($goods[$i]->color), 'myFilter');
-//   $size[$i] = unserialize($goods[$i]->size);
-//   // $ex[$i] = htmlspecialchars_decode($goods[$i]->explanation);
-// }
-// function myFilter($val) {
-//   return !($val === "");
-// }
 // var_dump($goodsSizes);
 
 ?>
@@ -62,30 +54,34 @@ $goodsColors = $goodsMod->goods_colors();
                 <th>
                   <label>サイズ</label>
                 </th>
-                <td>
+                <td class="size-list">
                   <div class="size">
-                  <?php foreach($sizes as $size):
-                    if (!(empty($size->size))) { ?>
-                    <input class="form-text size" name="size[<?= $size->id; ?>]" id="size[<?= $size->id; ?>]" type="checkbox">
-                    <label class="label" for="size[<?= $size->id; ?>]"><?= h($size->size); ?></label>
-                  <?php } endforeach ?>
-                    <buttton type="button" name="size-button" class="btn" onclick="location.href='size.php'">サイズ編集</button>
+                    <?php foreach($sizes as $size):
+                      if (!(empty($size->size))) { ?>
+                      <div class="list">
+                        <input class="form-text" name="size[<?= $size->id; ?>]" id="size[<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>">
+                        <label class="label" for="size[<?= $size->id; ?>]"><?= h($size->size); ?></label>
+                      </div>
+                    <?php } endforeach ?>
                   </div>
+                  <buttton type="button" name="size-button" class="btn" onclick="location.href='size.php'">サイズ編集</button>
                 </td>
               </tr>
               <tr>
                 <th>
                   <label>カラー</label>
                 </th>
-                <td>
+                <td class="color-list">
                   <div class="color">
-                  <?php foreach($colors as $color):
-                    if (!(empty($color->color))) { ?>
-                    <input class="form-text color" name="color[<?= $color->id; ?>]" id="color[<?= $color->id; ?>]" type="checkbox">
-                    <label class="label" for="color[<?= $color->id; ?>]"><?= h($color->color); ?></label>
-                  <?php } endforeach ?>
-                    <buttton type="button" name="color-button" class="btn" onclick="location.href='color.php'">カラー編集</button>
+                    <?php foreach($colors as $color):
+                      if (!(empty($color->color))) { ?>
+                      <div class="list">
+                        <input class="form-text color" name="color[<?= $color->id; ?>]" id="color[<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>">
+                        <label class="label" for="color[<?= $color->id; ?>]"><?= h($color->color); ?></label>
+                      </div>
+                    <?php } endforeach ?>
                   </div>
+                  <buttton type="button" name="color-button" class="btn" onclick="location.href='color.php'">カラー編集</button>
                 </td>
               </tr>
             </tbody>
@@ -109,9 +105,9 @@ $goodsColors = $goodsMod->goods_colors();
         </div>
       </form>
     </div>
-    <!-- 送料・消費税設定 -->
+    <!-- 送料設定 -->
     <div class="container">
-      <h2>送料・消費税設定</h2>
+      <h2>送料設定</h2>
       <form class="setting_form" method="post" action="" onsubmit="return validateFormSetting()" name="settingForm">
         <div class="setting">
         <table>
@@ -125,17 +121,6 @@ $goodsColors = $goodsMod->goods_colors();
                     <input class="form-text setting" type="text" name="postage" value="<?= isset($postage) ? h($postage): ''; ?>">円
                   </p>
                   <p class="err-txt" id="err-postage"></p>
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  <label for="tax">消費税</label>
-                </th>
-                <td>
-                  <p class="price">
-                    <input class="form-text setting" type="text" name="tax" value="<?= isset($rate) ? h($rate * 100): ''; ?>">％
-                  </p>
-                  <p class="err-txt" id="err-tax"></p>
                 </td>
               </tr>
             </tbody>
@@ -173,7 +158,7 @@ $goodsColors = $goodsMod->goods_colors();
                   <tr>
                     <th>商品名</th>
                     <td>
-                      <p><input class="form-text" name="goods_name[<?= $id; ?>]" type="text" value="<?= h($item->goods_name); ?>"></p>
+                      <p><input class="form-text" name="goods_name[<?= $id; ?>]" type="text" value="<?= h($item->name); ?>"></p>
                       <input class="id" name="id" type="hidden" value="<?= $id; ?>">
                     </td>
                   </tr>
@@ -186,32 +171,36 @@ $goodsColors = $goodsMod->goods_colors();
                   <tr>
                     <th>サイズ</th>
                     <td>
-                      <p class="size">
-                      <?php foreach($sizes as $size):
-                        if (!(empty($size->size))) { ?>
-                        <input class="form-text size" name="size[<?= $id; ?>][]" id="size[<?= $id; ?>][<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>"
-                        <?php foreach($goodsSizes as $gSize):
-                          if ($id == $gSize->goods_id && $size->size == $gSize->size && $gSize->delflag == '0') { ?> checked
-                        <?php } endforeach ?> >
-                        <label class="label" for="size[<?= $id;?>][<?= $size->id; ?>]"><?= h($size->size); ?></label>
-                      <?php } endforeach ?>
-                      </p>
+                      <div class="size">
+                        <?php foreach($sizes as $size):
+                          if (!(empty($size->size))) { ?>
+                          <div class="size-list">
+                            <input class="form-text size" name="size[<?= $id; ?>][]" id="size[<?= $id; ?>][<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>"
+                            <?php foreach($goodsSizes as $gSize):
+                              if ($id == $gSize->goods_id && $size->size == $gSize->size && $gSize->delflag == '0') { ?> checked
+                            <?php } endforeach ?> >
+                            <label class="label" for="size[<?= $id;?>][<?= $size->id; ?>]"><?= h($size->size); ?></label>
+                          </div>
+                        <?php } endforeach ?>
+                      </div>
                     </td>
                   </tr>
                   <tr>
                   <tr>
                     <th>カラー</th>
                     <td>
-                      <p class="color">
-                      <?php foreach($colors as $color):
-                        if (!(empty($color->color))) { ?>
-                        <input class="form-text color" name="color[<?= $id; ?>][]" id="color[<?= $id; ?>][<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>"
-                        <?php foreach($goodsColors as $gColor):
-                          if ($id == $gColor->goods_id && $color->color == $gColor->color && $gColor->delflag == '0') { ?> checked
-                        <?php } endforeach ?> >
-                        <label class="label" for="color[<?= $id; ?>][<?= $color->id; ?>]"><?= h($color->color); ?></label>
+                      <div class="color">
+                        <?php foreach($colors as $color):
+                          if (!(empty($color->color))) { ?>
+                          <div class="color-list">
+                            <input class="form-text color" name="color[<?= $id; ?>][]" id="color[<?= $id; ?>][<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>"
+                            <?php foreach($goodsColors as $gColor):
+                            if ($id == $gColor->goods_id && $color->color == $gColor->color && $gColor->delflag == '0') { ?> checked
+                            <?php } endforeach ?> >
+                            <label class="label" for="color[<?= $id; ?>][<?= $color->id; ?>]"><?= h($color->color); ?></label>
+                          </div>
                         <?php } endforeach ?>
-                      </p>
+                      </div>
                     </td>
                   </tr>
                     <th>

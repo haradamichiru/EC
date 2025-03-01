@@ -1,35 +1,32 @@
 <?php
 require_once(__DIR__ .'/header.php');
 $detail = $goodsMod->getGoods($_GET['goods_id']);
-$sizeMod = $goodsMod->goods_sizes();
-$colorMod = $goodsMod->goods_colors();
 
-foreach ($sizeMod as $size) {
-  if ($size->goods_id == $_GET['goods_id']) {
+foreach ($goodsMod->goods_sizes() as $size) {
+  if ($size->goods_id == $_GET['goods_id'] && $size->delflag == 0) {
     $goodsSize[] = $size->size;
   }
 }
-foreach ($colorMod as $color) {
-  if ($color->goods_id == $_GET['goods_id']) {
+foreach ($goodsMod->goods_colors() as $color) {
+  if ($color->goods_id == $_GET['goods_id'] && $color->delflag == 0) {
     $goodsColor[] = $color->color;
   }
 }
 
-$app = new Ec\Controller\Goods();
-$app->run();
+$goodsCon->run();
 ?>
   <div class="detail">
     <div div class="item__show">
       <div class="item_img">
         <img src="<?= !(empty($detail->image)) ? './image/'.h($detail->image) : './asset/img/noimage.png'; ?>">
       </div>
-      <form method="post" action="">
+      <form method="get" action="">
         <section class="item_detail">
           <h1><?= h($detail->name); ?></h1>
           <div class="detail_price tax_in">
-            <span class="price">￥<?= number_format($detail->price * (RATE + 1)); ?></span>
+            <span class="price">￥<?= number_format($detail->price * (TAX_RATE + 1)); ?></span>
             <input type="hidden" name="price" value="<?= h($detail->price); ?>">
-            <span class="tax">（内税￥<?= number_format($detail->price * RATE); ?>）</span>
+            <span class="tax">（内税￥<?= number_format($detail->price * TAX_RATE); ?>）</span>
           </div>
           <div class="specification">
             <table>

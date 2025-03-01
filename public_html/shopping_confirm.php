@@ -63,14 +63,14 @@ $app->run();
                         </tr>
                         <tr>
                           <th>送料</th>
-                          <td>￥<?= h(POSTAGE); ?></td>
+                          <td>￥<?= h($postage); ?></td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                     <p class="tax_in">
-                      <span class="price">￥<?= number_format($_SESSION['total_price'] * (1 + RATE)); ?></span>
-                      <span class="tax">(内税￥<?= number_format($_SESSION['total_price'] * RATE); ?>)</span>
+                      <span class="price">￥<?= number_format($_SESSION['total_price'] * (1 + TAX_RATE)); ?></span>
+                      <span class="tax">(内税￥<?= number_format($_SESSION['total_price'] * TAX_RATE); ?>)</span>
                     </p>
                   </div>
               </section>

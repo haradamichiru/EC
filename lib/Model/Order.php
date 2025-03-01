@@ -1,9 +1,8 @@
 <?php
 namespace Ec\Model;
 class Order extends \Ec\Model {
-
   public function find($id) {
-    $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id;");
+    $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
     $stmt->bindValue('id',$id);
     $stmt->execute();
     $stmt->setFetchMode(\PDO::FETCH_CLASS, 'stdClass');
@@ -13,53 +12,54 @@ class Order extends \Ec\Model {
 
   // 新規注文
   public function order($values) {
-    $stmt = $this->db->prepare("INSERT INTO orders (number, postage, tax, name, kana, email, post_number, address, tel, pay, created, modified) VALUES (:number, :postage, :tax, :name, :kana, :email, :post_number, :address, :tel, :pay, now(), now())");
+    $stmt = $this->db->prepare("INSERT INTO orders (number, postage, tax_rate, name, kana, email, post_number, address, tel, pay, created, modified) VALUES (:number, :postage, :tax_rate, :name, :kana, :email, :post_number, :address, :tel, :pay, now(), now())");
     $res = $stmt->execute([
       ':number' => $values['number'],
       ':postage' => $values['postage'],
-      ':tax' => $values['tax'],
+      ':tax_rate' => $values['tax_rate'],
       ':name' => $values['name'],
       ':kana' => $values['kana'],
       ':email' => $values['email'],
-      ':post_number' => $values['postNum'],
+      ':post_number' => $values['post-number'],
       ':address' => $values['address'],
       ':tel' => $values['tel'],
       ':pay' => $values['pay'],
     ]);
   }
+  // 新規注文時に注文された商品のサイズとカラーをそれぞれのDBに追加
   public function orderGoods($values) {
     $stmt = $this->db->prepare("INSERT INTO order_goods (order_number, goods_id, price, count, size, color, created, modified) VALUES (:order_number, :goods_id, :price, :count, :size, :color, now(), now())");
     if (empty($values['size'])) {
-      if (empty($values['color'])) {
+      if (empty($values['color'])) { // サイズ、カラーどちらも連携されていない場合
         $res = $stmt->execute([
           ':order_number' => $values['order_number'],
           ':goods_id' => $values['goods_id'],
           ':price' => $values['price'],
           ':count' => $values['count'],
-          ':size' => '',
-          ':color' => '',
+          ':size' => '', // サイズを空でDBに追加
+          ':color' => '', // カラーを空でDBに追加
         ]);
-      } else {
+      } else { // サイズが連携なし、カラーが連携されている場合
         $res = $stmt->execute([
           ':order_number' => $values['order_number'],
           ':goods_id' => $values['goods_id'],
           ':price' => $values['price'],
           ':count' => $values['count'],
-          ':size' => '',
+          ':size' => '', // サイズを空でDBに追加
           ':color' => $values['color'],
         ]);
       }
     } else {
-      if (empty($values['color'])) {
+      if (empty($values['color'])) { // サイズが連携あり、カラーが連携されていない場合
         $res = $stmt->execute([
           ':order_number' => $values['order_number'],
           ':goods_id' => $values['goods_id'],
           ':price' => $values['price'],
           ':count' => $values['count'],
           ':size' => $values['size'],
-          ':color' => '',
+          ':color' => '', // カラーを空でDBに追加
         ]);
-      } else {
+      } else { // サイズ、カラーどちらも連携されている場合
         $res = $stmt->execute([
           ':order_number' => $values['order_number'],
           ':goods_id' => $values['goods_id'],
@@ -73,16 +73,16 @@ class Order extends \Ec\Model {
   }
 
   // 注文商品一覧
-  public function orders() {
+  public function ordersGoods() {
     $stmt = $this->db->query("SELECT * FROM order_goods");
     return $stmt->fetchAll(\PDO::FETCH_OBJ);
   }
 
-  // 注文商品一覧
-  // public function ordersGoods() {
-  //   $stmt = $this->db->query("SELECT * FROM order_goods");
-  //   return $stmt->fetchAll(\PDO::FETCH_OBJ);
-  // }
+  // 注文一覧
+  public function orders() {
+    $stmt = $this->db->query("SELECT * FROM orders");
+    return $stmt->fetchAll(\PDO::FETCH_OBJ);
+  }
 
   // 注文追加
   public function addGoods() {
@@ -99,7 +99,7 @@ class Order extends \Ec\Model {
       ':email' => $values['email'],
       ':name' => $values['name'],
       ':kana' => $values['kana'],
-      ':post_number' => $values['postNum'],
+      ':post_number' => $values['post-number'],
       ':address' => $values['address'],
       ':tel' => $values['tel'],
       ':pay' => $values['pay'],
@@ -108,24 +108,38 @@ class Order extends \Ec\Model {
 
   // 注文商品更新
   public function orderGoodsUpdate($values) {
-    var_dump($values);
-    exit();
-    // $stmt = $this->db->prepare("UPDATE order_goods SET goods_id = :goods_id, price = :price, count = :count, size = :size, color = :color, modified = now() WHERE order_number = :number");
-    // $stmt->execute([
-    //   ':number' => $values['number'],
-    //   ':goods_id' => $values['goods_id'],
-    //   ':price' => $values['price'],
-    //   ':count' => $values['count'],
-    //   ':size' => $values['size'],
-    //   ':color' => $values['color'],
-    // ]);
+    $key = $values['key'];
+    // 商品数がNULLだった場合に0としてDBに保存
+    if (isset($values[0]['count'][$key])) {
+      $count = $values[0]['count'][$key];
+    } else {
+      $count = '0';
+    }
+    // 商品サイズがNULLだった場合に空白としてDBに保存
+    if (isset($values[0]['size'][$key])) {
+      $size = $values[0]['size'][$key];
+    } else {
+      $size = '';
+    }
+    // 商品カラーがNULLだった場合に空白としてDBに保存
+    if (isset($values[0]['color'][$key])) {
+      $color = $values[0]['color'][$key];
+    } else {
+      $color = '';
+    }
+
+    $stmt = $this->db->prepare("UPDATE order_goods SET goods_id = :goods_id, count = :count, size = :size, color = :color, modified = now() WHERE id = :id");
+    $stmt->execute([
+      ':id' => $values['id'],
+      ':goods_id' => $values['goods_id'],
+      ':count' => $count,
+      ':size' => $size,
+      ':color' => $color,
+    ]);
   }
 
   // 注文商品追加
   public function orderGoodsCreate($values) {
-    var_dump($values);
-    exit();
-
     $stmt = $this->db->prepare("INSERT INTO order_goods (order_number, goods_id, price, count, size, color, created, modified) VALUES (:number, :goods_id, :price, :count, :size, :color, now(), now())");
     $res = $stmt->execute([
       ':number' => $values['number'],

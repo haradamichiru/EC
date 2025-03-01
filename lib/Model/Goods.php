@@ -3,11 +3,9 @@ namespace Ec\Model;
 class Goods extends \Ec\Model {
   // 商品追加
   public function create($values) {
-    // $size_data = serialize($values['size']);
-    // $color_data = serialize($values['color']);
-    $stmt = $this->db->prepare("INSERT INTO goods (goods_name,price,explanation,image,created,modified) VALUES (:goods_name,:price,:explanation,:image,now(),now())");
+    $stmt = $this->db->prepare("INSERT INTO goods (name,price,explanation,image,created,modified) VALUES (:name,:price,:explanation,:image,now(),now())");
     $res = $stmt->execute([
-      ':goods_name' => $values['goods_name'],
+      ':name' => $values['goods_name'],
       ':price' => $values['price'],
       ':explanation' => $values['explanation'],
       ':image' => $values['image'],
@@ -16,7 +14,6 @@ class Goods extends \Ec\Model {
 
   // サイズ追加
   public function sizeCreate($values) {
-    var_dump($values);
     $stmt = $this->db->prepare("INSERT INTO sizes (id,size,created,modified) VALUES (:id,:size,now(),now())");
     $res = $stmt->execute([
       ':id' => $values['id'],
@@ -35,8 +32,6 @@ class Goods extends \Ec\Model {
 
   // カラー追加
   public function colorCreate($values) {
-    // var_dump($values);
-    // exit();
     $stmt = $this->db->prepare("INSERT INTO colors (id,color,created,modified) VALUES (:id,:color,now(),now())");
     $res = $stmt->execute([
       ':id' => $values['id'],
@@ -80,14 +75,15 @@ class Goods extends \Ec\Model {
     return $user;
   }
 
-  public function find($id) {
-    $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id;");
-    $stmt->bindValue('id',$id);
-    $stmt->execute();
-    $stmt->setFetchMode(\PDO::FETCH_CLASS, 'stdClass');
-    $user = $stmt->fetch();
-    return $user;
-  }
+  // 商品検索
+  // public function find($id) {
+  //   $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id;");
+  //   $stmt->bindValue('id',$id);
+  //   $stmt->execute();
+  //   $stmt->setFetchMode(\PDO::FETCH_CLASS, 'stdClass');
+  //   $user = $stmt->fetch();
+  //   return $user;
+  // }
 
   // 商品一覧
   public function goods() {
@@ -156,7 +152,7 @@ class Goods extends \Ec\Model {
 
   // 商品更新
   public function goodsUpdate($values) {
-    $stmt = $this->db->prepare("UPDATE goods SET goods_name = :goods_name, price = :price, explanation = :explanation, image = :image, modified = now() WHERE id = :id");
+    $stmt = $this->db->prepare("UPDATE goods SET name = :goods_name, price = :price, explanation = :explanation, image = :image, modified = now() WHERE id = :id");
     $stmt->execute([
       ':id' => $values['id'],
       ':goods_name' => $values['goods_name'],
@@ -196,7 +192,6 @@ class Goods extends \Ec\Model {
 
   // 商品カラー更新
   public function goodsColorUpdate($values) {
-    var_dump($values);
     $stmt = $this->db->prepare("UPDATE goods_color SET color = :color, delflag = :delflag, modified = now() WHERE id = :id");
     $stmt->execute([
       ':id' => $values['id'],
@@ -208,11 +203,10 @@ class Goods extends \Ec\Model {
 
   // 設定値更新
   public function settingUpdate($values) {
-    $stmt = $this->db->prepare("UPDATE users SET postage = :postage, tax = :tax, modified = now() WHERE loginid = :loginid");
+    $stmt = $this->db->prepare("UPDATE users SET postage = :postage, modified = now() WHERE loginid = :loginid");
     $stmt->execute([
       ':loginid' => $values['id'],
       ':postage' => $values['postage'],
-      ':tax' => $values['tax'],
     ]);
   }
 

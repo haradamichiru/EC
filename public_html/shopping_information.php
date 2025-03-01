@@ -1,7 +1,15 @@
 <?php
 require_once(__DIR__ .'/header.php');
-$app = new Ec\Controller\Goods();
-$app->run();
+$orderCon->run();
+$orders = $orderMod->orders();
+$postage = $goodsMod->settings()[0]->postage;
+
+if ($orders == array()) {
+  $num = 0;
+} else {
+  $num = array_key_last($orders)+2;
+}
+
 ?>
 <section class="information">
   <h1 class="page_title">お客様情報入力</h1>
@@ -9,7 +17,7 @@ $app->run();
       <form method="post" class="h-adr" action="" id="form" onsubmit="return validateForm()" name="customerInformation">
         <div class="form-contents">
           <label class="form">メールアドレス（必須）</label>
-          <input class="form-text" type="email" name="mail" value="<?= isset($_SESSION['mail']) ? h($_SESSION['mail']): ''; ?>" placeholder="abc@vue.jp">
+          <input class="form-text" type="email" name="mail" value="<?= isset($_SESSION['email']) ? h($_SESSION['email']): ''; ?>" placeholder="abc@vue.jp">
           <p class="err-txt" id="err-mail"></p>
           <p>※入力誤りにご注意ください。メールアドレスに誤りがある場合、注文完了メールが受け取れなくなります。</p>
         </div>
@@ -28,9 +36,9 @@ $app->run();
           <span class="p-country-name" style="display:none;">Japan</span>
           <p class="postnum">
             〒
-            <input class="form-text p-postal-code" type="text" name="post-number1" value="<?= isset($_SESSION['post_number1']) ? h($_SESSION['post_number1']): ''; ?>" placeholder="160">
+            <input class="form-text p-postal-code" type="text" name="post-number1" value="<?= isset($_SESSION['post-number1']) ? h($_SESSION['post-number1']): ''; ?>" placeholder="160">
             -
-            <input class="form-text p-postal-code" type="text" name="post-number2" value="<?= isset($_SESSION['post_number2']) ? h($_SESSION['post_number2']): ''; ?>" placeholder="0022">
+            <input class="form-text p-postal-code" type="text" name="post-number2" value="<?= isset($_SESSION['post-number2']) ? h($_SESSION['post-number2']): ''; ?>" placeholder="0022">
           </p>
           <p class="err-txt" id="err-postnum"></p>
         </div>
@@ -59,7 +67,7 @@ $app->run();
                     <tr>
                       <th><label for="credit_number">カード番号</label></th>
                       <td>
-                        <input id="number" class="form-text" type="text" name="credit_number" value="">
+                        <input id="credit_number" class="form-text" type="text" name="credit_number" value="">
                         <p class="err-txt" id="err-number"></p>
                       </td>
                     </tr>
@@ -114,7 +122,13 @@ $app->run();
             </div>
           </div>
           <div class="next">
-            <input class="btn" type="submit" name="customer" value="次に進む">
+            <input class="btn" type="submit" name="next" id="next" value="次に進む" onclick="customerInformation.key.value = 'next'">
+            <p class="buy" id="complete"></p>
+            <input class="btn complete" type="submit" name="buy" id="buy" value="購入する" onclick="customerInformation.key.value = 'buy'">
+            <input name="key" type="hidden" value="">
+            <input type="hidden" name="number" value="<?= h(date('Ymd'). $num); ?>">
+            <input type="hidden" name="postage" value="<?= h($postage); ?>">
+            <input type="hidden" name="tax_rate" value="<?= h(TAX_RATE); ?>">
             <a class="back" href="<?= SITE_URL; ?>/shopping_all.php">ショッピングカートに戻る</a>
           </div>
         </div>

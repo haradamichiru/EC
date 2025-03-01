@@ -297,14 +297,26 @@ th,td {
   align-items: center;
 }
 
+.size-list, .color-list {
+  display: flex;
+  align-items: center;
+}
+
 .size, .color {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
+  width: 70%;
 }
 
 .size .form-text, .color .form-text {
   width: auto;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  padding: 5px;
 }
 
 .label {
@@ -370,9 +382,19 @@ th,td {
 .back {
   color: #ffffff;
   text-decoration: none;
+  align-content: center;
 }
 
 /* 発送管理 */
+.result {
+  font-size: 2.5rem;
+  padding: 20px;
+}
+
+.order_list {
+  width: 100%;
+}
+
 .next {
   font-size: 2.5rem;
   display: flex;
@@ -452,132 +474,13 @@ th,td {
   text-align: center;
 }
 
-@media (max-width: 1100px){
-  th {
-    width: 20%;
-  }
-  .goods {
-    flex-direction: column;
-  }
-  .goods_image {
-    margin: 10px;
-  }
-  .delete {
-    margin-top: 0px;
-  }
-  .goods_edit .btn {
-    margin-top: 20px;
-    width: 100%;
-  }
-  /* 商品管理 */
-  .size, .color {
-    flex-direction: column;
-  }
-  /* 発送管理 */
-  .order_customer, .order_content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+/* キャンセル */
+.customer {
+  width: 100%;
+  margin: 10px;
 }
 
-@media (max-width: 800px){
-  html {
-    font-size: 1.4rem;
-  }
-  p {
-    margin-bottom: 0px;
-  }
-  h1 {
-    font-size: 1.8rem;
-  }
-  h2 {
-    font-size: 1.8rem;
-  }
-  .order_title, th {
-    font-size: 1.6rem;
-  }
-  /* ヘッダー */
-  .header img {
-    width: 50px;
-  }
-  .header_title {
-    display: flex;
-    flex-direction: column;
-  }
-  .header__inner nav ul li {
-    font-size: 1.5rem;
-  }
-  /* 運営者ログイン */
-  .login_id, .login_password {
-    flex-direction: column;
-  }
-    /* 商品管理 */
-  .container {
-    margin: 20px;
-    padding: 15px;
-  }
-  .container_form {
-    flex-direction: column;
-    align-items: center;
-  }
-  .addition_detail table {
-    width: 100%;
-  }
-  .goods_image {
-    margin: 0px;
-  }
-  .entry {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .goods {
-    flex-direction: column;
-  }
-  .goods_image {
-    margin: 10px;
-  }
-  .delete {
-    margin-top: 0px;
-  }
-  .goods_edit .btn {
-    margin-top: 20px;
-    width: 100%;
-  }
-  /* 発送管理 */
-  .order_list {
-    width: 90%;
-  }
-  .order_detail {
-    flex-direction: column;
-  }
-  .order_state {
-    margin-left: 0px;
-  }
-  .order_state th {
-    padding: 0px;
-  }
-  .content th {
-    font-size: 1.4rem;
-  }
-  .order_edit .btn {
-    margin-top: 20px;
-    width: 100%;
-  }
-  .content_items th, .content_items td {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  .content_items th {
-    border-top: solid 1px #323232;
-    padding: 10px;
-  }
-  .content_items th:last-child {
-    border-top: none;
-  }
-  .delete-btn {
-    display: inline-table;
-  }
+.content {
+  width: 100%;
+  margin: 10px;
 }

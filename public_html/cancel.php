@@ -1,26 +1,22 @@
 <?php
 require_once(__DIR__ .'/header_admin.php');
-$app = new Ec\Controller\Order();
-$app->run();
-$goodsMod = new Ec\Model\Goods();
-$OrdersMod = new Ec\Model\Order();
-$orders = $OrdersMod->orders();
-$goods = $goodsMod->goods();
+$GoodsMod = new Ec\Model\Goods();
+$OrderMod = new Ec\Model\Order();
+$goods_data = $GoodsMod->goods();
+$OrderCon = new Ec\Controller\Order();
+$orders_data = $OrderMod->orders();
+$order_goods = $OrderMod->ordersGoods();
+$OrderCon->run();
 
-for ($i = 0; $i < count($orders); $i++) {
-  if ($orders[$i]->number == $_SESSION['number']) {
-    $order = $orders[$i];
+foreach ($orders_data as $key => $orders) {
+  if ($orders->number == $_SESSION['number']) {
+    $order = $orders;
   }
 }
-
-$item = array_filter(unserialize($order->goods), 'myFilter');
-
-for ($i = 0 ; $i < count($goods); $i++) {
-  $color[$i] = array_filter(unserialize($goods[$i]->color), 'myFilter');
-  $size[$i] = array_filter(unserialize($goods[$i]->size), 'myFilter');
-}
-function myFilter($val) {
-  return !($val === "");
+foreach ($order_goods as $goods) {
+  if ($order->number == $goods->order_number) {
+    $orderG[] = $goods;
+  }
 }
 ?>
     <div class="container">
@@ -28,35 +24,35 @@ function myFilter($val) {
         <form class="container_form" method="post" action="">
           <div class="order_list">
             <div class="order">
-              <h3>注文番号：<?= h($number); ?></h3>
+              <h3>注文番号：<?= h($order->number); ?></h3>
               <div class="order_detail">
-                <div class="order_customer">
+                <div class="customer">
                   <table>
                     <tbody>
                       <tr>
                         <th>ご注文者情報</th>
-                        <td><?= h($order->customers_name); ?></td>
+                        <td><?= h($order->name); ?></td>
                       </tr>
                       <tr>
                         <th>フリガナ</th>
-                        <td><?= h($order->customers_kana); ?></td>
+                        <td><?= h($order->kana); ?></td>
                       </tr>
                       <tr>
                         <th>住所</th>
-                        <td><?= h($order->customers_address); ?></td>
+                        <td><?= h($order->address); ?></td>
                       </tr>
                       <tr>
                         <th>メールアドレス</th>
-                        <td><?= h($order->customers_email); ?></td>
+                        <td><?= h($order->email); ?></td>
                       </tr>
                       <tr>
                         <th>電話番号</th>
-                        <td><?= h($order->customers_tel); ?></td>
+                        <td><?= h($order->tel); ?></td>
                       </tr>
                       <tr>
                         <th>支払方法</th>
                         <td>
-                          <?php $pay = $order->customers_pay;
+                          <?php $pay = $order->pay;
                           if ($pay == "credit") { ?>クレジットカード
                           <?php } if ($pay == "transfer") { ?>銀行振込
                           <?php } if ($pay == "cash") { ?>代引 <?php } ?>
@@ -65,37 +61,42 @@ function myFilter($val) {
                     </tbody>
                   </table>
                 </div>
-                <div class="order_content">
+                <div class="content">
                   <p class="order_title">注文内容</p>
                   <table class="content_items">
                     <tbody>
-                      <?php for ($i = 0; $i < count($item); $i++): ?>
                       <tr>
+                        <?php
+                          foreach ($orderG as $goods):
+                            if (!($goods->count == 0)): ?>
                         <th>
-                          <?php foreach($goods as $g): ?>
-                            <?php if ($order->id == $g->id) { ?>
-                              <?= h($g->goods_name); ?>
-                            <?php } ?>
-                          <?php endforeach; ?>
+                          <?php
+                            foreach ($goods_data as $g):
+                              if ($g->id == $goods->goods_id): ?>
+                            <?= h($g->name); ?>
+                          <?php
+                              endif;
+                            endforeach; ?>
                         </th>
                         <td>
-                          <?= $count = h($item[$i]['count'][0]); ?>個
-                        </td>
-                        <td>color:
-                          <?= h($item[$i]['color']); ?>
+                          <?= h($goods->count); ?>個
                         </td>
                         <td>
-                          <?php if (!empty($item[$i]['size'])) { ?>
-                          size:
-                            <?= h($item[$i]['size']); ?> <?php } ?>
+                          <?php if (!empty($goods->color)): ?>
+                            <?= h($goods->color); ?>
+                          <?php endif; ?>
                         </td>
                         <td>
-                          ￥<?= number_format($price = $item[$i]['price']) ?>／個
+                          <?php if (isset($goods->size)): ?>
+                            <?= h($goods->size); ?>
+                          <?php endif; ?>
+                        </td>
+                        <td>
+                          ￥<?= number_format($goods->price) ?>／個
                         </td>
                       </tr>
-                    <?php
-                      $total[] = $price * $count;
-                      endfor; ?>
+                      <?php $total[] = $goods->price * $goods->count; ?>
+                      <?php endif; endforeach; ?>
                     </tbody>
                   </table>
                   <div class="order_state">

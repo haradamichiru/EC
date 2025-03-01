@@ -6,12 +6,13 @@ $goods_data = $GoodsMod->goods();
 $OrderCon = new Ec\Controller\Order();
 $OrderCon->run();
 $orders = $OrderCon->search();
-$order_goods = $OrderMod->orders();
+$order_goods = $OrderMod->ordersGoods();
 $sizes = $goodsMod->sizes();
 $goodsSizes = $goodsMod->goods_sizes();
 $colors = $goodsMod->colors();
 $goodsColors = $goodsMod->goods_colors();
 
+// 検索結果を５件ずつ表示
 if (isset($orders)) {
   define('MAX','5');
   $orders_num = count($orders);
@@ -24,23 +25,6 @@ if (isset($orders)) {
   $start_no = ($now - 1) * MAX;
   $orders_data = array_slice($orders, $start_no, MAX, true);
 }
-// var_dump($goodsColors);
-
-// for ($i = 0; $i < count($goods_data); $i++) {
-//   $goods_id[$i] = $goods_data[$i]->id;
-//   $color[$i] = unserialize($goods_data[$i]->color);
-//   $size[$i] = unserialize($goods_data[$i]->size);
-// }
-// for ($i = 0; $i < count($orders); $i++) {
-//   $item[$i] = array_values(array_filter(unserialize($orders[$i]->goods), 'myFilter'));
-// }
-// function myFilter($val) {
-//   return !($val === "");
-// }
-
-// $arrayColor = array_combine($goods_id, $color);
-// $arraySize = array_combine($goods_id, $size);
-
 ?>
 
     <!-- 検索 -->
@@ -107,19 +91,19 @@ if (isset($orders)) {
     <!-- 注文情報 -->
     <section class="container">
       <h2>発送管理</h2>
-      <form class="container_form" method="post" action="">
+      <form class="container_form" method="post" action="" onsubmit="return validateFormOrderGoods()" name="orders">
           <div class="order_list">
+          <?php if (empty($orders_data)) { ?>
+            <p class="result">検索結果は0件です。</p>
+          <?php } else { ?>
           <!-- オーダー繰り返しここから -->
           <?php foreach($orders_data as $key => $order):
             $number = $order->number;
-            $status = $order->status;
             $pay = $order->pay;
-            $postage = $order->postage;
-            $rate = $order->tax / 100;
           ?>
-            <div class="order" id=<?= h($key); ?>>
+            <div class="order" id="order[<?= h($key); ?>]">
               <h3>注文番号：<?= h($number); ?></h3>
-              <input type="hidden" name="number[<?= $key ?>]" value="<?= $number ?>">
+              <input type="hidden" name="number[<?= $key ?>]" value="<?= $number; ?>">
               <div class="order_detail">
                 <div class="order_customer">
                   <table>
@@ -141,7 +125,7 @@ if (isset($orders)) {
                       <tr>
                         <th>郵便番号</th>
                         <td>
-                          <input class="form-text" type="text" name="postNum[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->postNum) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->postNum): h($order->post_number); ?>" ?>
+                          <input class="form-text" type="text" name="post-number[<?= $key; ?>]" value="<?= isset($OrderCon->getValues()->postNum) && ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->postNum): h($order->post_number); ?>" ?>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('postNum')): ''; ?></p>
                         </td>
                       </tr>
@@ -168,19 +152,27 @@ if (isset($orders)) {
                       <tr>
                         <th>支払方法</th>
                         <td>
-                          <?php
-                            if (isset($OrderCon->getValues()->pay)) {
-                              if ($OrderCon->getValues()->pay == "credit") {
-                                $valuesPay = 'credit';
-                              }
-                            }
-                          ?>
                           <p class="small">※銀行振込→クレジット、代引→クレジットへの変更はできません。</p>
                           <select class="select" name="pay[<?= $key; ?>]">
-                            <option value="credit" <?php if ($valuesPay == "credit" || $pay == "credit") { ?> selected <?php } ?>>クレジットカード</option>
-                            <option value="transfer" <?php if (!($valuesPay == 'credit') && $pay == "transfer") { ?> selected <?php } ?>>銀行振込</option>
-                            <option value="cash" <?php if (!($valuesPay == 'credit') && $pay == "cash") { ?> selected <?php } ?>>代引</option>
+                            <option value="credit"
+                              <?php if (isset($OrderCon->getValues()->pay)) { if($OrderCon->getValues()->pay == 'credit' && $key == $OrderCon->getValues()->id) { ?> selected
+                              <?php }} elseif ($pay == 'credit') { ?> selected
+                              <?php } ?>>クレジットカード
+                            </option>
+                            <option value="transfer"
+                              <?php if (isset($OrderCon->getValues()->pay)) { if ($OrderCon->getValues()->pay == 'transfer' && $key == $OrderCon->getValues()->id) { ?> selected
+                              <?php }} elseif ($pay == 'transfer') { ?> selected
+                              <?php } ?>>銀行振込
+                            </option>
+                            <option value="cash"
+                              <?php if (isset($OrderCon->getValues()->pay)) { if ($OrderCon->getValues()->pay == 'cash' && $key == $OrderCon->getValues()->id) { ?> selected
+                              <?php }} elseif ($pay == 'cash') { ?> selected
+                              <?php } ?>>代引
+                            </option>
                           </select>
+                          <?php if (!($pay == 'credit')) { ?>
+                            <input type="hidden" name="credit[<?= $key; ?>]" value="1">
+                          <?php } ?>
                           <p class="err-txt"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('pay')): ''; ?></p>
                         </td>
                       </tr>
@@ -193,13 +185,15 @@ if (isset($orders)) {
                     <tbody>
                     <!-- オーダーされたグッズ繰り返しここから -->
                     <?php foreach($order_goods as $goods):
-                      if ($number == $goods->order_number) {
+                      if (!($order->count >= '0')) {
+                      if ($number == $goods->order_number && $goods->count >= 1) {
                         foreach($goods_data as $gd):
                           if ($goods->goods_id == $gd->id) { ?>
                       <tr>
                         <th>
                             <?= h($gd->name); ?>
-                            <input type="hidden" name="id[<?= $key; ?>][]" value="<?= $goods->goods_id; ?>">
+                            <input type="hidden" name="id[<?= $key; ?>][]" value="<?= $goods->id; ?>">
+                            <input type="hidden" name="goods_id[<?= $key; ?>][]" value="<?= $goods->goods_id; ?>">
                         </th>
                         <td>
                           <input class="form-text number" type="text" name="count[<?= $key; ?>][]" value="<?= $goods->count; ?>">個
@@ -246,26 +240,27 @@ if (isset($orders)) {
                         </td>
                       </tr>
                       <?php
-                        $total[] = $goods->price * $goods->count;
-                        } endforeach; } endforeach;
-                        // var_dump(array_sum($total));
+                        $total[$key][] = $goods->price * $goods->count;
+                        } endforeach; }} endforeach;
                       ?>
                       <!-- オーダーされたグッズここまで -->
                       <tr class="add-order">
                         <th>
-                          <select class="goods-name select" name="id[<?= $key; ?>][]">
+                          <select class="goods-name select" name="goods_id[<?= $key; ?>][]">
                             <option value="" selected>
                               商品を選択してください
                             </option>
                             <?php foreach($goods_data as $gd): ?>
-                            <option value="<?= h($gd->id); ?>">
+                            <option value="<?= h($gd->id); ?>"
+                              <?php if ($key == $OrderCon->getValues()->id && $gd->id == $OrderCon->getValues()->goods) { ?> selected <?php }?>
+                            >
                               <?= h($gd->name); ?>
                             </option>
                             <?php  endforeach; ?>
                           </select>
                         </th>
                         <td>
-                          <input class="form-text number" type="text" name="count[<?= $key; ?>][]" value="" placeholder="1">個
+                          <input class="form-text select-number" type="text" name="count[<?= $key; ?>][]" value="<?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getValues()->count): ''; ?>" placeholder="1">個
                         </td>
                         <td>
                           color:
@@ -273,11 +268,13 @@ if (isset($orders)) {
                               <option value="">
                                 カラーを選択してください
                               </option>
-                              <?php
-                                foreach($goodsColors as $gc):
-                                  if (!empty($gc->color)) {
-                              ?>
-                              <option class="color <?= h($gc->goods_id); ?>" value="<?= h($gc->color); ?>">
+                                <?php
+                                  foreach($goodsColors as $gc):
+                                    if (!empty($gc->color)) {
+                                ?>
+                              <option class="color <?= h($gc->goods_id); ?>" value="<?= h($gc->color); ?>"
+                                <?php if ($key == $OrderCon->getValues()->id && $gc->color == $OrderCon->getValues()->color) { ?> selected <?php }?>
+                              >
                                 <?= h($gc->color); ?>
                               </option>
                               <?php } endforeach; ?>
@@ -329,27 +326,33 @@ if (isset($orders)) {
                           <td><?= h($order->modified); ?></td>
                         </tr>
                         <tr>
+                          <th>商品合計金額：</th>
+                          <td>
+                            ￥<?= number_format(array_sum($total[$key])); ?>
+                          </td>
+                        </tr>
+                        <tr>
                           <th>消費税額：</th>
                           <td>
-                            ￥<?= number_format(array_sum($total) * $rate); ?>
+                            ￥<?= number_format(array_sum($total[$key]) * $order->tax_rate); ?>
                           </td>
                         </tr>
                         <tr>
                           <th>送料：</th>
                           <td>
-                            ￥<?= number_format($postage); ?>
+                            ￥<?= number_format($order->postage); ?>
                           </td>
                         </tr>
                         <tr>
                           <th>合計金額：</th>
-                          <td class="price">￥<?= number_format(array_sum($total) * (1 + $rate) + $postage); ?></td>
+                          <td class="price">￥<?= number_format(array_sum($total[$key]) * (1 + $order->tax_rate) + $order->postage); ?></td>
                         </tr>
                         <tr>
                           <th>発送状態：</th>
                           <td>
                             <select class="select" name="status[<?= $key ?>]">
-                              <option value="0" <?php if ($status == "0") { ?> selected <?php } ?>>発送準備中</option>
-                              <option value="1" <?php if ($status == "1") { ?> selected <?php } ?>>発送完了</option>
+                              <option value="0" <?php if ($order->status == "0") { ?> selected <?php } ?>>発送準備中</option>
+                              <option value="1" <?php if ($order->status == "1") { ?> selected <?php } ?>>発送完了</option>
                             </select>
                           </td>
                         </tr>
@@ -359,10 +362,12 @@ if (isset($orders)) {
                 </div>
               </div>
               <div class="cancel">
-                <p class="err-txt"><?= h($OrderCon->getErrors('color')); ?></p>
-                <p class="err-txt"><?= h($OrderCon->getErrors('size')); ?></p>
-                <input class="btn cancel-btn" type="submit" name="cancel[<?= $key ?>]" value="注文をキャンセルする">
-                <input class="btn update-btn" type="submit" value="更新" name="update[<?= $key; ?>]">
+                <p class="err-txt err-goods"><?= ($key == $OrderCon->getValues()->id) ? h($OrderCon->getErrors('goods')): ''; ?></p>
+                <p class="err-txt err-count"></p>
+                <p class="err-txt err-color"></p>
+                <p class="err-txt err-size"></p>
+                <input class="btn cancel-btn" type="submit" name="cancel[<?= $key; ?>]" value="注文をキャンセルする">
+                <input class="btn update-btn" type="submit" name="update[<?= $key; ?>]" value="更新" >
               </div>
             </div>
           <?php endforeach; ?>
@@ -387,6 +392,7 @@ if (isset($orders)) {
                 <?php } else { ?>＞<?php } ?>
               </div>
             </div>
+            <?php } ?>
           </div>
         </form>
     </section>
