@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>カート内一覧</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=Zen+Old+Mincho&display=swap" rel="stylesheet">
+  <script src="./js/count.js"></script>
+  <link rel="stylesheet" href="./css/shopping_styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header_inner">
+      <div><a href="index.html"><img src="./asset/img/Vue_logo.png"></a></div>
+      <nav>
+        <ul>
+          <li class="menu"><a href="shopping_all.html"><img src="./asset/img/cart.jpg"></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <div class="main">
+    <div class="shopping_cart">
+      <h1 class="page_title">カート内一覧</h1>
+      <form class="cart" method="" action="shopping_information.html">
+        <!-- 商品一覧 -->
+        <div div class="items">
+          <div class="cart_item">
+            <div class="item_img">
+              <img src="./asset/img/a.jpg">
+            </div>
+            <div class="item_number">
+              <h1><p>アクセサリーA</p></h1>
+              <div class="item_price"><span class="price">￥10,000</span>/点</div>
+              <div class="specification">
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>color</th>
+                      <td>シルバー</td>
+                    </tr>
+                    <tr>
+                      <th>size</th>
+                      <td>7号</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="count">
+                <input class="count_number" type="text" value="1">
+                <button class="btn_change" name="change" type="button">変更</button>
+              </div>
+            </div>
+          <div class="subtotal">
+            <p>小計<span class="price">￥10,000</span></p>
+            <button class="delete" name="delete" type="button">削除</button>
+          </div>
+          </div>
+          <div class="cart_item">
+            <div class="item_img">
+              <img src="./asset/img/c.jpg">
+            </div>
+            <div class="item_number">
+              <h1><p>アクセサリーC</p></h1>
+              <div class="item_price"><span class="price">￥5,000</span>/点</div>
+              <div class="specification">
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>color</th>
+                      <td>シルバー</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="count">
+                <input class="count_number" type="text" value="2">
+                <button class="btn_change" name="change" type="button">変更</button>
+              </div>
+            </div>
+            <div class="subtotal">
+              <p>小計<span class="price">￥10,000</span></p>
+              <button class="delete" name="delete" type="button">削除</button>
+            </div>
+          </div>
+          <div class="cart_item">
+            <div class="item_img">
+              <img src="./asset/img/e.jpg">
+            </div>
+            <div class="item_number">
+              <h1><p>アクセサリーE</p></h1>
+              <div class="item_price"><span class="price">￥8,000</span>/点</div>
+              <div class="specification">
+                <table>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <div class="count">
+                <input class="count_number" type="text" value="1">
+                <button class="btn_change" name="change" type="button">変更</button>
+              </div>
+            </div>
+            <div class="subtotal">
+              <p>小計<span class="price">￥8,000</span></p>
+              <button class="delete" name="delete" type="button">削除</button>
+            </div>
+        </div>
+        </div>
+        <!-- 合計 -->
+        <div class="total">
+          <div class="payment">
+            <h2>お支払金額</h2>
+            <div class="total_price">
+              <div class="total_number">
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>商品小計</th>
+                      <td>4点</td>
+                    </tr>
+                    <tr>
+                      <th>送料</th>
+                      <td>￥500</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><span class="price">￥28,500</span></p>
+              </div>
+            </div>
+          <input class="btn" type="submit" value="次に進む">
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="shop">
+      <div class="logo_sns">
+        <div class="logo">
+          <img src="./asset/img/Vue_logo.png">
+        </div>
+        <div class="sns">
+          <li><a href="index.html"><img src="./asset/img/Instagram_Glyph_Gradient.png"></a></li>
+          <li><a href="index.html"><img src="./asset/img/logo-black.png"></a></li>
+        </div>
+      </div>
+      <div class="address">
+        <p>営業時間：10:00～18:00</p>
+        <p>〒123-4567<br>東京都千代田区千代田1-1</p>
+      </div>
+    </div>
+    <div class="map">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1620.3340205433192!2d139.75041769839476!3d35.685175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188c0d02d8064d%3A0xd11a5f0b379e6db7!2z55qH5bGF!5e0!3m2!1sja!2sjp!4v1712989571631!5m2!1sja!2sjp" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</body>
+</html>
+

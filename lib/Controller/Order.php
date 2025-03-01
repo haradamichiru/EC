@@ -102,6 +102,7 @@ class Order extends \Ec\Controller {
   protected function UpdateOrders() {
     $key = array_keys($_POST['update'])['0']; // POSTされた商品を特定するためのキーを変数格納
     $errorMessages = []; //　エラーメッセージをリセット
+
     try {
       $this->validate();
     } catch (\Exception $e) {
@@ -151,7 +152,6 @@ class Order extends \Ec\Controller {
           $goodsId[] = $orders->goods_id;
         }
       }
-
       if (count($ordersGoodsId) >= count(array_filter($_POST['goods_id'][$key]))) { // DBとPOSTの注文番号一致数がPOSTされた数以上の場合
         foreach (array_filter($_POST['goods_id'][$key]) as $i => $orderId) { // POSTされた商品数までループ
           $OrderMod->orderGoodsUpdate([
@@ -175,7 +175,6 @@ class Order extends \Ec\Controller {
         foreach ($_POST['goods_id'][$key] as $i => $orderId) { // POSTされた商品数までループ
           foreach ($ordersGoodsId as $id) { // DBとPOSTの注文番号一致数までループ
             if ($id == $_POST['id'][$key][$i]) { // DB内のidとPOSTされたidが同じだった場合
-              var_dump('bb');
               $OrderMod->orderGoodsUpdate([
                 'id' => $id,
                 'key' => $i,
@@ -197,7 +196,7 @@ class Order extends \Ec\Controller {
           }
         }
       }
-      header('Location: '. SITE_URL . '/order_confirm.php?page_id=' .$_GET['page_id']. '#order[' .$key .']');
+      header('Location: '. SITE_URL . '/order_confirm.php?page_id=' .$_POST['page_id']. '#order[' .$key .']');
       exit();
     }
   }

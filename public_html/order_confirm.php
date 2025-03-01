@@ -25,6 +25,7 @@ if (isset($orders)) {
   $start_no = ($now - 1) * MAX;
   $orders_data = array_slice($orders, $start_no, MAX, true);
 }
+var_dump($now);
 ?>
 
     <!-- 検索 -->
@@ -368,6 +369,7 @@ if (isset($orders)) {
                 <p class="err-txt err-size"></p>
                 <input class="btn cancel-btn" type="submit" name="cancel[<?= $key; ?>]" value="注文をキャンセルする">
                 <input class="btn update-btn" type="submit" name="update[<?= $key; ?>]" value="更新" >
+                <input type="hidden" name="page_id" value="<?= h($now); ?>">
               </div>
             </div>
           <?php endforeach; ?>
