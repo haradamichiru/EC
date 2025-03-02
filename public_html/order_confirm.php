@@ -25,8 +25,7 @@ if (isset($orders)) {
   $start_no = ($now - 1) * MAX;
   $orders_data = array_slice($orders, $start_no, MAX, true);
 }
-var_dump($now);
-?>
+// ?>
 
     <!-- 検索 -->
     <section class="container">
