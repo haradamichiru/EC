@@ -130,7 +130,7 @@ foreach ($order_goods as $goods) {
               </div>
               <div class="cancel">
                 <button type="button" class="btn" onclick="history.back()">戻る</button>
-                <input class="btn" type="submit" value="注文を削除" name="delete">
+                <input class="btn" type="submit" value="注文を削除" name="order_delete">
               </div>
             </div>
           </div>

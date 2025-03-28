@@ -8,6 +8,32 @@ else {
     exit();
   }
 }
+$GoodsMod = new Ec\Model\Goods();
+$OrderMod = new Ec\Model\Order();
+$goodsCon = new Ec\Controller\Goods();
+$OrderCon = new Ec\Controller\Order();
+$goodsCon->run();
+$OrderCon->run();
+
+// 1番初めにエラーとなっている項目を特定
+if (!empty($goodsCon->errorText())) {
+  $errorText = $goodsCon->errorText();
+  if (count($errorText) == 1) {
+    $key = key($errorText);
+  } else {
+    $key = array_key_first($errorText);
+  }
+}
+
+if (!empty($OrderCon->errorText())) {
+  $errorText = $OrderCon->errorText();
+  if (count($errorText) == 1) {
+    $key = key($errorText);
+  } else {
+    $key = array_key_first($errorText);
+  }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -30,7 +56,13 @@ else {
   <script src="./js/goods.js"></script>
   <script src="./js/sort.js"></script>
 </head>
-<body>
+<body
+<?php if (!empty($goodsCon->errorText())): ?>
+  onLoad="document.goodsFormUpdate_<?= h($goodsCon->getValues()->id) ?>.<?= h($key); ?>.focus()"
+<?php endif; ?>
+<?php if (!empty($OrderCon->errorText())): ?>
+  onLoad="document.orders_<?= h($OrderCon->getValues()->number) ?>.<?= h($key); ?>.focus()"
+<?php endif; ?>>
   <header class="header">
     <div class="header__inner">
       <div class="header_title">

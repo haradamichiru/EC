@@ -1,24 +1,21 @@
 <?php
 require_once(__DIR__ .'/header_admin.php');
 $goodsCon->run();
-$goods = $goodsMod->goods();
-$id = $_SESSION['delete_id'];
-$sizes = $goodsMod->goods_sizes();
-$colors = $goodsMod->goods_colors();
+$id = $_SESSION['delete_goods_id'];
 
-foreach ($goods as $data) {
+foreach ($goodsMod->goods() as $data) {
   if ($data->id == $id) {
-    $goods = $data;
+    $goods_data = $data;
   }
 }
 
-foreach ($sizes as $s) {
+foreach ($goodsMod->goods_sizes() as $s) {
   if ($s->goods_id == $id) {
     $size[] = $s;
   }
 }
 
-foreach ($colors as $c) {
+foreach ($goodsMod->goods_colors() as $c) {
   if ($c->goods_id == $id) {
     $color[] = $c;
   }
@@ -30,7 +27,7 @@ foreach ($colors as $c) {
       <form class="delete_form" method="post" action="">
         <div class="goods">
           <div class="goods_image">
-            <img src="<?= !(empty($image)) ? './image/'.h($image) : './asset/img/noimage.png'; ?>">
+            <img src="<?= !(empty($goods_data->image)) ? './image/'.h($goods_data->image) : './asset/img/noimage.png'; ?>">
           </div>
           <div class="goods_detail">
             <p class="note">※一度削除すると元には戻せません。</p>
@@ -39,13 +36,13 @@ foreach ($colors as $c) {
                 <tr>
                   <th>商品名</th>
                   <td>
-                    <p><?= h($goods->name); ?></p>
+                    <p><?= h($goods_data->name); ?></p>
                   </td>
                 </tr>
                 <tr>
                   <th>金額</th>
                   <td>
-                    <p class="price"><?= h($goods->price) ?>円</p>
+                    <p class="price"><?= h($goods_data->price) ?>円</p>
                   </td>
                 </tr>
                 <?php if ($size): ?>
@@ -79,7 +76,7 @@ foreach ($colors as $c) {
                     商品説明
                   </th>
                   <td>
-                    <code><?= h($goods->explanation); ?></code>
+                    <code><?= h($goods_data->explanation); ?></code>
                   </td>
                 </tr>
               </tbody>

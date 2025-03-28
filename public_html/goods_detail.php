@@ -20,12 +20,12 @@ $goodsCon->run();
       <div class="item_img">
         <img src="<?= !(empty($detail->image)) ? './image/'.h($detail->image) : './asset/img/noimage.png'; ?>">
       </div>
-      <form method="get" action="">
+      <form method="post" action="">
         <section class="item_detail">
           <h1><?= h($detail->name); ?></h1>
           <div class="detail_price tax_in">
             <span class="price">￥<?= number_format($detail->price * (TAX_RATE + 1)); ?></span>
-            <input type="hidden" name="price" value="<?= h($detail->price); ?>">
+            <input type="hidden" name="<?= h($detail->id); ?>[price]" value="<?= h($detail->price); ?>">
             <span class="tax">（内税￥<?= number_format($detail->price * TAX_RATE); ?>）</span>
           </div>
           <div class="specification">
@@ -35,10 +35,10 @@ $goodsCon->run();
                   <?php if (!empty($goodsSize)) { ?>
                   <th>size</th>
                   <td>
-                    <select class="select" name="size">
+                    <select class="select" name="<?= h($detail->id); ?>[size]">
                       <?php foreach($goodsSize as $s): ?>
                       <option value="<?= h($s); ?>"><?= h($s); ?></option>
-                      <?php endforeach ?>
+                      <?php endforeach; ?>
                     </select>
                   </td>
                   <?php } ?>
@@ -47,10 +47,10 @@ $goodsCon->run();
                   <?php if (!empty($goodsColor)) { ?>
                   <th>color</th>
                   <td>
-                    <select class="select" name="color">
+                    <select class="select" name="<?= h($detail->id); ?>[color]">
                       <?php foreach($goodsColor as $c): ?>
                       <option value="<?= h($c); ?>"><?= h($c); ?></option>
-                      <?php endforeach ?>
+                      <?php endforeach; ?>
                     </select>
                   </td>
                   <?php } ?>
@@ -67,7 +67,7 @@ $goodsCon->run();
                   d="M.5 1C.5.7.7.5 1 .5h8a.5.5 0 110 1H1A.5.5 0 01.5 1z" fill="currentColor"> </path>
               </svg>
             </button>
-            <input class="quantity__input" type="text" name="count[]" value="1" min="0" aria-label=""
+            <input class="quantity__input" type="text" name="<?= h($detail->id); ?>[count]" value="1" min="0" aria-label=""
               id="Quantity-1" data-index="1">
             <button class="quantity__button no-js-hidden" name="plus" type="button">
               <span class="visually-hidden">個数を増やす</span>

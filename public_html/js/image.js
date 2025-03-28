@@ -27,5 +27,11 @@ $(function () {
     reader.readAsDataURL(file);
   })
 
+  $('.delete_image-btn').on('click', function() {
+    var image = $(this).closest('.goods_image');
+    image.find('.old_image').attr('value', '');
+    image.find('.edit_image').attr('src', './asset/img/noimage.png');
+  })
+
 });
 

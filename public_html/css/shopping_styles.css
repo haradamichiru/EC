@@ -93,7 +93,19 @@ label {
 
 .back {
   font-size: 1.6rem;
+  margin-top: 10px;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid;
+  background-color: transparent;
+  font-family: "Zen Old Mincho", serif;
 }
+
+.back:hover {
+  color: #ffffff;
+  background-color: rgba(110, 115, 130, 0.748);
+}
+
 
 /* ヘッダー */
 
@@ -391,10 +403,6 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.back {
-  margin-top: 10px;
 }
 
 /* お客様情報入力 */

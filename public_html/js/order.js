@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 更新ボタン押下時にバリデーションチェック
     let updateBtn = document.querySelectorAll('.update-btn');
     for (var i = 0; i < updateBtn.length; i++) {
-      updateBtn[i].addEventListener('click',function() { // どの更新ボタンが押下されたか判断
+      updateBtn[i].addEventListener('click',function(e) { // どの更新ボタンが押下されたか判断
         if (this.closest('.order').querySelector('.add-order').style.display == 'revert') { // 「商品を追加する」ボタンを押下していた場合
           if (this.closest('.order').querySelector('.goods-name').value == "") {
             this.parentNode.querySelector('.err-goods').innerText = "商品を選択してください。";
@@ -127,7 +127,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (this.parentNode.querySelector('.err-goods').innerText == "" && this.parentNode.querySelector('.err-count').innerText == "" && this.parentNode.querySelector('.err-color').innerText == "" && this.parentNode.querySelector('.err-size').innerText =="") {
           err = true;
         }
-        return err;
+
+        if (err == false) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
       });
     }
   }
@@ -137,4 +141,3 @@ document.addEventListener('DOMContentLoaded', function () {
 function validateFormOrderGoods() {
   return err;
 }
-

@@ -20,56 +20,24 @@ class Order extends \Ec\Model {
       ':name' => $values['name'],
       ':kana' => $values['kana'],
       ':email' => $values['email'],
-      ':post_number' => $values['post-number'],
+      ':post_number' => $values['postNumber'],
       ':address' => $values['address'],
       ':tel' => $values['tel'],
       ':pay' => $values['pay'],
     ]);
   }
+
   // 新規注文時に注文された商品のサイズとカラーをそれぞれのDBに追加
   public function orderGoods($values) {
     $stmt = $this->db->prepare("INSERT INTO order_goods (order_number, goods_id, price, count, size, color, created, modified) VALUES (:order_number, :goods_id, :price, :count, :size, :color, now(), now())");
-    if (empty($values['size'])) {
-      if (empty($values['color'])) { // サイズ、カラーどちらも連携されていない場合
-        $res = $stmt->execute([
-          ':order_number' => $values['order_number'],
-          ':goods_id' => $values['goods_id'],
-          ':price' => $values['price'],
-          ':count' => $values['count'],
-          ':size' => '', // サイズを空でDBに追加
-          ':color' => '', // カラーを空でDBに追加
-        ]);
-      } else { // サイズが連携なし、カラーが連携されている場合
-        $res = $stmt->execute([
-          ':order_number' => $values['order_number'],
-          ':goods_id' => $values['goods_id'],
-          ':price' => $values['price'],
-          ':count' => $values['count'],
-          ':size' => '', // サイズを空でDBに追加
-          ':color' => $values['color'],
-        ]);
-      }
-    } else {
-      if (empty($values['color'])) { // サイズが連携あり、カラーが連携されていない場合
-        $res = $stmt->execute([
-          ':order_number' => $values['order_number'],
-          ':goods_id' => $values['goods_id'],
-          ':price' => $values['price'],
-          ':count' => $values['count'],
-          ':size' => $values['size'],
-          ':color' => '', // カラーを空でDBに追加
-        ]);
-      } else { // サイズ、カラーどちらも連携されている場合
-        $res = $stmt->execute([
-          ':order_number' => $values['order_number'],
-          ':goods_id' => $values['goods_id'],
-          ':price' => $values['price'],
-          ':count' => $values['count'],
-          ':size' => $values['size'],
-          ':color' => $values['color'],
-        ]);
-      }
-    }
+    $res = $stmt->execute([
+      ':order_number' => $values['order_number'],
+      ':goods_id' => $values['goods_id'],
+      ':price' => $values['price'],
+      ':count' => $values['count'],
+      ':size' => $values['size'],
+      ':color' => $values['color'],
+    ]);
   }
 
   // 注文商品一覧
@@ -99,7 +67,7 @@ class Order extends \Ec\Model {
       ':email' => $values['email'],
       ':name' => $values['name'],
       ':kana' => $values['kana'],
-      ':post_number' => $values['post-number'],
+      ':post_number' => $values['postNumber'],
       ':address' => $values['address'],
       ':tel' => $values['tel'],
       ':pay' => $values['pay'],
@@ -108,33 +76,13 @@ class Order extends \Ec\Model {
 
   // 注文商品更新
   public function orderGoodsUpdate($values) {
-    $key = $values['key'];
-    // 商品数がNULLだった場合に0としてDBに保存
-    if (isset($values[0]['count'][$key])) {
-      $count = $values[0]['count'][$key];
-    } else {
-      $count = '0';
-    }
-    // 商品サイズがNULLだった場合に空白としてDBに保存
-    if (isset($values[0]['size'][$key])) {
-      $size = $values[0]['size'][$key];
-    } else {
-      $size = '';
-    }
-    // 商品カラーがNULLだった場合に空白としてDBに保存
-    if (isset($values[0]['color'][$key])) {
-      $color = $values[0]['color'][$key];
-    } else {
-      $color = '';
-    }
-
     $stmt = $this->db->prepare("UPDATE order_goods SET goods_id = :goods_id, count = :count, size = :size, color = :color, modified = now() WHERE id = :id");
     $stmt->execute([
       ':id' => $values['id'],
       ':goods_id' => $values['goods_id'],
-      ':count' => $count,
-      ':size' => $size,
-      ':color' => $color,
+      ':count' => $values['count'],
+      ':size' => $values['size'],
+      ':color' => $values['color'],
     ]);
   }
 
@@ -150,7 +98,6 @@ class Order extends \Ec\Model {
       ':color' => $values['color'],
     ]);
   }
-
 
   // 注文削除
   public function delete($values) {

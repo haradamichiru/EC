@@ -1,19 +1,11 @@
 <?php
 require_once(__DIR__ .'/header_admin.php');
-$goodsCon = new Ec\Controller\Goods();
-$goodsCon->run();
-$orderCon = new Ec\Controller\Order();
-$orderCon->run();
-
-$goodsMod = new Ec\Model\Goods();
 $goods = $goodsMod->goods();
 $sizes = $goodsMod->sizes();
 $goodsSizes = $goodsMod->goods_sizes();
 $colors = $goodsMod->colors();
 $goodsColors = $goodsMod->goods_colors();
 $postage = $goodsMod->settings()[0]->postage;
-
-// var_dump($goodsSizes);
 
 ?>
     <!-- 商品追加 -->
@@ -25,28 +17,28 @@ $postage = $goodsMod->settings()[0]->postage;
             <tbody>
               <tr>
                 <th>
-                  <label for="goods_name">商品名</label>
+                  <label for="new_goods_name">商品名</label>
                 </th>
                 <td>
-                  <input class="form-text" type="text" name="goods_name" value="<?= isset($goodsCon->getValues()->goods_name) ? h($goodsCon->getValues()->goods_name): ''; ?>">
+                  <input class="form-text" type="text" name="new_goods_name" value="<?=h($goodsCon->getValues()->goods_name ?? ''); ?>">
                   <p class="err-txt" id="err-goods"></p>
                 </td>
               </tr>
               <tr>
                 <th>
-                  <label for="goods_price">金額</label>
+                  <label for="new_goods_price">金額</label>
                 </th>
                 <td>
-                  <input class="form-text" type="text" name="goods_price" value="<?= isset($goodsCon->getValues()->price) ? h($goodsCon->getValues()->price): ''; ?>">
+                  <input class="form-text" type="text" name="new_goods_price" value="<?= h($goodsCon->getValues()->price ?? ''); ?>">
                   <p class="err-txt" id="err-price"></p>
                 </td>
               </tr>
               <tr>
                 <th>
-                  <label for="goods_price">商品説明</label>
+                  <label for="new_goods_price">商品説明</label>
                 </th>
                 <td>
-                  <textarea class="form-text" name="explanation" value="<?= isset($goodsCon->getValues()->explanation) ? h($goodsCon->getValues()->explanation): ''; ?>"></textarea>
+                  <textarea class="form-text" name="new_explanation" value="<?= h($goodsCon->getValues()->explanation ?? ''); ?>"></textarea>
                   <p class="err-txt" id="err-ex"></p>
                 </td>
               </tr>
@@ -59,8 +51,8 @@ $postage = $goodsMod->settings()[0]->postage;
                     <?php foreach($sizes as $size):
                       if (!(empty($size->size))) { ?>
                       <div class="list">
-                        <input class="form-text" name="size[<?= $size->id; ?>]" id="size[<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>">
-                        <label class="label" for="size[<?= $size->id; ?>]"><?= h($size->size); ?></label>
+                        <input class="form-text" name="size[<?= $size->id; ?>]" id="new_size[<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>">
+                        <label class="label" for="new_size[<?= $size->id; ?>]"><?= h($size->size); ?></label>
                       </div>
                     <?php } endforeach ?>
                   </div>
@@ -76,8 +68,8 @@ $postage = $goodsMod->settings()[0]->postage;
                     <?php foreach($colors as $color):
                       if (!(empty($color->color))) { ?>
                       <div class="list">
-                        <input class="form-text color" name="color[<?= $color->id; ?>]" id="color[<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>">
-                        <label class="label" for="color[<?= $color->id; ?>]"><?= h($color->color); ?></label>
+                        <input class="form-text color" name="color[<?= $color->id; ?>]" id="new_color[<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>">
+                        <label class="label" for="new_color[<?= $color->id; ?>]"><?= h($color->color); ?></label>
                       </div>
                     <?php } endforeach ?>
                   </div>
@@ -118,7 +110,7 @@ $postage = $goodsMod->settings()[0]->postage;
                 </th>
                 <td>
                   <p class="price">
-                    <input class="form-text setting" type="text" name="postage" value="<?= isset($postage) ? h($postage): ''; ?>">円
+                    <input class="form-text setting" type="text" name="postage" value="<?= h($postage ?? ''); ?>">円
                   </p>
                   <p class="err-txt" id="err-postage"></p>
                 </td>
@@ -135,20 +127,20 @@ $postage = $goodsMod->settings()[0]->postage;
     <!-- 商品編集 -->
     <div class="container">
       <h2>商品の編集・削除</h2>
-      <form class="container_form" method="post" action="" onsubmit="return validateFormGoodsUpdate()" name="goodsFormUpdate" enctype="multipart/form-data">
+      <?php foreach($goods as $key => $item):
+        $id = $item->id; ?>
+      <form class="container_form" method="post" action="" onsubmit="return validateFormGoodsUpdate()" name="goodsFormUpdate_<?= h($id); ?>" enctype="multipart/form-data">
         <div class="goods_list">
-        <?php foreach($goods as $key => $item):
-          $id = $item->id; ?>
           <div class="goods" id="goods[<?= $id ?>]">
             <div class="goods_image">
               <span class="delete_image-btn">削除</span>
               <label>
                 <span class="edit-btn">編集
-                  <input type="file" name="edit_image[<?= $id; ?>]" class="edit_button" style="display:none" accept="image/*">
+                  <input type="file" name="edit_image" class="edit_button" style="display:none" accept="image/*">
                 </span>
               </label>
               <div class="image_file">
-                <input type="hidden" class="old_image" name="old_image[<?= $id; ?>]" value="<?= h($item->image); ?>">
+                <input type="hidden" class="old_image" name="image" value="<?= h($item->image); ?>">
                 <img class="edit_image" src="<?= !(empty($item->image)) ? './image/'.h($item->image) : './asset/img/noimage.png'; ?>">
               </div>
             </div>
@@ -158,14 +150,16 @@ $postage = $goodsMod->settings()[0]->postage;
                   <tr>
                     <th>商品名</th>
                     <td>
-                      <p><input class="form-text" name="goods_name[<?= $id; ?>]" type="text" value="<?= h($item->name); ?>"></p>
+                      <p><input class="form-text" name="goods_name" type="text" value="<?= ($id == $goodsCon->getValues()->id) ? h($goodsCon->getvalues()->goods_name): h($item->name); ?>"></p>
                       <input class="id" name="id" type="hidden" value="<?= $id; ?>">
+                      <p class="err-txt"><?= ($id == $goodsCon->getValues()->id && $goodsCon->getErrors('goods_name')) ? h($goodsCon->getErrors('goods_name')): ''; ?></p>
                     </td>
                   </tr>
                   <tr>
                     <th>金額</th>
                     <td>
-                      <p class="price"><input class="form-text" name="price[<?= $id; ?>]" type="text" value="<?= h($item->price); ?>">円</p>
+                      <p class="price"><input class="form-text" name="price" type="text" value="<?= ($id == $goodsCon->getValues()->id) ? h($goodsCon->getvalues()->price): h($item->price); ?>">円</p>
+                      <p class="err-txt"><?= ($id == $goodsCon->getValues()->id && $goodsCon->getErrors('price')) ? h($goodsCon->getErrors('price')): ''; ?></p>
                     </td>
                   </tr>
                   <tr>
@@ -175,11 +169,11 @@ $postage = $goodsMod->settings()[0]->postage;
                         <?php foreach($sizes as $size):
                           if (!(empty($size->size))) { ?>
                           <div class="size-list">
-                            <input class="form-text size" name="size[<?= $id; ?>][]" id="size[<?= $id; ?>][<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>"
+                            <input class="form-text size" name="size[]" id="size[<?= $id; ?>][<?= $size->id; ?>]" type="checkbox" value="<?= h($size->size); ?>"
                             <?php foreach($goodsSizes as $gSize):
                               if ($id == $gSize->goods_id && $size->size == $gSize->size && $gSize->delflag == '0') { ?> checked
                             <?php } endforeach ?> >
-                            <label class="label" for="size[<?= $id;?>][<?= $size->id; ?>]"><?= h($size->size); ?></label>
+                            <label class="label" for="size[<?= $id; ?>][<?= $size->id; ?>]"><?= h($size->size); ?></label>
                           </div>
                         <?php } endforeach ?>
                       </div>
@@ -193,7 +187,7 @@ $postage = $goodsMod->settings()[0]->postage;
                         <?php foreach($colors as $color):
                           if (!(empty($color->color))) { ?>
                           <div class="color-list">
-                            <input class="form-text color" name="color[<?= $id; ?>][]" id="color[<?= $id; ?>][<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>"
+                            <input class="form-text color" name="color[]" id="color[<?= $id; ?>][<?= $color->id; ?>]" type="checkbox" value="<?= h($color->color); ?>"
                             <?php foreach($goodsColors as $gColor):
                             if ($id == $gColor->goods_id && $color->color == $gColor->color && $gColor->delflag == '0') { ?> checked
                             <?php } endforeach ?> >
@@ -207,7 +201,7 @@ $postage = $goodsMod->settings()[0]->postage;
                       商品説明
                     </th>
                     <td>
-                      <textarea class="form-text large" name="explanation[<?= $id; ?>]"><?= h($item->explanation); ?></textarea>
+                      <textarea class="form-text large" name="explanation"><?= h($goodsCon->getvalues()->explanation ?? $item->explanation); ?></textarea>
                     </td>
                   </tr>
                 </tbody>
@@ -215,17 +209,18 @@ $postage = $goodsMod->settings()[0]->postage;
             </div>
             <div class="buttons">
               <p class="delete">
-                <input class="delete_goods" type="submit" name="delete_confirm[<?= $id ?>]" value="削除">
+                <input class="delete_goods" type="submit" name="delete_confirm" value="削除">
               </p>
               <div class="goods_edit">
-                <input class="btn update-goods" type="submit" name="goods_update[<?= $id ?>]" value="更新">
+                <input class="btn update-goods" type="submit" name="goods_update" value="更新">
                 <p class="err-txt" id="err-goods_update"></p>
                 <p class="err-txt" id="err-price_update"></p>
               </div>
             </div>
           </div>
-          <?php endforeach ?>
+        </div>
       </form>
+      <?php endforeach ?>
     </div>
 <?php
   require_once(__DIR__ .'/footer_admin.php');

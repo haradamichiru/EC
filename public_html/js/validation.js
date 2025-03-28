@@ -2,7 +2,7 @@
 function validateForm() {
   const key = customerInformation.key.value;
   if(key == 'next') {
-    let mail = document.forms["customerInformation"]["mail"].value;
+    let email = document.forms["customerInformation"]["email"].value;
     let name = document.forms["customerInformation"]["name"].value;
     let kana = document.forms["customerInformation"]["kana"].value;
     let postNum1 = document.forms["customerInformation"]["post-number1"].value;
@@ -12,7 +12,6 @@ function validateForm() {
     let pay = document.forms["customerInformation"]["pay"].value;
     let number = document.forms["customerInformation"]["credit_number"].value;
     let cvv = document.forms["customerInformation"]["cvv"].value;
-  
   
     let errMail = document.getElementById('err-mail');
     let errName = document.getElementById('err-name');
@@ -119,13 +118,13 @@ function validateForm() {
     }
 
     // メールアドレス
-    if (mail == "") {
+    if (email == "") {
       errMail.innerText = "メールアドレスが未入力です。"
       err = false;
       let y = errMail.getBoundingClientRect().top;
       scrollTo(0,y);
     } else {
-      if (!mail.match(mailRegex)) {
+      if (!email.match(mailRegex)) {
         errMail.innerText = "メールアドレスの形式ではありません。";
         err = false;
         let y = errMail.getBoundingClientRect().top;
@@ -142,7 +141,6 @@ function validateForm() {
       buy.style.display = "block";
       err = false;
     }
-
   } else if(key == 'buy') {
     err = true;
   }
@@ -248,8 +246,8 @@ function validateFormAdmin() {
 
 // 商品追加のバリデーション
 function validateFormGoodsAdd() {
-  let goodsName = document.forms["goodsFormAdd"]["goods_name"].value;
-  let goodsPrice = document.forms["goodsFormAdd"]["goods_price"].value;
+  let goodsName = document.forms["goodsFormAdd"]["new_goods_name"].value;
+  let goodsPrice = document.forms["goodsFormAdd"]["new_goods_price"].value;
 
   errGoods = document.getElementById('err-goods');
   errPrice = document.getElementById('err-price');

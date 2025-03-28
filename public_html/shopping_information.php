@@ -17,18 +17,18 @@ if ($orders == array()) {
       <form method="post" class="h-adr" action="" id="form" onsubmit="return validateForm()" name="customerInformation">
         <div class="form-contents">
           <label class="form">メールアドレス（必須）</label>
-          <input class="form-text" type="email" name="mail" value="<?= isset($_SESSION['email']) ? h($_SESSION['email']): ''; ?>" placeholder="abc@vue.jp">
+          <input class="form-text" type="email" name="email" value="<?= h($_SESSION['email'] ?? ''); ?>" placeholder="abc@vue.jp">
           <p class="err-txt" id="err-mail"></p>
           <p>※入力誤りにご注意ください。メールアドレスに誤りがある場合、注文完了メールが受け取れなくなります。</p>
         </div>
         <div class="form-contents">
           <label class="form">氏名（必須）</label>
-          <input class="form-text" type="text" name="name" value="<?= isset($_SESSION['name']) ? h($_SESSION['name']): ''; ?>" placeholder="佐藤太郎">
+          <input class="form-text" type="text" name="name" value="<?= h($_SESSION['name'] ?? ''); ?>" placeholder="佐藤太郎">
           <p class="err-txt" id="err-name"></p>
         </div>
         <div class="form-contents">
           <label class="form">氏名フリガナ（必須）</label>
-          <input class="form-text" type="text" name="kana" value="<?= isset($_SESSION['kana']) ? h($_SESSION['kana']): ''; ?>" placeholder="サトウタロウ" id="kana">
+          <input class="form-text" type="text" name="kana" value="<?= h($_SESSION['kana'] ?? ''); ?>" placeholder="サトウタロウ" id="kana">
           <p class="err-txt" id="err-kana"></p>
         </div>
         <div class="form-contents">
@@ -36,20 +36,20 @@ if ($orders == array()) {
           <span class="p-country-name" style="display:none;">Japan</span>
           <p class="postnum">
             〒
-            <input class="form-text p-postal-code" type="text" name="post-number1" value="<?= isset($_SESSION['post-number1']) ? h($_SESSION['post-number1']): ''; ?>" placeholder="160">
+            <input class="form-text p-postal-code" type="text" name="post-number1" value="<?= h($_SESSION['post-number1'] ?? ''); ?>" placeholder="160">
             -
-            <input class="form-text p-postal-code" type="text" name="post-number2" value="<?= isset($_SESSION['post-number2']) ? h($_SESSION['post-number2']): ''; ?>" placeholder="0022">
+            <input class="form-text p-postal-code" type="text" name="post-number2" value="<?= h($_SESSION['post-number2'] ?? ''); ?>" placeholder="0022">
           </p>
           <p class="err-txt" id="err-postnum"></p>
         </div>
         <div class="form-contents"><label class="form">住所（必須）</label>
-          <input class="form-text p-region p-locality p-street-address p-extended-address" type="text" name="address" value="<?= isset($_SESSION['address']) ? h($_SESSION['address']): ''; ?>" placeholder="東京都新宿区新宿１丁目１９−１０ サンモールクレスト 5F">
+          <input class="form-text p-region p-locality p-street-address p-extended-address" type="text" name="address" value="<?= h($_SESSION['address'] ?? ''); ?>" placeholder="東京都新宿区新宿１丁目１９−１０ サンモールクレスト 5F">
           <p>※建物名、部屋番号を必ずご入力ください。</p>
           <p class="err-txt" id="err-address"></p>
         </div>
         <div class="form-contents">
           <label class="form">お届け時に連絡可能な電話番号（必須）</label>
-          <input class="form-text" type="tel" name="tel" value="<?= isset($_SESSION['tel']) ? h($_SESSION['tel']): ''; ?>" placeholder="0312345678" id="tel">
+          <input class="form-text" type="tel" name="tel" value="<?= h($_SESSION['tel'] ?? ''); ?>" placeholder="0312345678" id="tel">
           <p class="err-txt" id="err-tel"></p>
         </div>
         <div class="bottom">
@@ -129,7 +129,7 @@ if ($orders == array()) {
             <input type="hidden" name="number" value="<?= h(date('Ymd'). $num); ?>">
             <input type="hidden" name="postage" value="<?= h($postage); ?>">
             <input type="hidden" name="tax_rate" value="<?= h(TAX_RATE); ?>">
-            <a class="back" href="<?= SITE_URL; ?>/shopping_all.php">ショッピングカートに戻る</a>
+            <input class="back" type="submit" name="back" value="ショッピングカートに戻る">
           </div>
         </div>
       </form>

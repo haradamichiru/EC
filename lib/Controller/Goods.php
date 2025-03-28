@@ -2,74 +2,52 @@
 namespace Ec\Controller;
 class Goods extends \Ec\Controller {
   public function run() {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add'])) {
-      $this->addGoods();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['add_cart'])) {
-      $this->cart();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order'])) {
-      $this->customer();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
-      $this->delete();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change'])) {
-      $this->change();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_confirm']) ) {
-      $this->deleteConfirm();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['goods_delete']) ) {
-      $this->goodsDelete();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['goods_update']) ) {
-      $this->goodsUpdate();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['size_update']) ) {
-      $this->sizeUpdate();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['color_update']) ) {
-      $this->colorUpdate();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setting']) ) {
-      $this->setting();
-    }
-
-  }
-
-  // 商品POSTデータ格納
-  private function goods() {
-    $goods = [
-      'goods_name' => $_POST['goods_name'],
-      'price' => $_POST['goods_price'],
-      'explanation' => htmlspecialchars($_POST['explanation']),
-      'image' => $_POST['image'],
+    $action = [
+      'add' => 'addGoods',
+      'add_cart' => 'cart',
+      'order' => 'customer',
+      'delete' => 'cartDelete',
+      'change' => 'cartChange',
+      'delete_confirm' => 'deleteConfirm',
+      'goods_delete' => 'goodsDelete',
+      'goods_update' => 'goodsUpdate',
+      'size_update' => 'sizeUpdate',
+      'color_update' => 'colorUpdate',
     ];
-    return $goods;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      foreach ($action as $key => $method) {
+        if (isset($_POST[$key])) {
+          // var_dump($method);
+          // exit();
+          $this->$method();
+          return;
+        }
+      }
+      return;
+    }
   }
 
   // 商品追加
   protected function addGoods() {
     // 画像データをフォルダに格納して$_POST['image']として保存
     $goods_img = $_FILES['add_image'];
-    $ext = substr($goods_img['name'], strrpos($goods_img['name'], '.') + 1);
-    $goods_img['name'] = uniqid("img_") .'.'. $ext;
+    if ($goods_img['size'] > 0) {
+      $ext = substr($goods_img['name'], strrpos($goods_img['name'], '.') + 1);
+      $goods_img['name'] = uniqid("img_") .'.'. $ext;
+      move_uploaded_file($goods_img['tmp_name'],'./image/'.$goods_img['name']);
+      $_POST['image'] = $goods_img['name'];
+    } else {
+      $_POST['image'] = "";
+    }
+    
     $GoodsMod = new \Ec\Model\Goods();
-    move_uploaded_file($goods_img['tmp_name'],'./image/'.$goods_img['name']);
-    $_POST['image'] = $goods_img['name'];
-
-    $GoodsMod->create($this->goods());
+    $GoodsMod->create([
+      'goods_name' => $_POST['new_goods_name'],
+      'price' => $_POST['new_goods_price'],
+      'explanation' => htmlspecialchars($_POST['new_explanation']),
+      'image' => $_POST['image'],
+    ]);
     $id = end($GoodsMod->goods())->id; // ↑で追加した商品のIDを取得
     if ($_POST['size']) { //サイズが送信された場合
       foreach ($_POST['size'] as $size) {
@@ -93,31 +71,22 @@ class Goods extends \Ec\Controller {
 
   // ショッピングカートへ商品を追加
   protected function cart() {
-    if ($_SESSION['cart'] == array()) { // SESSION[cart]内が空だった場合
-      $i = 0;
-      $_SESSION['cart'][$i] = $_GET; // SESSION[cart]へGETされたデータを格納
-    } else {
-      $i = array_key_last($_SESSION['cart'])+1;
-      $j = array_keys($_SESSION['cart']);
-      $k = 0;
-      while ($k <= count($j)) {
-        // SESSION[cart]内のid、サイズ、カラーとGETデータが一致した場合
-        if ($_SESSION['cart'][$k]['id'] == $_GET['id'] && $_SESSION['cart'][$k]['size'] == $_GET['size'] && $_SESSION['cart'][$k]['color'] == $_GET['color']) {
-          $_SESSION['cart'][$k]['count'][0] = $_GET['count'][0] + $_SESSION['cart'][$k]['count'][0]; // SESSION[cart]の該当商品数を更新
-          break;
-        // GETされたデータにサイズが含まれていないかつ、SESSION[cart]内のid、カラーがGETデート一致した場合
-        } elseif (empty($_GET['size']) && $_SESSION['cart'][$k]['id'] == $_POST['id'] && $_SESSION['cart'][$k]['color'] == $_POST['color']) {
-          $_SESSION['cart'][$k]['count'][0] = $_POST['count'][0] + $_SESSION['cart'][$k]['count'][0]; // SESSION[cart]の該当商品数を更新
-          break;
-        // GETされたデータにカラーが含まれていないかつ、SESSION[cart]内のid、サイズがGETデート一致した場合
-        } elseif (empty($_GET['color']) && $_SESSION['cart'][$k]['id'] == $_POST['id'] && $_SESSION['cart'][$k]['size'] == $_POST['size']) {
-          $_SESSION['cart'][$k]['count'][0] = $_POST['count'][0] + $_SESSION['cart'][$k]['count'][0]; // SESSION[cart]の該当商品数を更新
-          break;
+    $session_goods_id = $_SESSION['cart'][$_POST['id']];
+    $post_goods_id = $_POST['id'];
+    if (isset($session_goods_id)) { // $_SESSION['cart']の中POSTされた商品と同じIDがあった場合
+      foreach ($session_goods_id as $key => $detail) {
+        if ($session_goods_id[$key]['size'] == $_POST[$post_goods_id]['size']) { // $_SESSION['cart']のサイズとPOSTされたサイズが同じ場合
+          if ($session_goods_id[$key]['color'] == $_POST[$post_goods_id]['color']) { // $_SESSION['cart']のカラーとPOSTされたカラーが同じ場合（同一商品の場合）
+            $_SESSION['cart'][$_POST['id']][$key]['count'] = $_POST[$post_goods_id]['count'] + $session_goods_id[$key]['count']; // 商品数を増やす
+          } else { // $_SESSION['cart']のサイズとPOSTされたサイズが同じでカラーが異なる場合
+            $_SESSION['cart'][$_POST['id']][] = $_POST[$_POST['id']]; //　別の商品として$_SESSION['cart']へ格納
+          }
         } else {
-          $_SESSION['cart'][$i] = $_GET; // GETされたデータをSESSION[cart]に格納
-          break;
+          $_SESSION['cart'][$_POST['id']][] = $_POST[$_POST['id']];
         }
       }
+    } else {
+      $_SESSION['cart'][$_POST['id']][] = $_POST[$_POST['id']];
     }
     header('Location: ' . SITE_URL . '/shopping_all.php'); // カート内一覧画面へ遷移
     exit();
@@ -130,40 +99,25 @@ class Goods extends \Ec\Controller {
   }
 
   // ショッピングカートから商品を削除
-  private function delete() {
-    // SESSION[cart]内すべてを繰り返し
-    for ($k = 0; $k <= array_key_last($_SESSION['cart']); $k++) {
-      // SESSION[cart]のidとポストされたidが同じだった場合
-      if ($_SESSION['cart'][$k]['id'] == $_POST['delete']) {
-        unset($_SESSION['cart'][$k]); // 該当idのSESSION[cart]を空にする
-        header('Location: ' . SITE_URL . '/shopping_all.php'); // 画面更新
-        exit();
-        break;
-      }
+  private function cartDelete() {
+    if (count($_SESSION['cart'][$_POST['delete']]) == 1) {
+      unset($_SESSION['cart'][$_POST['delete']]);
+    } else {
+      unset($_SESSION['cart'][$_POST['delete']][$_POST['key']]);
     }
   }
 
   // ショッピングカートの商品数量変更
-  private function change() {
-    $id = $_POST['change'];
-    $count = $_POST['count'][$id];
-    $j = array_key_last($_SESSION['cart']);
-    for ($k = 0; $k <= $j; $k++) {
-      if ($_SESSION['cart'][$k]['id'] == $id) {
-        $_SESSION['cart'][$k]['count'][0] = $count;
-        header('Location: ' . SITE_URL . '/shopping_all.php'); // 画面更新
-        exit();
-        break;
-      }
-    }
-    $_SESSION['cart'][$id]['count'][0] = $count;
+  private function cartChange() {
+    $goods_id = $_POST['change'];
+    $_SESSION['cart'][$goods_id][$_POST['key']]['count'] = $_POST['count'][$_POST['key']];
     header('Location: ' . SITE_URL . '/shopping_all.php'); // 画面更新
     exit();
   }
 
-  // 商品削除
+  // 商品削除画面へ遷移
   protected function deleteConfirm() {
-    $_SESSION['delete_id'] = array_keys($_POST['delete_confirm'])[0]; // 押下した削除ボタンのキーを取得（IDを取得）
+    $_SESSION['delete_goods_id'] = $_POST['id']; // 押下した削除ボタンのキーを取得（IDを取得）
     header('Location: ' . SITE_URL . '/goods_delete.php'); // 商品削除画面へ遷移
     exit();
   }
@@ -180,147 +134,184 @@ class Goods extends \Ec\Controller {
 
   // 商品情報更新
   protected function goodsUpdate() {
-    $id = array_keys($_POST['goods_update'])[0]; // POSTされたID情報を$idとして変数格納
-    $goods_img = $_FILES['edit_image'];
-    $old_img = $_POST['old_image'][$id];
-    $goodsMod = new \Ec\Model\Goods();
-    $goodsSizes = $goodsMod->goods_sizes();
-    $goodsColors = $goodsMod->goods_colors();
-    $postSize = $_POST['size'][$id]; // POSTされたサイズを配列として格納
-    $postColor = $_POST['color'][$id]; // POSTされたカラーを配列として格納
-
-    // サイズ情報更新
-    if (!empty($postSize)) { // サイズがPOSTされていた場合
-      $counter = 0;
-      foreach ($goodsSizes as $size) {
-        if ($size->goods_id == $id) { // DB"goods_size"の中でPOSTされたidと同じものがあった場合
-          $counter++; // DB内のgoods_idとidが同じ個数をカウント
-          $sizeMod[] = $size->id; // DBのidを配列に格納
-        }
-      }
-      if (count($postSize) > $counter) { // POSTされた数がDB内の同じgoods_id数より多かった場合
-        // DB内のgoods_idが同じものはPOSTされた値に更新
-        foreach ($sizeMod as $key => $size) {
-          $goodsMod->goodsSizeUpdate([
-            'id' => $size,
-            'size' => $postSize[$key],
-            'delflag' => '0',
-          ]);
-        }
-        // DB内の同じgoods_id数からPOSTされた数までサイズ追加
-        for ($i = $counter; $i < count($postSize); $i++) {
-          $goodsMod->goodsSizeCreate([
-            'goods_id' => $id,
-            'size' => $postSize[$i],
-          ]);
-        }
-      } elseif (count($postSize) == $counter) { // POSTされた数とDB内の同じgoods_id数が同じだった場合
-        // DB内のgoods_idが同じものはPOSTされた値に更新
-        foreach ($sizeMod as $key => $size) {
-          $goodsMod->goodsSizeUpdate([
-            'id' => $size,
-            'size' => $postSize[$key],
-            'delflag' => '0',
-          ]);
-        }
-      } else { // 上記に当てはまらない場合（POSTされた数がDB内の同じgoods_id数を下回った場合）
-        // POSTされた値を更新
-        for ($i = 0; $i < count($postSize); $i++) {
-          $goodsMod->goodsSizeUpdate([
-            'id' => $sizeMod[$i],
-            'size' => $postSize[$i],
-            'delflag' => '0',
-          ]);
-        }
-        // POSTされた値以上のDB内の同じgoods_idのdelflagを更新
-        for ($j = $i; $j <= count($sizeMod); $j++) {
-          $goodsMod->goodsSizeUpdate([
-            'id' => $sizeMod[$j],
-            'size' => '',
-            'delflag' => '1',
-          ]);
-        }
-      }
+    $id = $_POST['id']; // POSTされたID情報を$idとして変数格納
+    try {
+      $this->validate();
+    } catch (\Exception $e) {
+      $errorMessages = json_decode($e->getMessage(), true);
     }
-
-    // カラー情報更新
-    if (!empty($postColor)) {
-      $counter = 0;
-      foreach ($goodsColors as $color) { // カラーがPOSTされていた場合
-        if ($color->goods_id == $id) { // DB"goods_color"の中でPOSTされたidと同じものがあった場合
-          $counter++; // DB内のgoods_idとidが同じ個数をカウント
-          $colorMod[] = $color->id; // DBのidを配列に格納
-        }
-      }
-      if (count($postColor) > $counter) { // POSTされた数がDB内の同じgoods_id数より多かった場合
-        // DB内のgoods_idが同じものはPOSTされた値に更新
-        foreach ($colorMod as $key => $color) {
-          $goodsMod->goodsColorUpdate([
-            'id' => $color,
-            'color' => $postColor[$key],
-            'delflag' => '0',
-          ]);
-        }
-        // DB内の同じgoods_id数からPOSTされた数までサイズ追加
-        for ($i = $counter; $i < count($postColor); $i++) {
-          $goodsMod->goodsColorCreate([
-            'goods_id' => $id,
-            'color' => $postColor[$i],
-          ]);
-        }
-      } elseif (count($postColor) == $counter) { // POSTされた数とDB内の同じgoods_id数が同じだった場合
-        // DB内のgoods_idが同じものはPOSTされた値に更新
-        foreach ($colorMod as $key => $color) {
-          $goodsMod->goodsColorUpdate([
-            'id' => $color,
-            'color' => $postColor[$key],
-            'delflag' => '0',
-          ]);
-        }
-      } else { // 上記に当てはまらない場合（POSTされた数がDB内の同じgoods_id数を下回った場合）
-        // POSTされた値を更新
-        for ($i = 0; $i < count($postColor); $i++) {
-          $goodsMod->goodsColorUpdate([
-            'id' => $colorMod[$i],
-            'color' => $postColor[$i],
-            'delflag' => '0',
-          ]);
-        }
-        // POSTされた値以上のDB内の同じgoods_idのdelflagを更新
-        for ($j = $i; $j <= count($colorMod); $j++) {
-          $goodsMod->goodsColorUpdate([
-            'id' => $colorMod[$j],
-            'color' => '',
-            'delflag' => '1',
-          ]);
-        }
-      }
-    }
-
-    // 商品画像更新
-    if ($goods_img['size'][$id] > 0) {
-      $ext = substr($goods_img['name'][$id], strrpos($goods_img['name'][$id], '.') + 1);
-      $goods_img['name'][$id] = uniqid("img_") .'.'. $ext;
-      move_uploaded_file($goods_img['tmp_name'][$id],'./image/'.$goods_img['name'][$id]);
-      $_POST['image'] = $goods_img['name'][$id];
-      $goodsMod->goodsUpdate([
-        'id' => $id,
-        'goods_name' => $_POST['goods_name'][$id],
-        'price' => $_POST['price'][$id],
-        'explanation' => $_POST['explanation'][$id],
-        'image' => $_POST['image'],
-      ]);
+    if (!empty($errorMessages)) { // $errorMessagesがあった場合
+      $this->setErrors('goods_name', $errorMessages['goods_name']);
+      $this->setErrors('price', $errorMessages['price']);
+      $this->setValues('id', $_POST['id']);
+      $this->setValues('goods_name', $_POST['goods_name']);
+      $this->setValues('price', $_POST['price']);
+      $this->setValues('explanation', $_POST['explanation']);
+      return $errorMessages;
     } else {
-      $goodsMod->goodsUpdate([
+      $goods_img = $_FILES['edit_image'];
+      $goodsMod = new \Ec\Model\Goods();
+      $goodsSizes = $goodsMod->goods_sizes();
+      $goodsColors = $goodsMod->goods_colors();
+      $postSize = $_POST['size']; // POSTされたサイズを配列として格納
+      $postColor = $_POST['color']; // POSTされたカラーを配列として格納
+
+      // サイズ情報更新
+      if (!empty($postSize)) { // サイズがPOSTされていた場合
+        $counter = 0;
+        foreach ($goodsSizes as $size) {
+          if ($size->goods_id == $id) { // DB"goods_size"の中でPOSTされたidと同じものがあった場合
+            $counter++; // DB内のgoods_idとidが同じ個数をカウント
+            $sizeMod[] = $size->id; // DBのidを配列に格納
+          }
+        }
+        if (count($postSize) > $counter) { // POSTされた数がDB内の同じgoods_id数より多かった場合
+          // DB内のgoods_idが同じものはPOSTされた値に更新
+          foreach ($sizeMod as $key => $size) {
+            $goodsMod->goodsSizeUpdate([
+              'id' => $size,
+              'size' => $postSize[$key],
+              'delflag' => '0',
+            ]);
+          }
+          // DB内の同じgoods_id数からPOSTされた数までサイズ追加
+          for ($i = $counter; $i < count($postSize); $i++) {
+            $goodsMod->goodsSizeCreate([
+              'goods_id' => $id,
+              'size' => $postSize[$i],
+            ]);
+          }
+        } elseif (count($postSize) == $counter) { // POSTされた数とDB内の同じgoods_id数が同じだった場合
+          // DB内のgoods_idが同じものはPOSTされた値に更新
+          foreach ($sizeMod as $key => $size) {
+            $goodsMod->goodsSizeUpdate([
+              'id' => $size,
+              'size' => $postSize[$key],
+              'delflag' => '0',
+            ]);
+          }
+        } else { // 上記に当てはまらない場合（POSTされた数がDB内の同じgoods_id数を下回った場合）
+          // POSTされた値を更新
+          for ($i = 0; $i < count($postSize); $i++) {
+            $goodsMod->goodsSizeUpdate([
+              'id' => $sizeMod[$i],
+              'size' => $postSize[$i],
+              'delflag' => '0',
+            ]);
+          }
+          // POSTされた値以上のDB内の同じgoods_idのdelflagを更新
+          for ($j = $i; $j <= count($sizeMod); $j++) {
+            $goodsMod->goodsSizeUpdate([
+              'id' => $sizeMod[$j],
+              'size' => '',
+              'delflag' => '1',
+            ]);
+          }
+        }
+      }
+
+      // カラー情報更新
+      if (!empty($postColor)) {
+        $counter = 0;
+        foreach ($goodsColors as $color) { // カラーがPOSTされていた場合
+          if ($color->goods_id == $id) { // DB"goods_color"の中でPOSTされたidと同じものがあった場合
+            $counter++; // DB内のgoods_idとidが同じ個数をカウント
+            $colorMod[] = $color->id; // DBのidを配列に格納
+          }
+        }
+        if (count($postColor) > $counter) { // POSTされた数がDB内の同じgoods_id数より多かった場合
+          // DB内のgoods_idが同じものはPOSTされた値に更新
+          foreach ($colorMod as $key => $color) {
+            $goodsMod->goodsColorUpdate([
+              'id' => $color,
+              'color' => $postColor[$key],
+              'delflag' => '0',
+            ]);
+          }
+          // DB内の同じgoods_id数からPOSTされた数までサイズ追加
+          for ($i = $counter; $i < count($postColor); $i++) {
+            $goodsMod->goodsColorCreate([
+              'goods_id' => $id,
+              'color' => $postColor[$i],
+            ]);
+          }
+        } elseif (count($postColor) == $counter) { // POSTされた数とDB内の同じgoods_id数が同じだった場合
+          // DB内のgoods_idが同じものはPOSTされた値に更新
+          foreach ($colorMod as $key => $color) {
+            $goodsMod->goodsColorUpdate([
+              'id' => $color,
+              'color' => $postColor[$key],
+              'delflag' => '0',
+            ]);
+          }
+        } else { // 上記に当てはまらない場合（POSTされた数がDB内の同じgoods_id数を下回った場合）
+          // POSTされた値を更新
+          for ($i = 0; $i < count($postColor); $i++) {
+            $goodsMod->goodsColorUpdate([
+              'id' => $colorMod[$i],
+              'color' => $postColor[$i],
+              'delflag' => '0',
+            ]);
+          }
+          // POSTされた値以上のDB内の同じgoods_idのdelflagを更新
+          for ($j = $i; $j <= count($colorMod); $j++) {
+            $goodsMod->goodsColorUpdate([
+              'id' => $colorMod[$j],
+              'color' => '',
+              'delflag' => '1',
+            ]);
+          }
+        }
+      }
+
+      // 更新するデータを配列に格納
+      $goods_update_data = [
         'id' => $id,
-        'goods_name' => $_POST['goods_name'][$id],
-        'price' => $_POST['price'][$id],
-        'explanation' => $_POST['explanation'][$id],
-        'image' => $old_img,
-      ]);
+        'goods_name' => $_POST['goods_name'],
+        'price' => $_POST['price'],
+        'explanation' => $_POST['explanation'],
+      ];
+      // 商品画像更新
+      if ($goods_img['size'] > 0) {
+        $ext = substr($goods_img['name'], strrpos($goods_img['name'], '.') + 1);
+        $goods_img['name'] = uniqid("img_") .'.'. $ext;
+        move_uploaded_file($goods_img['tmp_name'],'./image/'.$goods_img['name']);
+        $goods_update_data['image'] = $goods_img['name'];
+        $goodsMod->goodsUpdate($goods_update_data);
+      } else {
+        $goods_update_data['image'] = $_POST['image'];
+        $goodsMod->goodsUpdate($goods_update_data);
+      }
     }
     header('Location: '. SITE_URL . '/goods_confirm.php#goods[' .$id .']'); // 更新した商品の位置へ遷移
     exit();
+  }
+
+  // 商品更新バリデーション
+  private function validate() {
+    if (isset($_POST['goods_update'])) {
+      if ($_POST['goods_name'] === '') {
+        $errors['goods_name'] = "商品名が入力されていません。";
+      }
+      if ($_POST['price'] === '') {
+        $errors['price'] = "商品金額が入力されていません。";
+      }
+      if (!empty($errors)) {
+        throw new \Exception(json_encode($errors, JSON_UNESCAPED_UNICODE));
+      }
+    }
+  }
+
+  // 商品更新時のバリデーション時のエラーメッセージ
+  public function errorText() {
+    try {
+      $this->validate();
+    } catch (\Exception $e) {
+      $errorMessages = json_decode($e->getMessage(), true);
+    }
+    if (!empty($errorMessages)) { // $errorMessagesがあった場合
+      return $errorMessages;
+    }
   }
 
   // サイズ一覧更新
@@ -333,41 +324,46 @@ class Goods extends \Ec\Controller {
     $sizeMod = $GoodsMod->sizes();
     $counter = 1;
     $sizeModCount = 0;
+    // DBに保存されているサイズの個数をカウント
     foreach ($sizeMod as $key => $sizeDb) {
-      if (!empty($sizeDb->size)) {
+      if (!empty($sizeDb->size)) { // 空白は除く
         $sizeModCount++;
       }
     }
 
-    if (!empty($sizeMod)) {
+    if (!empty($sizeMod)) { // DBにサイズの保存がある場合
       foreach ($sizeMod as $sizeId) {
         foreach ($size as $key => $s) {
-          if ($sizeId->id == $id[$key]) {
+          if ($sizeId->id == $id[$key]) { // DBに保存してあるID中にPOSTされたIDがあった場合
+            // サイズを更新
             $GoodsMod->sizeUpdate([
               'id' => $id[$key],
               'size' => $s,
             ]);
             $counter++;
             continue;
-          } elseif (count($sizeMod) == 1 && $counter >= 2) {
-            if (isset($sizeId->size)) {
+          } elseif (count($sizeMod) == 1 && $counter >= 2) { // DB内の空白を含むサイズ数が1つのみかつカウンターが2以上の場合
+            if (isset($sizeId->size)) { // DB内にサイズがある場合
+              // サイズを更新
               $GoodsMod->sizeUpdate([
                 'id' => $id[$key],
                 'size' => $s,
               ]);
               $counter++;
-            } else {
+            } else { // DB内にサイズがない場合
+              // サイズを新規作成
               $GoodsMod->sizeCreate([
                 'id' => $id[$key],
                 'size' => $s,
               ]);
               $counter++;
             }
-          } elseif ($counter < count($sizeMod) * count($size) - (count($size) - count($sizeMod))) {
-            if ($sizeModCount <= count($size)) {
+          } elseif ($counter < count($sizeMod) * count($size) - (count($size) - count($sizeMod))) { // カウンター数がすべての組み合わせ数-POSTされたサイズとDB内の空白含むサイズ数の差よりも小さかった場合
+            if ($sizeModCount <= count($size)) { // POSTされたサイズ数がDBのサイズ数以上の場合
               $counter++;
               continue;
-            } elseif ($counter > count($size) * count($size)) {
+            } elseif ($counter > count($size) * count($size)) { // カウンターがPOSTされたサイズ数での組み合わせ数より大きかった場合
+              // サイズを更新
               $GoodsMod->sizeUpdate([
                 'id' => $sizeId->id,
                 'size' => '',
@@ -377,6 +373,7 @@ class Goods extends \Ec\Controller {
               continue;
             }
           } else {
+            // サイズを新規作成
             $GoodsMod->sizeCreate([
               'id' => $id[$key],
               'size' => $s,
@@ -384,8 +381,9 @@ class Goods extends \Ec\Controller {
           }
         }
       }
-     } else {
+     } else { // DBに情報がない場合
       foreach ($size as $key => $s) {
+        // サイズを新規作成
         $GoodsMod->sizeCreate([
           'id' => $id[$key],
           'size' => $s,
@@ -397,7 +395,7 @@ class Goods extends \Ec\Controller {
   }
 
   // カラー一覧更新
-  protected function colorUpdate() {
+  protected function colorUpdate() { // DBにカラーの保存がある場合
     $id = array_values(array_filter($_POST['id'], 'strlen'));
     $color = array_values(array_filter($_POST['color'], function ($k) {
       return $k !== '';
@@ -406,43 +404,48 @@ class Goods extends \Ec\Controller {
     $colorMod = $GoodsMod->colors();
     $counter = 1;
     $colorModCount = 0;
-    foreach ($colorMod as $key => $colorDb) {
-      if (!empty($colorDb->color)) {
+    // DBに保存されているカラーの個数をカウント
+    foreach ($colorMod as $key => $colorDb) { // DBに保存してあるID中にPOSTされたIDがあった場合
+      if (!empty($colorDb->color)) { // 空白は除く
         $colorModCount++;
       }
     }
 
-    if (!empty($colorMod)) {
+    if (!empty($colorMod)) { // DBにカラーの保存がある場合
       foreach ($colorMod as $colorId) {
         foreach ($color as $key => $c) {
-          if ($colorId->id == $id[$key]) {
+          if ($colorId->id == $id[$key]) { // DBに保存してあるID中にPOSTされたIDがあった場合
+            // カラーを更新
             $GoodsMod->colorUpdate([
               'id' => $id[$key],
               'color' => $c,
             ]);
             $counter++;
             continue;
-          } elseif (count($colorMod) == 1 && $counter >= 2) {
-            if (isset($colorId->color)) {
+          } elseif (count($colorMod) == 1 && $counter >= 2) { // DB内の空白を含むカラー数が1つのみかつカウンターが2以上の場合
+            if (isset($colorId->color)) { // DB内にカラーがある場合
+              // カラーを更新
               $GoodsMod->colorUpdate([
                 'id' => $id[$key],
                 'color' => $c,
               ]);
               $counter++;
-            } else {
+            } else { // DB内にカラーがない場合
+              // カラーを新規作成
               $GoodsMod->colorCreate([
                 'id' => $id[$key],
                 'color' => $c,
               ]);
               $counter++;
             }
-          } elseif ($counter < count($colorMod) * count($color) - (count($color) - count($colorMod))) {
-            if ($colorModCount <= count($color)) {
+          } elseif ($counter < count($colorMod) * count($color) - (count($color) - count($colorMod))) { // カウンター数がすべての組み合わせ数-POSTされたカラーとDB内の空白含むカラー数の差よりも小さかった場合
+            if ($colorModCount <= count($color)) { // POSTされたカラー数がDBのサイズ数以上の場合
               $counter++;
               continue;
             } else {
               foreach ($id as $id) {
                 if ((count($color) + 1) <= $id) {
+                  // カラーを更新
                   $GoodsMod->colorUpdate([
                     'id' => $id,
                     'color' => '',
@@ -451,6 +454,7 @@ class Goods extends \Ec\Controller {
               }
             }
           } else {
+            // カラーを新規作成
             $GoodsMod->colorCreate([
               'id' => $id[$key],
               'color' => $c,
@@ -458,8 +462,9 @@ class Goods extends \Ec\Controller {
           }
         }
       }
-     } else {
+     } else { // DBに情報がない場合
       foreach ($color as $key => $c) {
+        // カラーを新規作成
         $GoodsMod->colorCreate([
           'id' => $id[$key],
           'color' => $c,

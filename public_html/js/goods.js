@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (document.querySelector('.add-color')) {
     let colorBtn = document.querySelectorAll('.add-color');
     let sizeBtn = document.querySelectorAll('.add-size');
-    let deleteBtn = document.querySelectorAll('.delete_image-btn');
 
     for (var i = 0; i < colorBtn.length; i++){
       colorBtn[i].addEventListener('click',function(){
@@ -29,15 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         size.name = 'size[' + id + '][]';
         size.type = 'text';
         parent.insertBefore(size, this);
-      });
-    }
-
-    for (var i = 0; i < deleteBtn.length; i++){
-      deleteBtn[i].addEventListener('click',function(){
-        let parent = this.closest('.goods_image');
-        let image = parent.querySelector('.edit_image');
-        image.src = './asset/img/noimage.png';
-        parent.querySelector('.old_image').value = "";
       });
     }
   }

@@ -56,6 +56,7 @@ class Goods extends \Ec\Model {
     return $stmt->fetch(\PDO::FETCH_OBJ);
   }
 
+  // ログイン
   public function login($values) {
     $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email;");
     $stmt->execute([
@@ -74,16 +75,6 @@ class Goods extends \Ec\Model {
     }
     return $user;
   }
-
-  // 商品検索
-  // public function find($id) {
-  //   $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id;");
-  //   $stmt->bindValue('id',$id);
-  //   $stmt->execute();
-  //   $stmt->setFetchMode(\PDO::FETCH_CLASS, 'stdClass');
-  //   $user = $stmt->fetch();
-  //   return $user;
-  // }
 
   // 商品一覧
   public function goods() {
